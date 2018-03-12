@@ -1,0 +1,13 @@
+loat-right {
+  float: right !important;
+}
+col-4 {
+  border-style: solid;
+  border-radius: 5%;
+  width: 33.33333%;
+  border-width: 5px;
+}
+pl-4 {
+  padding-left: 24px;
+  border: none;
+}
