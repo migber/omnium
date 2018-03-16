@@ -1,22 +1,38 @@
 {
-  "name": "omnium",
-  "version": "0.1.0",
-  "private": true,
-  "dependencies": {
-    "dotenv": "^5.0.1",
-    "react": "^16.2.0",
-    "react-bootstrap": "^0.32.1",
-    "react-dom": "^16.2.0",
-    "react-facebook-login": "^4.0.1",
-    "react-google-login": "^3.0.4",
-    "react-router-dom": "^4.2.2",
-    "react-scripts": "1.1.1",
-    "react-share": "^2.0.0"
-  },
+  "name": "migle",
+  "version": "1.0.0",
+  "description": "Omnium information system",
+  "main": "index.js",
+  "repository": "git@github.com:migber/omnium.git",
+  "author": "Migle Beresineviciute <migle.brs@gmail.com>",
+  "license": "MIT",
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test --env=jsdom",
-    "eject": "react-scripts eject"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon ./server/index.js",
+    "server": "nodemon ./server/index.js",
+    "client": "npm run start --prefix client",
+    "dev": "concurrently \"npm run server\" \"npm run client\""
+  },
+  "dependencies": {
+    "babel": "^6.23.0",
+    "babel-cli": "^6.26.0",
+    "babel-preset-env": "^1.6.1",
+    "babel-preset-node6": "^11.0.0",
+    "body-parser": "^1.18.2",
+    "concurrently": "^3.5.1",
+    "cors": "^2.8.4",
+    "dotenv": "^5.0.0",
+    "express": "^4.16.2",
+    "moment": "^2.21.0",
+    "mysql": "^2.15.0",
+    "mysql2": "^1.5.2",
+    "nodemon": "^1.14.12",
+    "pg": "^7.4.1",
+    "pg-hstore": "^2.3.2",
+    "request": "^2.83.0",
+    "sequelize": "^4.35.0"
+  },
+  "devDependencies": {
+    "sequelize-cli": "^4.0.0"
   }
 }

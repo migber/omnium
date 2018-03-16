@@ -1,0 +1,26 @@
+{
+  "development": {
+    "username": "zvlkylriahtbwp",
+    "password": "bf6114cc5662d9530613f0e4452246d3aaecc1b51fae57dbc98a516b282bac26",
+    "database": "dsi1lrs6la958",
+    "host": "ec2-79-125-110-209.eu-west-1.compute.amazonaws.com",
+    "dialect": "postgres",
+    "dialectOptions": {
+      "ssl": true
+    }
+  },
+  "test": {
+    "username": "zvlkylriahtbwp",
+    "password": "bf6114cc5662d9530613f0e4452246d3aaecc1b51fae57dbc98a516b282bac26",
+    "database": "dsi1lrs6la958",
+    "host": "ec2-79-125-110-209.eu-west-1.compute.amazonaws.com",
+    "dialect": "postgres"
+  },
+  "production": {
+    "username": "zvlkylriahtbwp",
+    "password": "bf6114cc5662d9530613f0e4452246d3aaecc1b51fae57dbc98a516b282bac26",
+    "database": "dsi1lrs6la958",
+    "host": "ec2-79-125-110-209.eu-west-1.compute.amazonaws.com",
+    "dialect": "postgres"
+  }
+}

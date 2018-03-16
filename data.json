@@ -1,0 +1,391 @@
+{
+    "firstName": "Migle",
+    "lastName":"Beresineviciute",
+     "uciCode": "111092828378378",
+    "team": "New team",
+     "nationality": "LTU",
+    "birthdate": "1995-04-16",
+    "gender":"female",
+    "category": "u23"
+}
+// 'use strict'
+
+// const Cyclist = this.sequelize.define('cyclist', {
+//   hashValue: {
+//     type: Sequelize.STRING,
+//   },
+//   raceNumber: {
+//     type: Sequelize.INTEGER,
+//   },
+//   firstName: {
+//     type: Sequelize.STRING,
+//   },
+//   lastName: {
+//     type: Sequelize.STRING,
+//   },
+//   uciCode: {
+//     type: Sequelize.INTEGER,
+//   },
+//   team: {
+//     type: Sequelize.STRING,
+//   },
+//   nationality: {
+//     type: Sequelize.STRING,
+//   },
+//   birthddate: {
+//     type: Sequelize.DATE,
+//   },
+//   gender: {
+//     type: Sequelize.STRING,
+//   },
+//   category: {
+//     type: Sequelize.STRING,
+//   }
+// })
+
+// const Race = this.sequelize.define('race', {
+//   elapsetime: {
+//     type: Sequelize.STRING,
+//   },
+//   name: {
+//     type:   Sequelize.ENUM,
+//     values: ['scratch', 'elimination', 'tempo', 'pointRace'],
+//   },
+//   avgSpeed: {
+//     type: Sequelize.DECIMAL,
+//   },
+//   description: {
+//     type: Sequelize.STRING,
+//   },
+//   score: {
+//     type: Sequelize.INTEGER,
+//   }
+// })
+// node_modules/.bin/sequelize model:create --name Race --attributes "elapseTime:string, name:string, avgSpeed:decimal, description:string"
+
+// const Score = this.sequelize.define('score', {
+//   raceNumber: {
+//     type: Sequelize.INTEGER,
+//   },
+//   lapPlusPoints: {
+//     type: Sequelize.INTEGER
+//   },
+//   lapMinusPoints: {
+//     type: Sequelize.INTEGER
+//   },
+//   points: {
+//     type: Sequelize.INTEGER
+//   },
+//   finishPlace: {
+//     type: Sequelize.INTEGER
+//   },
+//   raceDate: {
+//     type: Sequelize.DATE  // Advance
+//   },
+//   place: {
+//     type: Sequelize.INTEGER
+//   },
+//   participant:{
+//     type: Sequelize.STRING
+//   },
+//   sprints: {
+//     type: Sequelize.ARRAY({
+//       sprintNo: {
+//         type: Sequelize.INTEGER,
+//         sprintPoints: Sequelize.INTEGER
+//       }
+//     })
+//   },
+//   totalPoints: {
+//     type: Sequelize.INTEGER
+//   }
+// })
+// node_modules/.bin/sequelize model:create --name Sprint --attributes "sprintNumber:integer, sprintPoints:integer"
+//node_modules/.bin/sequelize model:create --name Score --attributes "raceNumber:integer, lapPlusPoints:integer, lapMinusPoints:integer, points:integer, finishPlace:integer, raceDate:date, place:integer, totalPoints:integer"
+// const Omnium = this.sequelize.define('omnium', {
+//   name: {
+//     type: Sequelize.STRING
+//   },
+//   positionBefore: {
+//     type: Sequelize.INTEGER
+//   },
+//   currentPosition: {
+//     type: Sequelize.INTEGER  // maybe
+//   },
+//   totalPoints: {
+//     type: Sequelize.INTEGER
+//   },
+//   date: {
+//     type: Sequelize.DATE
+//   },
+//   race:{
+//     type: Sequelize.INTEGER
+//   }
+// })
+// node_modules/.bin/sequelize model:create --name Event --attributes "name:string, positionBefore:integer, currentPosition:integer, totalPoints:integer, date:date"
+//node_modules/.bin/sequelize model:create --name Cyclist --attributes "firstName:string, lastName:string, uciCode:string, team:string, nationality:string, birthdate:date, gender:string, category:string"
+// Race.hasMany(Score, {foreignKey: 'raceNumber', sourceKey: 'score'})
+// Omnium.hasMany(Race, {foreignKey: 'race', sourceKey: 'name'})
+// Score.belongsTo(Cyclist, {foreignKey: 'participant', targetKey: 'uciCode'})
+// // --------------------------------------------------------
+
+
+// const Scratch = this.sequelize.define('scratch', {
+//   lapPlusPoints: {
+//     type: Sequelize.INTEGER
+//   },
+//   lapMinusPoints: {
+//     type: Sequelize.INTEGER
+//   },
+//   points: {
+//     type: Sequelize.INTEGER
+//   },
+//   finishPlace: {
+//     type: Sequelize.INTEGER
+//   },
+//   raceDate: {
+//     type: Sequelize.DATE  // Advance
+//   },
+//   place: {
+//     type: Sequelize.INTEGER
+//   },
+//   participant:{
+//     type: Sequelize.STRING
+//   }
+// })
+
+// const ScratchRaceProtocol = this.sequelize.define('scratchProtocol', {
+//   elapsetime: {
+//     type: Sequelize.STRING
+//   },
+//   avgSpeed: {
+//     type: Sequelize.DECIMAL
+//   },
+//   description: {
+//     type: Sequelize.STRING
+//   }
+// })
+
+// const Elimination = this.sequelize.define('elimination', {
+//   points: {
+//     type: Sequelize.INTEGER
+//   },
+//   finishPlace: {
+//     type: Sequelize.INTEGER
+//   },
+//   raceDate: {
+//     type: Sequelize.DATE  // Advance
+//   },
+//   place: {
+//     type: Sequelize.INTEGER
+//   },
+//   participant:{
+//     type: Sequelize.STRING
+//   }
+// })
+
+// const EliminationRaceProtocol = this.sequelize.define('eliminationProtocol', {
+//   elapsetime: {
+//     type: Sequelize.STRING
+//   },
+//   avgSpeed: {
+//     type: Sequelize.DECIMAL
+//   },
+//   description: {
+//     type: Sequelize.STRING
+//   }
+// })
+
+// const TempoRace = this.sequelize.define('tempo', {
+//   lapPlusPoints: {
+//     type: Sequelize.INTEGER
+//   },
+//   lapMinusPoints: {
+//     type: Sequelize.INTEGER
+//   },
+//   sprints: {
+//     type: Sequelize.ARRAY(DataTypes.INTEGER)
+//   },
+//   points: {
+//     type: Sequelize.INTEGER
+//   },
+//   finishPlace: {
+//     type: Sequelize.INTEGER
+//   },
+//   raceDate: {
+//     type: Sequelize.DATE  // Advance
+//   },
+//   place: {
+//     type: Sequelize.INTEGER
+//   },
+//   participant:{
+//     type: Sequelize.STRING
+//   }
+// })
+// const TempoRaceProtocol = this.sequelize.define('tempoRaceProtocol', {
+//   elapsetime: {
+//     type: Sequelize.STRING
+//   },
+//   avgSpeed: {
+//     type: Sequelize.DECIMAL
+//   },
+//   description: {
+//     type: Sequelize.STRING
+//   }
+// })
+
+// const PointRace = this.sequelize.define('pointrace', {
+//   lapPlusPoints: {
+//     type: Sequelize.INTEGER
+//   },
+//   lapMinusPoints: {
+//     type: Sequelize.INTEGER
+//   },
+//   finishPlace: {
+//     type: Sequelize.INTEGER
+//   },
+//   sprints: {
+//     type: Sequelize.ARRAY({
+//       sprintNo: {
+//         type: Sequelize.INTEGER,
+//         sprintPoints: Sequelize.INTEGER
+//       }
+//     })
+//   },
+//   totalPoints: {
+//     type: Sequelize.INTEGER
+//   },
+//   raceDate: {
+//     type: Sequelize.DATE  // Advance
+//   },
+//   place: {
+//     type: Sequelize.INTEGER
+//   },
+//   participant:{
+//     type: Sequelize.STRING
+//   }
+// })
+
+// const PointRaceProtocol = this.sequelize.define('pointRaceProtocol', {
+//   elapsetime: {
+//     type: Sequelize.STRING
+//   },
+//   avgSpeed: {
+//     type: Sequelize.DECIMAL
+//   },
+//   description: {
+//     type: Sequelize.STRING
+//   }
+// })
+
+// const OmniumProtocol = this.sequelize.define('omniumProtocol', {
+//   elapsetime: {
+//     type: Sequelize.STRING
+//   },
+//   avgSpeed: {
+//     type: Sequelize.DECIMAL
+//   },
+//   description: {
+//     type: Sequelize.STRING
+//   }
+// })
+
+// Scratch.belongsTo(Omnium)
+// TempoRace.belongsTo(Omnium)
+// Elimination.belongsTo(Omnium)
+// PointRace.belongsTo(Omnium)
+
+// Scratch.hasMany(Cyclist, {foreignKey: 'participant', sourceKey: 'hashValue'})
+// TempoRace.hasMany(Cyclist, {foreignKey: 'participant', sourceKey: 'hashValue'})
+// Omnium.hasMany(Cyclist, {foreignKey: 'participant', sourceKey: 'hashValue'})
+// Elimination.hasMany(Cyclist, {foreignKey: 'participant', sourceKey: 'hashValue'})
+// PointRace.hasMany(Cyclist, {foreignKey: 'participant', sourceKey: 'hashValue'})
+
+// // Scratch.hasOne(Cyclist, {foreignKey: 'participant', sourceKey: 'hashValue'})
+// // TempoRace.hasOne(Cyclist, {foreignKey: 'participant', sourceKey: 'hashValue'})
+// // Omnium.hasOne(Cyclist, {foreignKey: 'participant', sourceKey: 'hashValue'})
+// // Elimination.hasOne(Cyclist, {foreignKey: 'participant', sourceKey: 'hashValue'})
+// // PointRace.hasOne(Cyclist, {foreignKey: 'participant', sourceKey: 'hashValue'})
+
+// TempoRaceProtocol.hasMany(TempoRace, {as: 'tempoRaceProtocolId'})
+// ScratchRaceProtocol.hasMany(Scratch, {as: 'scratchProtocolId'})
+// EliminationRaceProtocol.hasMany(Elimination, {as: 'eliminationProtocolId'})
+// PointRaceProtocol.hasMany(PointRace, {as: 'pointRaceProtocolId'})
+// OmniumProtocol.hasMany(Omnium, {as: 'omniumPortocolId'})
+
+// Scratch.belongsToMany(Cyclist, {through: 'CyclistScratch'})
+// Cyclist.belongsToMany(Scratch, {through: 'CyclistScratch'})
+
+// Cyclist.belongsToMany(Elimination, {through: 'CyclistElimination'})
+// Elimination.belongsToMany(Cyclist, {through: 'CyclistElimination'})
+
+// Cyclist.belongsToMany(TempoRace, {through: 'CyclistTempoRace'})
+// TempoRace.belongsToMany(Cyclist, {through: 'CyclistTempoRace'})
+
+// Cyclist.belongsToMany(PointRace, {through: 'CyclistPointRace'})
+// PointRace.belongsToMany(Cyclist, {through: 'CyclistPointRace'})
+
+// Cyclist.belongsToMany(Omnium, {through: 'CyclistOmnium'})
+// Omnium.belongsToMany(Cyclist, {through: 'CyclistOmnium'})
+
+// module.exports = {
+//   Cyclist,
+//   Omnium,
+//   Race,
+//   Score
+// }
+
+
+// 'use strict'
+
+// module.exports = (sequelize, DataTypes) => {
+//   const Cyclist = sequelize.define('Cyclist', {
+//     firstName: {
+//       type: DataTypes.STRING,
+//       allowNull: false,
+//     },
+//     lastName: {
+//       type: DataTypes.STRING,
+//       allowNull: false,
+//     },
+//     uciCode: {
+//       type: DataTypes.STRING,
+//       unique: true,
+//     },
+//     team: DataTypes.STRING,
+//     nationality: {
+//       type: DataTypes.STRING,
+//       allowNull: false,
+//     },
+//     birthdate: DataTypes.DATE,
+//     gender: DataTypes.STRING,
+//     category: {
+//       type: DataTypes.STRING,
+//       allowNull: false,
+//     },
+//   }, {})
+//   Cyclist.associate = (models) => {
+//     // associations can be defined here
+//     Cyclist.hasMany(models.Score, {
+//       foreignKey: 'CyclistId',
+//       onDelete: 'CASCADE',
+//     })
+//   }
+//   return Cyclist
+// }
+
+raceNumber: {
+    type: DataTypes.INTEGER,
+    allowNull: false
+  },
+  lapPlusPoints: DataTypes.INTEGER,
+  lapMinusPoints: DataTypes.INTEGER,
+  points: DataTypes.INTEGER,
+  finishPlace: DataTypes.INTEGER,
+  raceDate: DataTypes.DATE,
+  place: DataTypes.INTEGER,
+  totalPoints: DataTypes.INTEGER,
+  dns: DataTypes.BOOLEAN,
+  dnq: DataTypes.BOOLEAN,
+  dnf: DataTypes.BOOLEAN,
+  bk: DataTypes.BOOLEAN
