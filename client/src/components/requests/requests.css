@@ -1,0 +1,28 @@
+.word-spacing {
+  word-spacing: 2px;
+}
+
+.listPosition {
+  width: 100%;
+}
+
+.btn-float{
+  float: right;
+  height: 2px;
+  text-align: center;
+  line-height: 2px;
+}
+
+.text {
+  text-align: left;
+}
+
+.btn-approve {
+  background: #65C6BB;
+  border-color: #65C6BB;
+}
+
+.btn-edit{
+  background: #86E2D5;
+  border-color: #86E2D5;
+}

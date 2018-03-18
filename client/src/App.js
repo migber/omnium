@@ -24,10 +24,11 @@ class App extends Component {
       user: null,
       authenticated: false
     }
-
     this.onLogin = this.onLogin.bind(this)
     this.onLogout = this.onLogout.bind(this)
+    this.badgeSet = this.badgeSet.bind(this)
   }
+
   componentWillMount() {
     console.log(localStorage)
     const user = JSON.parse(localStorage.getItem('user'))
@@ -45,7 +46,8 @@ class App extends Component {
       email: profileObj.email,
       accessToken: response.accessToken,
       googleId: profileObj.googleId,
-      img: profileObj.imageUrl
+      img: profileObj.imageUrl,
+      counter: 0,
     }
     localStorage.setItem('user', JSON.stringify(user))
     localStorage.setItem('authenticated', true)
@@ -60,9 +62,12 @@ class App extends Component {
     this.setState({ authenticated: false, user: null })
   }
 
+  badgeSet(counter){
+    this.setState({ counter })
+  }
 
   render() {
-    const { authenticated, user } = this.state
+    const { authenticated, user, counter } = this.state
     return (
       <Router>
       <div className="App">
@@ -77,14 +82,14 @@ class App extends Component {
        onLogout={this.onLogout}
        authenticated={authenticated}
        user={user}
+       counter={counter}
        />
        <div>
        <Switch>
         <Route
-            path='/'
+            exact path='/'
             render={( props ) => <Home {...props} user={user} authenticated={authenticated} />}
          />
-         <Redirect to='/event'/>
        </Switch>
         <Route
             path='/cyclists'
@@ -92,7 +97,10 @@ class App extends Component {
         />
         <Route
           path='/requests' render={( props ) =>
-          <Requests {...props} user={user} authenticated={authenticated} />}
+          <Requests {...props}
+            user={user}
+            authenticated={authenticated}
+            badgeSet={this.badgeSet} />}
          />
         <Route path='/events' render={( props ) =>
         <Event {...props} user={user}/>}

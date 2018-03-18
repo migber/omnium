@@ -1,4 +1,4 @@
-'use strict'
+
 
 const router = require('express').Router()
 const {
@@ -14,12 +14,96 @@ async function getScoresList(req, res) {
   console.log('Getting list of scores')
   // const eventId = Number(req.params.eventId)
   const raceId = Number(req.params.raceId)
+  const eventId = Number(req.params.eventId)
+  const category = req.body.category
+
   Score.findAll({
     include: [{
       model: Race,
-      where: { id: raceId },
+      where: { order: raceId, 'EventId': eventId },
     }, {
       model: Cyclist,
+      as: 'Cyclist',
+      where: { category, approved: 'true' },
+    }, {
+      model: Sprint, as: 'Sprints',
+    }],
+  }).then((scores) => {
+    res.status(200)
+    res.json(scores)
+  }).catch((error) => {
+    res.status(400)
+    res.send(responseBadRequest(error))
+  })
+}
+
+async function getScoresListOfEvent(req, res) {
+  console.log('Getting list of scores in event')
+  // const eventId = Number(req.params.eventId)
+  const eventId = Number(req.params.eventId)
+  Score.findAll({
+    order: [
+      ['totalPoints', 'DESC'],
+    ],
+    include: [{
+      model: Race,
+      where: { 'EventId': eventId },
+    }, {
+      model: Cyclist,
+      as: 'Cyclist',
+      where: { approved: true },
+    }, {
+      model: Sprint, as: 'Sprints',
+    }],
+  }).then((scores) => {
+    res.status(200)
+    res.json(scores)
+  }).catch((error) => {
+    res.status(400)
+    res.send(responseBadRequest(error))
+  })
+}
+
+async function getScoresListWomen(req, res) {
+  console.log('Getting list of scores in event women')
+  const eventId = Number(req.params.eventId)
+  Score.findAll({
+    include: [{
+      model: Race,
+      where: { 'EventId': eventId },
+    }, {
+      model: Cyclist,
+      as: 'Cyclist',
+      where: {
+        category: 'women',
+        approved: true,
+      },
+    }, {
+      model: Sprint, as: 'Sprints',
+    }],
+  }).then((scores) => {
+    res.status(200)
+    res.json(scores)
+  }).catch((error) => {
+    res.status(400)
+    res.send(responseBadRequest(error))
+  })
+}
+
+async function getScoresListMen(req, res) {
+  console.log('Getting list of scores in event men')
+  const eventId = Number(req.params.eventId)
+  Score.findAll({
+    include: [{
+      model: Race,
+      where: { 'EventId': eventId },
+    }, {
+      model: Cyclist,
+      as: 'Cyclist',
+      where: {
+        category: 'men',
+        approved: true,
+      },
     }, {
       model: Sprint, as: 'Sprints',
     }],
@@ -45,7 +129,7 @@ async function getScore(req, res) {
 
 async function createScore(req, res) {
   console.log('Create score')
-  const raceId = Number(req.params.raceId)
+  const raceOrder = Number(req.params.raceId)
   Score.create({
     raceNumber: req.body.raceNumber,
     lapPlusPoints: req.body.lapPlusPoints,
@@ -59,7 +143,7 @@ async function createScore(req, res) {
     dnq: false,
     dnf: false,
     bk: req.body.bk,
-    RaceId: raceId,
+    RaceId: req.body.RaceId,
     CyclistId: req.body.CyclistId,
   }).then((score) => {
     res.json(score)
@@ -291,6 +375,9 @@ async function deleteScore(req, res) {
 }
 
 router.get('/api/events/:eventId/races/:raceId/scores', getScoresList)
+router.get('/api/events/:eventId/scores/men', getScoresListMen)
+router.get('/api/events/:eventId/scores/women', getScoresListWomen)
+router.get('/api/events/:eventId/scores', getScoresListOfEvent)
 router.get('/api/events/:eventId/races/:raceId/scores/:scoreId', getScore)
 router.post('/api/events/:eventId/races/:raceId/scores', createScore)
 router.put('/api/events/:eventId/races/:raceId/scores/:scoreId', editScore)
@@ -323,4 +410,7 @@ module.exports = {
   updateDnq,
   updateBk,
   deleteScore,
+  getScoresListOfEvent,
+  getScoresListWomen,
+  getScoresListMen,
 }

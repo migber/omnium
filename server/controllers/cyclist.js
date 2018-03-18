@@ -1,7 +1,7 @@
 'use strict'
 
 const router = require('express').Router()
-const { Cyclist } = require('../models/index')
+const { Cyclist, Race } = require('../models/index')
 const responseBadRequest = require('../helpers/responseHelper')
 
 // const passport = require('passport')
@@ -30,6 +30,7 @@ async function getCyclist(req, res) {
 
 async function createCyclist(req, res) {
   console.log('Create cyclist')
+  console.log(req.body)
   Cyclist.create({
     firstName: req.body.firstName,
     lastName: req.body.lastName,
@@ -101,6 +102,39 @@ async function deleteCyclist(req, res) {
   })
 }
 
+async function getScoreCyclists(req, res) {
+  console.log('Getting list of cyclists')
+  // const eventId = Number(req.params.eventId)
+  const raceId = Number(req.params.raceId)
+  Cyclist.findAll({
+    include: [{
+      model: Race,
+      where: { id: raceId },
+    }],
+  }).then((cyclists) => {
+    res.json(cyclists)
+    res.status(200)
+  }).catch((err) => {
+    res.status(400)
+    res.send(responseBadRequest(err))
+  })
+}
+
+async function listOfCyclisttoApprove(req, res) {
+  console.log('Getting list of cyclists to approve')
+  Cyclist.findAll({
+    where: {
+      approve: false,
+    },
+  }).then((cyclists) => {
+    res.json(cyclists)
+    res.status(200)
+  }).catch((err) => {
+    res.status(400)
+    res.send(responseBadRequest(err))
+  })
+}
+
 
 // passport.use(new Strategy((token, cb) => {
 //   console.log("TOKEN : " + token)
@@ -111,6 +145,8 @@ router.get('/api/cyclists', getCyclistsList)
 router.get('/api/cyclists/:cyclistId', getCyclist)
 router.post('/api/cyclists', createCyclist)
 router.put('/api/cyclists/:cyclistId', editCyclist)
+router.get('/api/events/:eventId/races/:raceId/cyclists', getScoreCyclists)
+router.get('/api/cyclists/approve', listOfCyclisttoApprove)
 router.put('/api/cyclists/approve/:cyclistId', approveCyclist)
 router.delete('/api/cyclists/:cyclistId', deleteCyclist)
 
@@ -122,4 +158,6 @@ module.exports = {
   editCyclist,
   deleteCyclist,
   approveCyclist,
+  getScoreCyclists,
+  listOfCyclisttoApprove,
 }

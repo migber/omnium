@@ -1,3 +1,10 @@
 .from-left {
   margin-left: 0%;
 }
+.center {
+  text-align: center;
+}
+
+.fit {
+  font-size: 75%;
+}

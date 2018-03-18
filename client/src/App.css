@@ -35,12 +35,14 @@
 
 .right-half {
   float: right;
-  right: 0px;
+  margin-left: 0px;
+  /* left: 60px; */
   width: 28%;
   border: solid;
   border-radius: 3%;
   border-color: #BDC3C7;
   border-width: 1px;
+  position: static;
 }
 
 @keyframes App-logo-spin {

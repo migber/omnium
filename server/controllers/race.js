@@ -26,9 +26,22 @@ async function getRacesList(req, res) {
 
 async function getRace(req, res) {
   console.log('Get race')
-  const id = Number(req.params.raceId)
-  Race.findById(id).then((race) => {
-    res.json(race)
+  const id = Number(req.params.eventId)
+  const raceId = Number(req.params.raceId)
+  Race.findAll({
+    where: {
+      order: raceId,
+    },
+    include: [{
+      model: Event,
+      where: { id },
+    }],
+    order: [
+      ['order', 'ASC'],
+    ],
+  }).then((races) => {
+    res.status(200)
+    res.json(races)
   }).catch((error) => {
     res.status(400)
     res.send(responseBadRequest(error))

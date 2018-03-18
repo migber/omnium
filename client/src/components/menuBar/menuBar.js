@@ -42,7 +42,9 @@ class MenuBar extends Component {
           <NavItem eventKey={1} href="/about">About</NavItem>
           <NavItem eventKey={2} href="/home">Contacts</NavItem>
           <NavItem eventKey={1} href="/profile"> Profile</NavItem>
-          { authenticated && ( <NavItem eventKey={4} href="/requests"> Approve requests</NavItem>)}
+          { authenticated && (
+            <NavItem eventKey={4} href="/requests"> New Requests <span className="badge-right badge">{this.props.counter}</span>
+            </NavItem>)}
           { authenticated && (<NavItem eventKey={5} href="/assignNumber">Assign numbers</NavItem>)}
           <NavItem eventKey={6} href="/cyclists" user={user}>Cyclists</NavItem>
         </Nav>

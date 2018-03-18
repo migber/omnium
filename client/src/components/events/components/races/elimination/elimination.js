@@ -11,6 +11,7 @@ class Elimination extends Component {
       races: null,
       raceId: null,
       eventName: null,
+      scores: null,
     }
   }
 
@@ -20,18 +21,59 @@ class Elimination extends Component {
     api.getRacesByCategory(this.props.user, this.props.location.pathname ).then( races => {
       this.setState({ races })
     })
+    api.getScores(this.props.user, this.props.location.pathname).then(scores => {
+      console.log('scores')
+      console.log(scores)
+      const scoresMapped = []
+      scores.forEach(element => {
+        const scoresObj = {
+          "id": element.id,
+          "raceNumber": element.raceNumber,
+          "lapPlusPoints": element.lapPlusPoints,
+          "lapMinusPoints": element.lapMinusPoints,
+          "points": element.points,
+          "finishPlace": element.finishPlace,
+          "raceDate": element.raceDate,
+          "place": element.place,
+          "totalPoints": element.totalPoints,
+          "dns": element.dns,
+          "dnq": element.dnq,
+          "dnf": element.dnf,
+          "bk": element.bk,
+          "createdAt": element.createdAt,
+          "updatedAt": element.updatedAt,
+          "cyclistId": element['CyclistId'],
+          "raceId": element['RaceId'],
+          "race": {
+              "id": element['Race'].id,
+              "elapseTime": element['Race'].elapseTime,
+              "name": element['Race'].name,
+              "avgSpeed": element['Race'].avgSpeed,
+              "order": element['Race'].order,
+              "description": element['Race'].description,
+              "createdAt": element['Race'].createdAt,
+              "updatedAt": element['Race'].updatedAt,
+              "eventId": element['Race']['EventId']
+          }
+        }
+       scoresMapped.push(scoresObj)
+      })
+      console.log(scoresMapped)
+      localStorage.setItem('scores', JSON.stringify(scoresMapped))
+      this.setState({ scores: scoresMapped })
+    })
   }
 
   render() {
     const { omniumId, activeTab } = this.props
-    const { races } = this.state
+    const { races, scores } = this.state
 
     console.log(`Omnium id : ${omniumId}`)
     console.log('Races')
     console.log(races)
     return (
       <div className="space-from-top">
-        { activeTab === 3 && (
+        { localStorage.getItem('activeTab') === '3' && (
         <table className="table table-striped">
         <thead>
         <tr >
@@ -39,17 +81,23 @@ class Elimination extends Component {
         <th scope="col">No</th>
         <th scope="col">Name</th>
         <th scope="col">Nationality</th>
+        <th scope="col">Points</th>
         <th scope="col">Total points</th>
         </tr>
         </thead>
         <tbody>
-        <tr className="left">
-        <th scope="row">1</th>
-        <td>elimination</td>
-        <td>elimination</td>
-        <td>elimination</td>
-        <td>elimination</td>
-        </tr>
+        { scores && scores.map(function(score, id){
+          return (
+            <tr key={id} className="left">
+            <th key={id} scope="row">{score.finishPlace}</th>
+            <td>{score.raceNumber}</td>
+            {/* <td> {score['Cyclist'].lastName}</td> */}
+            <td>{}</td>
+            <td>{score.points}</td>
+            <td>{score.totalPoints}</td>
+            </tr>
+          )
+        })}
         </tbody>
         </table>
          )}

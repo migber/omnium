@@ -19,6 +19,36 @@ const api = {
     })
     .then(response =>
       response.json())
-  }
+  },
+  getScores(user, id) {
+    const url = new URL(`${baseUrl}/api/events/${id}/scores`)
+    console.log(url)
+    return fetch(url, {
+      method: 'GET',
+      headers: getHeaders(user.accessToken, user)
+    })
+    .then(response =>
+      response.json())
+  },
+  getWomenData(user, id) {
+    const url = new URL(`${baseUrl}/api/events/${id}/scores/women`)
+    console.log(url)
+    return fetch(url, {
+      method: 'GET',
+      headers: getHeaders(user.accessToken, user)
+    })
+    .then(response =>
+      response.json())
+  },
+  getMenData(user, id) {
+    const url = new URL(`${baseUrl}/api/events/${id}/scores/men`)
+    console.log(url)
+    return fetch(url, {
+      method: 'GET',
+      headers: getHeaders(user.accessToken, user)
+    })
+    .then(response =>
+      response.json())
+  },
 }
 export default api

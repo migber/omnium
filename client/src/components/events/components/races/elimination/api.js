@@ -20,6 +20,17 @@ const api = {
     })
     .then(response =>
       response.json())
-  }
+  },
+
+  getScores(user, id) {
+    const url = new URL(`${baseUrl}/api${id}/scores`)
+    console.log(url)
+    return fetch(url, {
+      method: 'GET',
+      headers: getHeaders(user.accessToken, user)
+    })
+    .then(response =>
+      response.json())
+  },
 }
 export default api
