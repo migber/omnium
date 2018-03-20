@@ -1,0 +1,29 @@
+.success {
+  height: 1%;
+}
+
+.upl-btn {
+  background: #336E7B;
+  color: white;
+  border-color: #336E7B;
+}
+
+.txt {
+  text-align: left;
+}
+
+.border-bottom {
+  border-bottom: 2px solid #BDC3C7;
+}
+
+.from-top {
+  margin-top: 9px;
+}
+
+.list-items {
+  margin-top: 25px;
+}
+
+.cho-file {
+  height: 45px;
+}

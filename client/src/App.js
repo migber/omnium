@@ -1,18 +1,19 @@
 import React, { Component } from 'react'
-import { BrowserRouter as Router, Route, Switch, Redirect } from 'react-router-dom'
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
 import logo from './ltu-timing.png'
 import './App.css'
 import MenuBar             from './components/menuBar/menuBar'
 import Footer from './components/footer/footer'
-// import OmniumResults from './components/omniumResults/omniumResults'
-// import Home from './components/home/home'
 import Share from './components/share/share'
 import Requests from './components/requests/requests'
 import Cyclists from './components/cyclists/cyclists'
 import Event from './components/events'
 import Home from './components/home/home'
+import Register from './components/registration/registration'
+import { VIP_EMAIL } from './config/env'
+import { request } from 'https'
+import api from './components/requests/api'
 
-// const AUTH_URL = 'http://localhost:3001/created'
 const AUTHORISE_URL = 'https://omnium.herokuapp.com/api/users/createLogged'
 const EXISTS_URL = 'https://omnium.herokuapp.com/api/users/exists'
 
@@ -22,7 +23,8 @@ class App extends Component {
 
     this.state = {
       user: null,
-      authenticated: false
+      authenticated: false,
+      badges: 0,
     }
     this.onLogin = this.onLogin.bind(this)
     this.onLogout = this.onLogout.bind(this)
@@ -33,6 +35,7 @@ class App extends Component {
     console.log(localStorage)
     const user = JSON.parse(localStorage.getItem('user'))
     if (localStorage.getItem('authenticated')) {
+      this.badgeSet(user)
       this.setState({ authenticated: true, user })
     } else {
       this.setState({ authenticated: false, user: {} })
@@ -52,6 +55,8 @@ class App extends Component {
     localStorage.setItem('user', JSON.stringify(user))
     localStorage.setItem('authenticated', true)
     this.setState({ authenticated: true, user })
+    this.badgeSet(user)
+    window.location.reload()
     console.log(user)
   }
 
@@ -60,14 +65,17 @@ class App extends Component {
     localStorage.removeItem('user')
     localStorage.removeItem('authenticated')
     this.setState({ authenticated: false, user: null })
+    window.location.reload()
   }
 
-  badgeSet(counter){
-    this.setState({ counter })
+  badgeSet(user){
+    api.getRequests(user).then( requests => {
+      this.setState({ badges: requests.length })
+    })
   }
 
   render() {
-    const { authenticated, user, counter } = this.state
+    const { authenticated, user, counter, badges } = this.state
     return (
       <Router>
       <div className="App">
@@ -83,6 +91,7 @@ class App extends Component {
        authenticated={authenticated}
        user={user}
        counter={counter}
+       badges={badges}
        />
        <div>
        <Switch>
@@ -95,16 +104,23 @@ class App extends Component {
             path='/cyclists'
             render={( props ) => <Cyclists {...props} user={user} authenticated={authenticated} />}
         />
-        <Route
-          path='/requests' render={( props ) =>
-          <Requests {...props}
-            user={user}
-            authenticated={authenticated}
-            badgeSet={this.badgeSet} />}
-         />
+        <Route path='/register' render={( props ) =>
+         <Register {...props} authenticated={authenticated} user={user} />
+        }
+        />
         <Route path='/events' render={( props ) =>
         <Event {...props} user={user}/>}
         />
+        { user.email == VIP_EMAIL && (
+         <Route
+         path='/requests' render={( props ) =>
+         <Requests {...props}
+           user={user}
+           authenticated={authenticated}
+           badgeSet={this.badgeSet} />}
+        />
+      )
+    }
           </div>
        <div id="root"></div>
        {/* <Home/> */}

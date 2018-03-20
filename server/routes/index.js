@@ -5,12 +5,14 @@ const express = require('express')
 const router = express.Router()
 const bodyParser = require('body-parser')
 const request = require('request')
+const multipart = require('connect-multiparty')
 
 const routesWithoutAuth = ['/api/users/exists', '/api/users/createLogged', '/api/cyclists',
   '/api/events', '/api/users']
 router.use(bodyParser.urlencoded({ extended: false }))
 router.use(express.static('public'))
-
+const multipartMiddleware = multipart()
+router.use(multipartMiddleware)
 router.use(require('../controllers/cyclist').router)
 router.use(require('../controllers/event').router)
 router.use(require('../controllers/race').router)

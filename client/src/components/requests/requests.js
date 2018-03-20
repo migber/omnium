@@ -36,7 +36,7 @@ class Requests extends Component {
         const { requests } = this.state
         console.log(requests)
         return (
-            <div className="jumbotron container">
+            <div className="container">
             <div className="row">
             <div className="listPosition col-sm-8">
             <h1 className="display-3">Requests</h1>

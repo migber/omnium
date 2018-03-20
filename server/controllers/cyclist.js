@@ -3,6 +3,7 @@
 const router = require('express').Router()
 const { Cyclist, Race } = require('../models/index')
 const responseBadRequest = require('../helpers/responseHelper')
+const Excel = require('exceljs')
 
 // const passport = require('passport')
 // const { Strategy } = require('passport-http-bearer')
@@ -134,12 +135,23 @@ async function listOfCyclisttoApprove(req, res) {
     res.send(responseBadRequest(err))
   })
 }
-
-
-// passport.use(new Strategy((token, cb) => {
-//   console.log("TOKEN : " + token)
-//   return cb(null, true)
-// }))
+async function fileUpload(req, res) {
+  console.log('File upload')
+  if (req.files.file) {
+    res.send('File was uploaded')
+    res.status(200)
+    const workbook = new Excel.Workbook()
+    workbook.xlsx.readFile(req.files.file.path.toString('utf8'))
+      .then(() => {
+        const worksheet = workbook.getWorksheet('registration')
+        worksheet.eachRow({ includeEmpty: false }, (row, rowNumber) => {
+          console.log(`Row  ${rowNumber} = ${JSON.stringify(row.values)}`)
+        })
+      })
+  } else {
+    res.send(responseBadRequest('file was not uploaded'))
+  }
+}
 
 router.get('/api/cyclists', getCyclistsList)
 router.get('/api/cyclists/:cyclistId', getCyclist)
@@ -149,6 +161,7 @@ router.get('/api/events/:eventId/races/:raceId/cyclists', getScoreCyclists)
 router.get('/api/cyclists/approve', listOfCyclisttoApprove)
 router.put('/api/cyclists/approve/:cyclistId', approveCyclist)
 router.delete('/api/cyclists/:cyclistId', deleteCyclist)
+router.post('/api/uploadFile', fileUpload)
 
 module.exports = {
   router,
@@ -160,4 +173,5 @@ module.exports = {
   approveCyclist,
   getScoreCyclists,
   listOfCyclisttoApprove,
+  fileUpload,
 }

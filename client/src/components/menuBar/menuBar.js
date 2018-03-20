@@ -5,15 +5,10 @@ import {
   Nav,
 } from "react-bootstrap"
 import { Link } from 'react-router-dom'
-// import { BrowserRouter as Router, Route } from 'react-router-dom'
 import './menuBar.css'
 import { GoogleLogin } from 'react-google-login'
 import { VIP_EMAIL } from '../../config/env'
-// import Requests from '../requests/requests'
-// import OmniumResults from '../omniumResults/omniumResults'
-// import Cyclists from '../cyclists/cyclists'
-// import Auth from '../Auth/Auth'
-// import Requests from '../requests/requests'
+
 
 class MenuBar extends Component {
   constructor(props) {
@@ -42,10 +37,10 @@ class MenuBar extends Component {
           <NavItem eventKey={1} href="/about">About</NavItem>
           <NavItem eventKey={2} href="/home">Contacts</NavItem>
           <NavItem eventKey={1} href="/profile"> Profile</NavItem>
-          { authenticated && (
-            <NavItem eventKey={4} href="/requests"> New Requests <span className="badge-right badge">{this.props.counter}</span>
+          { authenticated && user.email == VIP_EMAIL && (
+            <NavItem eventKey={4} href="/requests"> New Requests <span className="badge-right badge">{this.props.badges}</span>
             </NavItem>)}
-          { authenticated && (<NavItem eventKey={5} href="/assignNumber">Assign numbers</NavItem>)}
+          <NavItem eventKey={5} href="/register">Register for race</NavItem>
           <NavItem eventKey={6} href="/cyclists" user={user}>Cyclists</NavItem>
         </Nav>
         <Nav pullRight >
