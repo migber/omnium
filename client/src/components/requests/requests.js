@@ -10,8 +10,12 @@ class Requests extends Component {
         this.state = {
           requests: null,
           counter: 0,
+          editBtn: false,
+          deleteBtn: false,
+          approveBtn: false,
         }
         this.counter = this.counter.bind(this)
+        this.deleteCyclist = this.deleteCyclist.bind(this)
       }
 
    componentWillMount() {
@@ -32,17 +36,26 @@ class Requests extends Component {
        this.props.badgeSet(countTypes.length)
    }
 
+   deleteCyclist(id) {
+       console.log(id)
+       api.deleteCyclist(this.props.user, id).then(() => {
+           console.log('User was deleted')
+           window.location.reload()
+       })
+   }
+
     render() {
-        const { requests } = this.state
-        console.log(requests)
+        const { requests, deleteBtn } = this.state
+        console.log(deleteBtn)
         return (
             <div className="container">
             <div className="row">
             <div className="listPosition col-sm-8">
             <h1 className="display-3">Requests</h1>
-            <table className="table table-striped">
-            <thead>
+            <table className="fit table table-striped">
+            <thead className="left">
                 <tr >
+                <th scope="col">Race number</th>
                 <th scope="col">First name</th>
                 <th scope="col">Last name</th>
                 <th scope="col">UCI Code</th>
@@ -50,11 +63,13 @@ class Requests extends Component {
                 <th scope="col">Nationality</th>
                 <th scope="col">Birthday</th>
                 <th scope="col">Category</th>
+                <th scope="col">B/K</th>
             </tr>
             </thead>
       { requests && requests.map((request) => {
               return (
                 <tbody className="left">
+                   <input type="number" className="inp-size form-control"/>
                     <td>{request.firstName}</td>
                     <td>{request.lastName}</td>
                     <td> {request.uciCode}</td>
@@ -62,8 +77,10 @@ class Requests extends Component {
                     <td> {request.nationality}</td>
                     <td>{Moment(request.date).format('YYYY-MM-YY')}</td>
                     <td> {request.category}</td>
-                    <button type="button" class="btn-approve btn-float btn btn-success">Approve</button>
-                    <button type="button" class="btn-edit btn-float btn btn-success">Edit</button>
+                    <input type="checkbox"/>
+                    <button onClick={() => this.deleteCyclist(request.id)} type="button" className="btn-delete btn-float btn">Delete</button>
+                    <button type="button" className="btn-edit btn-float btn btn">Edit</button>
+                    <button type="button" className="btn-approve btn-float btn btn-success">Approve</button>
                  </tbody>
               )
             })

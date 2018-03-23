@@ -17,12 +17,45 @@
   text-align: left;
 }
 
+.inp-size {
+  width: 75px;
+  height: 30px;
+}
+
+.fit {
+  font-size: large;
+}
+
 .btn-approve {
   background: #65C6BB;
   border-color: #65C6BB;
 }
 
 .btn-edit{
-  background: #86E2D5;
-  border-color: #86E2D5;
+  background: #AEA8D3;
+  border-color: #AEA8D3;
+}
+
+.btn-delete {
+  background: #E26A6A;
+  border-color: #E26A6A;
+}
+
+.btn-delete :hover {
+  background: #E26A6A;
+  border-color: #E26A6A;
+}
+
+.btn-delete :targer{
+  background: #E26A6A;
+  border-color: #E26A6A;
+}
+.btn-delete :focus {
+  background: #E26A6A;
+  border-color: #E26A6A;
+}
+
+.btn-delete {
+  background: #E26A6A;
+  border-color: #E26A6A;
 }

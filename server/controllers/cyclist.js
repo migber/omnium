@@ -135,9 +135,45 @@ async function listOfCyclisttoApprove(req, res) {
     res.send(responseBadRequest(err))
   })
 }
+
+async function createCyclistsFromRegistration(cyclists) {
+  if (cyclists) {
+    cyclists.forEach(async (cyclist) => {
+      const found = await Cyclist.findAll({
+        where: {
+          firstName: cyclist.firstName,
+          lastName: cyclist.lastName,
+          uciCode: cyclist.uciCode.toString(),
+        },
+      }).then()
+      console.log(found)
+      console.log(typeof found)
+      if (found.length === 0) {
+        Cyclist.create({
+          firstName: cyclist.firstName,
+          lastName: cyclist.lastName,
+          uciCode: cyclist.uciCode,
+          team: cyclist.team,
+          nationality: cyclist.nationality,
+          birthdate: cyclist.birthdate,
+          gender: cyclist.gender,
+          category: cyclist.category,
+          approved: false,
+        }).then(() => {
+          console.log('Cyclist was created')
+        }).catch((error) => {
+          console.log(`Something went wrong ${error}`)
+        })
+      }
+    })
+  }
+}
+
 async function fileUpload(req, res) {
   console.log('File upload')
+  console.log(req.files.file.path)
   if (req.files.file) {
+    const cyclists = []
     res.send('File was uploaded')
     res.status(200)
     const workbook = new Excel.Workbook()
@@ -145,8 +181,24 @@ async function fileUpload(req, res) {
       .then(() => {
         const worksheet = workbook.getWorksheet('registration')
         worksheet.eachRow({ includeEmpty: false }, (row, rowNumber) => {
-          console.log(`Row  ${rowNumber} = ${JSON.stringify(row.values)}`)
+          if (rowNumber !== 1) {
+            const cyclist = {
+              firstName: row.values[2],
+              lastName: row.values[3],
+              uciCode: row.values[4],
+              team: row.values[5],
+              nationality: row.values[6],
+              birthdate: Date(row.values[7]),
+              gender: row.values[8],
+              category: row.values[9],
+              approved: false,
+            }
+            cyclists.push(cyclist)
+          }
         })
+        console.log('Cyclists')
+        console.log(cyclists)
+        createCyclistsFromRegistration(cyclists)
       })
   } else {
     res.send(responseBadRequest('file was not uploaded'))
