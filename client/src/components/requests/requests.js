@@ -1,8 +1,10 @@
 import React, { Component } from 'react'
 import { Route } from 'react-router-dom'
+import { Modal } from "react-bootstrap"
 import './requests.css'
 import api from './api'
 import Moment from 'moment'
+import CyclistModal from './cyclistModal'
 
 class Requests extends Component {
     constructor(props){
@@ -13,17 +15,45 @@ class Requests extends Component {
           editBtn: false,
           deleteBtn: false,
           approveBtn: false,
+          raceNumbers: [],
+          bk: false,
+          edit: false,
+          cyclist: null,
         }
+
         this.counter = this.counter.bind(this)
         this.deleteCyclist = this.deleteCyclist.bind(this)
+        this.handleChange = this.handleChange.bind(this)
+        this.approve = this.approve.bind(this)
+        this.editClick = this.editClick.bind(this)
+        this.onSaveButtonClick = this.onSaveButtonClick.bind(this)
+        this.onCloseButtonClick = this.onCloseButtonClick.bind(this)
       }
 
    componentWillMount() {
     api.getRequests(this.props.user).then( requests => {
         this.setState({ requests })
         this.counter()
+        const raceNumbers = []
+        this.state.requests.forEach(element => {
+            raceNumbers.push(0)
+        })
+        this.setState({raceNumbers})
     })
    }
+
+   onSaveButtonClick(){
+        this.setState({
+            edit: false,
+        })
+        window.location.reload()
+    }
+
+  onCloseButtonClick(){
+    this.setState({
+        edit: false
+    })
+  }
 
    counter(){
     const countTypes = []
@@ -36,6 +66,10 @@ class Requests extends Component {
        this.props.badgeSet(countTypes.length)
    }
 
+   handleChange(e, index){
+       this.setState({raceNumbers: e.target.value})
+   }
+
    deleteCyclist(id) {
        console.log(id)
        api.deleteCyclist(this.props.user, id).then(() => {
@@ -44,8 +78,20 @@ class Requests extends Component {
        })
    }
 
+   approve(id){
+       console.log('Approving cyclist')
+       api.approveCyclist(this.props.user, id).then(() => {
+           console.log('approved')
+           window.location.reload()
+       })
+   }
+
+   editClick(cyclist){
+       this.setState({ edit: true, cyclist })
+   }
+
     render() {
-        const { requests, deleteBtn } = this.state
+        const { requests, deleteBtn, edit } = this.state
         console.log(deleteBtn)
         return (
             <div className="container">
@@ -55,7 +101,7 @@ class Requests extends Component {
             <table className="fit table table-striped">
             <thead className="left">
                 <tr >
-                <th scope="col">Race number</th>
+                {/* <th scope="col">Race number</th> */}
                 <th scope="col">First name</th>
                 <th scope="col">Last name</th>
                 <th scope="col">UCI Code</th>
@@ -63,13 +109,13 @@ class Requests extends Component {
                 <th scope="col">Nationality</th>
                 <th scope="col">Birthday</th>
                 <th scope="col">Category</th>
-                <th scope="col">B/K</th>
+                {/* <th scope="col">B/K</th> */}
             </tr>
             </thead>
-      { requests && requests.map((request) => {
+      { requests && requests.map((request, index) => {
               return (
-                <tbody className="left">
-                   <input type="number" className="inp-size form-control"/>
+                <tbody key={request.id} className="left">
+                   {/* <input value={this.state.raceNumbers[index]} onChange={(e, index) => {this.handleChange(e, index)}} type="number" className="inp-size form-control"/> */}
                     <td>{request.firstName}</td>
                     <td>{request.lastName}</td>
                     <td> {request.uciCode}</td>
@@ -77,10 +123,22 @@ class Requests extends Component {
                     <td> {request.nationality}</td>
                     <td>{Moment(request.date).format('YYYY-MM-YY')}</td>
                     <td> {request.category}</td>
-                    <input type="checkbox"/>
+                    {/* <input type="checkbox"/> */}
                     <button onClick={() => this.deleteCyclist(request.id)} type="button" className="btn-delete btn-float btn">Delete</button>
-                    <button type="button" className="btn-edit btn-float btn btn">Edit</button>
-                    <button type="button" className="btn-approve btn-float btn btn-success">Approve</button>
+                    <button key={request.id} type="button" onClick={() => this.editClick(request)} className="btn-edit btn-float btn btn">Edit</button>
+                    <button type="button" onClick={() => this.approve(request.id)} className="btn-approve btn-float btn btn-success">Approve</button>
+                    { edit && (
+                       <Modal.Dialog>
+                            <Modal.Header>
+                                <Modal.Title>Edit cyclist info</Modal.Title>
+                            </Modal.Header>
+                            <Modal.Body>
+                                <CyclistModal cyclist={this.state.cyclist} user={this.props.user} auth={this.props.auth} onCloseButtonClick={this.onCloseButtonClick} action={this.onSaveButtonClick}/>
+                            </Modal.Body>
+                            <Modal.Footer>
+                            </Modal.Footer>
+                      </Modal.Dialog>
+                ) }
                  </tbody>
               )
             })

@@ -90,6 +90,70 @@ async function getScoresListWomen(req, res) {
   })
 }
 
+async function getScoresListWomenOverall(req, res) {
+  console.log('Getting list of scores in event women')
+  const eventId = Number(req.params.eventId)
+  Score.findAll({
+    where: {
+      dns: false,
+      bk: false,
+      dnq: false,
+      dnf: false,
+    },
+    include: [{
+      model: Race,
+      where: { 'EventId': eventId },
+    }, {
+      model: Cyclist,
+      as: 'Cyclist',
+      where: {
+        category: 'women',
+        approved: true,
+      },
+    }, {
+      model: Sprint, as: 'Sprints',
+    }],
+  }).then((scores) => {
+    res.status(200)
+    res.json(scores)
+  }).catch((error) => {
+    res.status(400)
+    res.send(responseBadRequest(error))
+  })
+}
+
+async function getScoresListMenOverall(req, res) {
+  console.log('Getting list of scores in event men overall')
+  const eventId = Number(req.params.eventId)
+  Score.findAll({
+    where: {
+      dns: false,
+      bk: false,
+      dnq: false,
+      dnf: false,
+    },
+    include: [{
+      model: Race,
+      where: { 'EventId': eventId },
+    }, {
+      model: Cyclist,
+      as: 'Cyclist',
+      where: {
+        category: 'men',
+        approved: true,
+      },
+    }, {
+      model: Sprint, as: 'Sprints',
+    }],
+  }).then((scores) => {
+    res.status(200)
+    res.json(scores)
+  }).catch((error) => {
+    res.status(400)
+    res.send(responseBadRequest(error))
+  })
+}
+
 async function getScoresListMen(req, res) {
   console.log('Getting list of scores in event men')
   const eventId = Number(req.params.eventId)
@@ -377,6 +441,8 @@ async function deleteScore(req, res) {
 router.get('/api/events/:eventId/races/:raceId/scores', getScoresList)
 router.get('/api/events/:eventId/scores/men', getScoresListMen)
 router.get('/api/events/:eventId/scores/women', getScoresListWomen)
+router.get('/api/events/:eventId/scores/women/overall', getScoresListWomenOverall)
+router.get('/api/events/:eventId/scores/men/overall', getScoresListMenOverall)
 router.get('/api/events/:eventId/scores', getScoresListOfEvent)
 router.get('/api/events/:eventId/races/:raceId/scores/:scoreId', getScore)
 router.post('/api/events/:eventId/races/:raceId/scores', createScore)
@@ -413,4 +479,6 @@ module.exports = {
   getScoresListOfEvent,
   getScoresListWomen,
   getScoresListMen,
+  getScoresListWomenOverall,
+  getScoresListMenOverall,
 }

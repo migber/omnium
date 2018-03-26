@@ -13,11 +13,11 @@ class FirstRidersList extends Component {
   }
   componentWillMount() {
     this.setState({ omniumId: localStorage.getItem('omniumId')})
-    api.getScoresM(this.props.user, localStorage.getItem('omniumId')).then(scores => {
+    api.getScoresMOverall(this.props.user, localStorage.getItem('omniumId')).then(scores => {
      console.log('Inside OverallOmniu MAn')
      this.setState({ scoresM: scores})
     })
-    api.getScoresW(this.props.user, localStorage.getItem('omniumId')).then(scores => {
+    api.getScoresWOverall(this.props.user, localStorage.getItem('omniumId')).then(scores => {
       console.log('Inside OverallOmniu WOmen')
       console.log(scores)
 

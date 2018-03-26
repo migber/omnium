@@ -1,4 +1,4 @@
-'use strict'
+
 
 const router = require('express').Router()
 const { Cyclist, Race } = require('../models/index')
@@ -11,6 +11,35 @@ const Excel = require('exceljs')
 async function getCyclistsList(req, res) {
   console.log('Getting list of cyclists')
   Cyclist.findAll({}).then((cyclist) => {
+    res.json(cyclist)
+  }).catch((error) => {
+    res.status(400)
+    res.send(responseBadRequest(error))
+  })
+}
+
+async function getCyclistsListNotApproved(req, res) {
+  console.log('Getting list of cyclists not approved')
+  Cyclist.findAll({
+    where: {
+      approved: false,
+    },
+    order: [['createdAt', 'DESC']],
+  }).then((cyclist) => {
+    res.json(cyclist)
+  }).catch((error) => {
+    res.status(400)
+    res.send(responseBadRequest(error))
+  })
+}
+
+async function getCyclistsListApproved(req, res) {
+  console.log('Getting list of cyclists approved')
+  Cyclist.findAll({
+    where: {
+      approved: true,
+    },
+  }).then((cyclist) => {
     res.json(cyclist)
   }).catch((error) => {
     res.status(400)
@@ -52,6 +81,7 @@ async function createCyclist(req, res) {
 
 async function editCyclist(req, res) {
   console.log('Updating Cyclist')
+  console.log(req.body)
   const id = Number(req.params.cyclistId)
   Cyclist.findById(id).then((cyclist) => {
     if (cyclist) {
@@ -70,6 +100,7 @@ async function editCyclist(req, res) {
         res.status(200)
       }).catch((err) => {
         res.status(400)
+        console.log(err)
         res.send(responseBadRequest(err))
       })
     }
@@ -206,6 +237,8 @@ async function fileUpload(req, res) {
 }
 
 router.get('/api/cyclists', getCyclistsList)
+router.get('/api/cyclists/approved', getCyclistsListApproved)
+router.get('/api/cyclists/notApproved', getCyclistsListNotApproved)
 router.get('/api/cyclists/:cyclistId', getCyclist)
 router.post('/api/cyclists', createCyclist)
 router.put('/api/cyclists/:cyclistId', editCyclist)
@@ -226,4 +259,6 @@ module.exports = {
   getScoreCyclists,
   listOfCyclisttoApprove,
   fileUpload,
+  getCyclistsListNotApproved,
+  getCyclistsListApproved,
 }

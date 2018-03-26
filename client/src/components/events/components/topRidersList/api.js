@@ -22,7 +22,7 @@ const api = {
   },
 
   getScoresM(user, id) {
-    const url = new URL(`${baseUrl}/api/events/${id}/scores/`)
+    const url = new URL(`${baseUrl}/api/events/${id}/scores/men`)
     console.log(url)
     return fetch(url, {
       method: 'GET',
@@ -33,7 +33,7 @@ const api = {
   },
 
   getScoresW(user, id) {
-    const url = new URL(`${baseUrl}/api/events/${id}/scores/`)
+    const url = new URL(`${baseUrl}/api/events/${id}/scores/women`)
     console.log(url)
     return fetch(url, {
       method: 'GET',
@@ -42,6 +42,28 @@ const api = {
     .then(response =>
       response.json())
   },
+
+  getScoresWOverall(user, id) {
+    const url = new URL(`${baseUrl}/api/events/${id}/scores/women/overall`)
+    console.log(url)
+    return fetch(url, {
+      method: 'GET',
+      headers: getHeaders(user.accessToken, user)
+    })
+    .then(response =>
+      response.json())
+  },
+
+  getScoresMOverall(user, id) {
+    const url = new URL(`${baseUrl}/api/events/${id}/scores/men/overall`)
+    console.log(url)
+    return fetch(url, {
+      method: 'GET',
+      headers: getHeaders(user.accessToken, user)
+    })
+    .then(response =>
+      response.json())
+  }
 }
 
 export default api

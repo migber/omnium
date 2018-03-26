@@ -12,11 +12,34 @@ function getHeaders(authToken, user) {
 
 const api = {
   getRequests(user) {
-    const url = new URL(`${baseUrl}/api/cyclists`)
+    const url = new URL(`${baseUrl}/api/cyclists/notApproved`)
     console.log(url)
     return fetch(url, {
       method: 'GET',
       headers: getHeaders(user.accessToken, user)
+    })
+    .then(response =>
+      response.json())
+  },
+
+  getCyclist(user, id) {
+    const url = new URL(`${baseUrl}/api/cyclists/${id}`)
+    console.log(url)
+    return fetch(url, {
+      method: 'GET',
+      headers: getHeaders(user.accessToken, user)
+    })
+    .then(response =>
+      response.json())
+  },
+
+  updateCyclist(user, id, cyclist) {
+    const url = new URL(`${baseUrl}/api/cyclists/${id}`)
+    console.log(url)
+    return fetch(url, {
+      method: 'PUT',
+      headers: getHeaders(user.accessToken, user),
+      body: JSON.stringify(cyclist)
     })
     .then(response =>
       response.json())
@@ -32,16 +55,16 @@ const api = {
     .then()
   },
 
-  approveCyclist(user, id, value){
+  approveCyclist(user, id){
     const url = new URL(`${baseUrl}/api/cyclists/approve/${id}`)
     console.log(url)
     const payload = {
-      approved: value
+      approved: true,
     }
     return fetch(url, {
       method: 'PUT',
       headers: getHeaders(user.accessToken, user),
-      body: formFormBody(payload)
+      body: JSON.stringify(payload)
     })
     .then()
   },

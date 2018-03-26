@@ -12,7 +12,7 @@ class Share extends Component {
 
   render() {
     const title = "Omnium"
-    const siteUrl = "http://localhost:3000/results"
+    const siteUrl = "https://brondza-bot.herokuapp.com/"
     return (
       <div className="container">
       <div className="horizontal">
