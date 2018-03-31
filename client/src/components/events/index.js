@@ -89,7 +89,8 @@ class Event extends Component {
           { omniums.map((omnium) => {
               return (
                 show &&
-                <a key={omnium.id} onClick={() => this.setEventData(omnium.name, omnium.date, omnium.id)} className="list-group-item list-group-item-action list-group-item-primary"> { omnium.name } {Moment(omnium.date).format('YYYY-MM-YY')}</a>
+                <a key={omnium.id} onClick={() => this.setEventData(omnium.name, omnium.date, omnium.id)} className="list-group-item list-group-item-action list-group-item-primary">
+                 { omnium.name } ({Moment(omnium.startDate).format('YYYY-MM-YY')} - {Moment(omnium.endDate).format('YYYY-MM-YY')})</a>
               )
             })
           }
