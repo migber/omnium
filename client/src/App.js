@@ -57,7 +57,6 @@ class App extends Component {
     this.setState({ authenticated: true, user })
     this.badgeSet(user)
     window.location.reload()
-    console.log(user)
   }
 
   onLogout() {
@@ -101,7 +100,7 @@ class App extends Component {
          />
        </Switch>
         <Route
-            path='/cyclists'
+            exact path='/cyclists'
             render={( props ) => <Cyclists {...props} user={user} authenticated={authenticated} />}
         />
         <Route path='/register' render={( props ) =>

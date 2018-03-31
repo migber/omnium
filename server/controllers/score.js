@@ -1,6 +1,9 @@
 
 
 const router = require('express').Router()
+const { Op } = require('sequelize').Sequelize
+// const Op = Sequelize.Op
+
 const {
   Race,
   Event,
@@ -68,6 +71,11 @@ async function getScoresListWomen(req, res) {
   console.log('Getting list of scores in event women')
   const eventId = Number(req.params.eventId)
   Score.findAll({
+    where: {
+      raceNumber: {
+        [Op.ne]: 0,
+      },
+    },
     include: [{
       model: Race,
       where: { 'EventId': eventId },
@@ -158,6 +166,11 @@ async function getScoresListMen(req, res) {
   console.log('Getting list of scores in event men')
   const eventId = Number(req.params.eventId)
   Score.findAll({
+    where: {
+      raceNumber: {
+        [Op.ne]: 0,
+      },
+    },
     include: [{
       model: Race,
       where: { 'EventId': eventId },
@@ -357,6 +370,25 @@ async function updateTotalPoints(req, res) {
   })
 }
 
+async function updateScoreBKorDNS(req, res) {
+  console.log('Update cyclist bk and dns functionality')
+  const id = Number(req.params.scoreId)
+  Score.findById(id).then((score) => {
+    if (score) {
+      score.updateAttributes({
+        dns: req.body.dns,
+        bk: req.body.bk,
+      }).then((updatedScore) => {
+        res.json(updatedScore)
+        res.status(200)
+      }).catch((err) => {
+        res.status(400)
+        res.send(responseBadRequest(err))
+      })
+    }
+  })
+}
+
 async function updateDns(req, res) {
   console.log('Update cyclist DNS in score')
   const id = Number(req.params.scoreId)
@@ -441,6 +473,7 @@ async function deleteScore(req, res) {
 router.get('/api/events/:eventId/races/:raceId/scores', getScoresList)
 router.get('/api/events/:eventId/scores/men', getScoresListMen)
 router.get('/api/events/:eventId/scores/women', getScoresListWomen)
+router.put('/api/events/:eventId/scores/:scoreId', updateScoreBKorDNS)
 router.get('/api/events/:eventId/scores/women/overall', getScoresListWomenOverall)
 router.get('/api/events/:eventId/scores/men/overall', getScoresListMenOverall)
 router.get('/api/events/:eventId/scores', getScoresListOfEvent)
@@ -481,4 +514,5 @@ module.exports = {
   getScoresListMen,
   getScoresListWomenOverall,
   getScoresListMenOverall,
+  updateScoreBKorDNS,
 }

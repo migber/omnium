@@ -1,0 +1,24 @@
+.text {
+  text-align: left;
+}
+
+.raceNo {
+  font-weight: bold;
+}
+
+.modal-size {
+  font-size: 10px;
+}
+
+.modal{
+  display: block !important; /* I added this to see the modal, you don't need this */
+}
+
+/* Important part */
+.modal-dialog{
+  overflow-y: initial !important
+}
+.modal-body{
+  height: 650px;
+  overflow-y: auto;
+}

@@ -94,7 +94,7 @@ async function editCyclist(req, res) {
         birthdate: req.body.birthdate,
         gender: req.body.gender,
         category: req.body.category,
-        approved: false,
+        approved: req.body.approved,
       }).then((updatedCyclist) => {
         res.json(updatedCyclist)
         res.status(200)

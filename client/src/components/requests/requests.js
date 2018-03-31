@@ -15,7 +15,6 @@ class Requests extends Component {
           editBtn: false,
           deleteBtn: false,
           approveBtn: false,
-          raceNumbers: [],
           bk: false,
           edit: false,
           cyclist: null,
@@ -34,11 +33,6 @@ class Requests extends Component {
     api.getRequests(this.props.user).then( requests => {
         this.setState({ requests })
         this.counter()
-        const raceNumbers = []
-        this.state.requests.forEach(element => {
-            raceNumbers.push(0)
-        })
-        this.setState({raceNumbers})
     })
    }
 
@@ -61,14 +55,10 @@ class Requests extends Component {
         this.state.requests.map(function(req, i) {
             countTypes.push(req)
         })
-        console.log(countTypes.length)
+        // console.log(countTypes.length)
        }
        this.props.badgeSet(countTypes.length)
-   }
-
-   handleChange(e, index){
-       this.setState({raceNumbers: e.target.value})
-   }
+    }
 
    deleteCyclist(id) {
        console.log(id)
@@ -92,7 +82,6 @@ class Requests extends Component {
 
     render() {
         const { requests, deleteBtn, edit } = this.state
-        console.log(deleteBtn)
         return (
             <div className="container">
             <div className="row">
@@ -101,7 +90,6 @@ class Requests extends Component {
             <table className="fit table table-striped">
             <thead className="left">
                 <tr >
-                {/* <th scope="col">Race number</th> */}
                 <th scope="col">First name</th>
                 <th scope="col">Last name</th>
                 <th scope="col">UCI Code</th>
@@ -109,13 +97,11 @@ class Requests extends Component {
                 <th scope="col">Nationality</th>
                 <th scope="col">Birthday</th>
                 <th scope="col">Category</th>
-                {/* <th scope="col">B/K</th> */}
             </tr>
             </thead>
       { requests && requests.map((request, index) => {
               return (
                 <tbody key={request.id} className="left">
-                   {/* <input value={this.state.raceNumbers[index]} onChange={(e, index) => {this.handleChange(e, index)}} type="number" className="inp-size form-control"/> */}
                     <td>{request.firstName}</td>
                     <td>{request.lastName}</td>
                     <td> {request.uciCode}</td>
@@ -123,7 +109,6 @@ class Requests extends Component {
                     <td> {request.nationality}</td>
                     <td>{Moment(request.date).format('YYYY-MM-YY')}</td>
                     <td> {request.category}</td>
-                    {/* <input type="checkbox"/> */}
                     <button onClick={() => this.deleteCyclist(request.id)} type="button" className="btn-delete btn-float btn">Delete</button>
                     <button key={request.id} type="button" onClick={() => this.editClick(request)} className="btn-edit btn-float btn btn">Edit</button>
                     <button type="button" onClick={() => this.approve(request.id)} className="btn-approve btn-float btn btn-success">Approve</button>
@@ -144,21 +129,6 @@ class Requests extends Component {
             })
           }
     </table>
-     <div>
-          {/* <Route
-            path={`${this.props.match.path}/:id/races`}
-            render={( props ) =>
-              <Races
-                {...props}
-                user={this.props.user}
-                omniumId={this.state.omniumId}
-                eventName={this.state.eventName}
-                date={this.state.date}
-                notShowEvents={this.notShowEvents}
-              />
-            }
-          /> */}
-        </div>
             </div>
             </div>
             </div>
