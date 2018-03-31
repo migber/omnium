@@ -12,16 +12,11 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: false,
       },
-      positionBefore: {
-        type: Sequelize.INTEGER,
+      startDate: {
+        type: Sequelize.DATE,
+        allowNull: false,
       },
-      currentPosition: {
-        type: Sequelize.INTEGER,
-      },
-      totalPoints: {
-        type: Sequelize.INTEGER,
-      },
-      date: {
+      endDate: {
         type: Sequelize.DATE,
         allowNull: false,
       },

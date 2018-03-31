@@ -1,7 +1,7 @@
 'use strict'
 
 const router = require('express').Router()
-const { Event } = require('../models/index')
+const { Event, Race } = require('../models/index')
 const responseBadRequest = require('../helpers/responseHelper')
 
 async function getEventsList(req, res) {
@@ -29,12 +29,34 @@ async function createEvent(req, res) {
   console.log('Create event')
   Event.create({
     name: req.body.name,
-    positionBefore: req.body.positionBefore,
-    currentPosition: req.body.currentPosition,
-    totalPoints: req.body.totalPoints,
-    date: req.body.date,
+    startDate: req.body.startDate,
+    endDate: req.body.endDate,
   }).then((event) => {
     res.json(event)
+    Race.create({
+      name: 'Scratch',
+      order: 1,
+      description: req.body.description,
+      EventId: event.id,
+    })
+    Race.create({
+      name: 'Tempo race',
+      order: 2,
+      description: req.body.description,
+      EventId: event.id,
+    })
+    Race.create({
+      name: 'Elimination',
+      order: 3,
+      description: req.body.description,
+      EventId: event.id,
+    })
+    Race.create({
+      name: 'Point race',
+      order: 4,
+      description: req.body.description,
+      EventId: event.id,
+    })
   }).catch((error) => {
     res.status(400)
     res.send(responseBadRequest(error))
@@ -48,10 +70,8 @@ async function editEvent(req, res) {
     if (event) {
       event.updateAttributes({
         name: req.body.name,
-        positionBefore: req.body.positionBefore,
-        currentPosition: req.body.currentPosition,
-        totalPoints: req.body.totalPoints,
-        date: req.body.date,
+        startDate: req.body.startDate,
+        endDate: req.body.endDate,
       }).then((updatedEvent) => {
         res.json(updatedEvent)
         res.status(200)

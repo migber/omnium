@@ -5,6 +5,9 @@ import { BrowserRouter as Router, Route, Link } from 'react-router-dom'
 import './events.css'
 import api from './api'
 import Races from './components/races/races'
+import { VIP_EMAIL } from '../../config/env'
+import { Modal } from "react-bootstrap"
+import AddEventItem from './addEvent'
 
 class Event extends Component {
   constructor(props){
@@ -15,13 +18,25 @@ class Event extends Component {
       eventName: null,
       date: null,
       show: true,
+      addEvent: false,
+      lastEventId: null,
     }
     this.setEventData = this.setEventData.bind(this)
     this.notShowEvents = this.notShowEvents.bind(this)
+    this.addNewEvent = this.addNewEvent.bind(this)
+    this.onCloseButtonClick = this.onCloseButtonClick.bind(this)
+    this.onSaveButtonClick = this.onSaveButtonClick.bind(this)
   }
 
   componentWillMount() {
-    api.getEvents(this.props.user).then( omniums => this.setState({ omniums }))
+    const countEvents = []
+    api.getEvents(this.props.user).then( omniums => {
+      this.setState({ omniums })
+      //  this.setState({
+      //    lastEventId: omniums[omniums.length -1].id
+      //  })
+      }
+    )
   }
 
   setEventData(name, date, id) {
@@ -35,13 +50,40 @@ class Event extends Component {
     this.setState({show: false})
   }
 
+  addNewEvent(){
+    this.setState({
+      addEvent: true
+    })
+  }
+
+  onSaveButtonClick(){
+    this.setState({
+      addEvent: false,
+    })
+    window.location.reload()
+  }
+
+  onCloseButtonClick(){
+    this.setState({
+      addEvent: false
+    })
+  }
+
   render() {
-    const { omniums, show } = this.state
+    const { omniums, show, addEvent } = this.state
+    const { user } = this.props
     return (
       <div className="container">
       { show && (
-        <h2> Events </h2>
+          <h2> Events </h2>
       )}
+      {
+        user.email == VIP_EMAIL && (
+          <button className="btn-left upl-btn btn" type="submit" onClick={this.addNewEvent}>
+          <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Create Event
+          </button>
+        )
+      }
       { omniums ? (
           <ul className="list-group list-group-flush ">
           { omniums.map((omnium) => {
@@ -71,6 +113,20 @@ class Event extends Component {
             }
           />
         </div>
+        {
+          addEvent && (
+            <Modal.Dialog>
+              <Modal.Header>
+                <Modal.Title>Add new event</Modal.Title>
+              </Modal.Header>
+              <Modal.Body>
+                <AddEventItem user={this.props.user} auth={this.props.auth} onCloseButtonClick={this.onCloseButtonClick} action={this.onSaveButtonClick}/>
+              </Modal.Body>
+            <Modal.Footer>
+            </Modal.Footer>
+          </Modal.Dialog>
+          )
+        }
      </div>
     )
   }

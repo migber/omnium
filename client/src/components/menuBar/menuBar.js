@@ -22,7 +22,6 @@ class MenuBar extends Component {
 
   render() {
     const { authenticated, user } = this.props
-    console.log(this.props.assignBadges === 0)
     return (
       <div>
         <Navbar className="extra-features">

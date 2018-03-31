@@ -90,7 +90,6 @@ class Cyclists extends Component {
       eventId: event.target.value
     })
     this.findParticipants(event.target.value)
-    console.log(event.target.value)
   }
 
   render() {
@@ -112,7 +111,6 @@ class Cyclists extends Component {
           {
             events &&  events.map((event, i) => {
               return (
-                // <option value="grapefruit">Grapefruit</option>
                 <option id={event.id} value={event.id}> {event.name}</option>
 
               )
@@ -155,7 +153,6 @@ class Cyclists extends Component {
 </table>
       </div>
       </div>
-      {/* { user.email == VIP_EMAIL && ( */}
       { edit && (
          <Modal.Dialog>
          <Modal.Header>

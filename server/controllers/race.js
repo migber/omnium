@@ -1,4 +1,4 @@
-'use strict'
+
 
 const router = require('express').Router()
 const { Event, Race } = require('../models/index')
@@ -51,18 +51,19 @@ async function getRace(req, res) {
 async function createRace(req, res) {
   console.log('Create race')
   const id = Number(req.params.eventId)
-  Race.create({
-    name: req.body.name,
-    elapseTime: req.body.elapseTime,
-    avgSpeed: req.body.avgSpeed,
-    description: req.body.description,
-    order: req.body.order,
-    EventId: id,
-  }).then((race) => {
-    res.json(race)
-  }).catch((error) => {
-    res.status(400)
-    res.send(responseBadRequest(error))
+  const { races } = req.body
+  races.forEach((race) => {
+    Race.create({
+      name: race.name,
+      description: race.description,
+      order: race.order,
+      EventId: id,
+    }).then((createdRace) => {
+      res.send(createdRace)
+    }).catch((error) => {
+      res.status(400)
+      res.send(responseBadRequest(error))
+    })
   })
 }
 

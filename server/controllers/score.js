@@ -42,7 +42,6 @@ async function getScoresList(req, res) {
 
 async function getListOfAssigningNumbers(req, res) {
   console.log('Getting list of scores for assigning numbers')
-  // const eventId = Number(req.params.eventId)
   const eventId = Number(req.params.eventId)
   Score.findAll({
     where: {
@@ -73,7 +72,6 @@ async function getListOfAssigningNumbers(req, res) {
 
 async function getScoresListOfEvent(req, res) {
   console.log('Getting list of scores in event')
-  // const eventId = Number(req.params.eventId)
   const eventId = Number(req.params.eventId)
   Score.findAll({
     order: [

@@ -19,7 +19,18 @@ const api = {
     })
     .then(response =>
       response.json())
-  }
+  },
+
+  createEvent(user, event) {
+    const url = new URL(`${baseUrl}/api/events`)
+    return fetch(url, {
+      method: 'POST',
+      body: JSON.stringify(event),
+      headers: getHeaders(user.accessToken, user)
+    })
+    .then(resp => resp.json())
+  },
+
 }
 
 export default api

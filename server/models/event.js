@@ -6,10 +6,11 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING(500),
       allowNull: false,
     },
-    positionBefore: DataTypes.INTEGER(6),
-    currentPosition: DataTypes.INTEGER(6),
-    totalPoints: DataTypes.INTEGER(6),
-    date: {
+    startDate: {
+      type: DataTypes.DATE,
+      allowNull: false,
+    },
+    endDate: {
       type: DataTypes.DATE,
       allowNull: false,
     },
