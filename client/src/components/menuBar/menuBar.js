@@ -22,7 +22,7 @@ class MenuBar extends Component {
 
   render() {
     const { authenticated, user } = this.props
-    console.log(user)
+    console.log(this.props.assignBadges === 0)
     return (
       <div>
         <Navbar className="extra-features">
@@ -36,10 +36,16 @@ class MenuBar extends Component {
         <Nav className="img-div">
           <NavItem eventKey={1} href="/about">About</NavItem>
           <NavItem eventKey={2} href="/home">Contacts</NavItem>
-          <NavItem eventKey={1} href="/profile"> Profile</NavItem>
           { authenticated && user.email == VIP_EMAIL && (
-            <NavItem eventKey={4} href="/requests"> New Requests <span className="badge-right badge">{this.props.badges}</span>
-            </NavItem>)}
+            <NavItem eventKey={1} href="/assignNumbers"> Assign Numbers
+                <span className={(this.props.assignBadges === 0) ? "badge-right bd-success glyphicon glyphicon-user" : "badge-right bd-warning glyphicon glyphicon-user" }></span>
+            </NavItem>
+          )}
+           { authenticated && user.email == VIP_EMAIL && (
+              <NavItem eventKey={4} href="/requests"> New Requests
+                <span className="badge-right badge">{this.props.badges}</span>
+              </NavItem>
+            )}
           <NavItem eventKey={5} href="/register">Register for race</NavItem>
           <NavItem eventKey={6} href="/cyclists" user={user}>Cyclists</NavItem>
         </Nav>

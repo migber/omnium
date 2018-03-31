@@ -1,0 +1,26 @@
+.raceNo {
+  font-weight: bold;
+}
+
+.inp-size {
+  align-content: center;
+  width: 75px;
+  height: 30px;
+}
+
+.bord {
+  border-radius: 25px;
+  border: solid #DADFE1;
+}
+
+.txt-inside {
+  text-align: center;
+}
+
+.txt-big {
+  font-size: 12px;
+}
+
+.btn-align {
+ margin-top: 4px;
+}

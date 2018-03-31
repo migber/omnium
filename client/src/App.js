@@ -13,6 +13,8 @@ import Register from './components/registration/registration'
 import { VIP_EMAIL } from './config/env'
 import { request } from 'https'
 import api from './components/requests/api'
+import AssignNumbers from './components/assignNumbers/assignNumbers'
+import apiAssignment from './components/assignNumbers/api'
 
 const AUTHORISE_URL = 'https://omnium.herokuapp.com/api/users/createLogged'
 const EXISTS_URL = 'https://omnium.herokuapp.com/api/users/exists'
@@ -25,10 +27,12 @@ class App extends Component {
       user: null,
       authenticated: false,
       badges: 0,
+      assignBadges: 0,
     }
     this.onLogin = this.onLogin.bind(this)
     this.onLogout = this.onLogout.bind(this)
     this.badgeSet = this.badgeSet.bind(this)
+    this.badgeSetAssign = this.badgeSetAssign.bind(this)
   }
 
   componentWillMount() {
@@ -36,6 +40,7 @@ class App extends Component {
     const user = JSON.parse(localStorage.getItem('user'))
     if (localStorage.getItem('authenticated')) {
       this.badgeSet(user)
+      this.badgeSetAssign(user)
       this.setState({ authenticated: true, user })
     } else {
       this.setState({ authenticated: false, user: {} })
@@ -56,6 +61,7 @@ class App extends Component {
     localStorage.setItem('authenticated', true)
     this.setState({ authenticated: true, user })
     this.badgeSet(user)
+    this.badgeSetAssign(user)
     window.location.reload()
   }
 
@@ -73,8 +79,14 @@ class App extends Component {
     })
   }
 
+  badgeSetAssign(user){
+    apiAssignment.getScoresForBagdes(user).then( scores => {
+      this.setState({ assignBadges: scores.length })
+    })
+  }
+
   render() {
-    const { authenticated, user, counter, badges } = this.state
+    const { authenticated, user, counter, badges, assignBadges } = this.state
     return (
       <Router>
       <div className="App">
@@ -91,6 +103,7 @@ class App extends Component {
        user={user}
        counter={counter}
        badges={badges}
+       assignBadges={assignBadges}
        />
        <div>
        <Switch>
@@ -111,6 +124,7 @@ class App extends Component {
         <Event {...props} user={user}/>}
         />
         { user.email == VIP_EMAIL && (
+          <div>
          <Route
          path='/requests' render={( props ) =>
          <Requests {...props}
@@ -118,6 +132,14 @@ class App extends Component {
            authenticated={authenticated}
            badgeSet={this.badgeSet} />}
         />
+        <Route
+        path='/assignNumbers' render={( props ) =>
+        <AssignNumbers {...props}
+          user={user}
+          authenticated={authenticated}
+          badgeSet={this.badgeSet} />}
+       />
+       </div>
       )
     }
           </div>

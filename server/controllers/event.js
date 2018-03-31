@@ -8,7 +8,6 @@ async function getEventsList(req, res) {
   console.log('Getting list of events')
   Event.findAll({}).then((event) => {
     res.json(event)
-    console.log(event)
   }).catch((error) => {
     res.status(400)
     res.send(responseBadRequest(error))

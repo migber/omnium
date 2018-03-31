@@ -1,12 +1,13 @@
 
 import React, { Component } from 'react'
 import CyclistModal from './cyclistModalScore'
-import { Modal } from "react-bootstrap"
+import { Modal, PageHeader } from "react-bootstrap"
 import { VIP_EMAIL } from '../../config/env'
 import { Switch, Route } from 'react-router-dom'
 
 import './cyclists.css'
 import api from './api'
+import eventApi from '../events/api'
 
 class Cyclists extends Component {
   constructor(props){
@@ -18,6 +19,9 @@ class Cyclists extends Component {
       activeList: null,
       edit: false,
       cyclist: null,
+      events: null,
+      eventId: 1,
+      selectedValue: 'Select race',
     }
 
     this.changeList = this.changeList.bind(this)
@@ -25,14 +29,14 @@ class Cyclists extends Component {
     this.onSaveButtonClick = this.onSaveButtonClick.bind(this)
     this.onCloseButtonClick = this.onCloseButtonClick.bind(this)
     this.editClick = this.editClick.bind(this)
-  }
+    this.handleChange = this.handleChange.bind(this)
+    this.findParticipants = this.findParticipants.bind(this)
+    }
 
   componentWillMount() {
-    api.getScoresWomen(this.props.user, 1).then( scores => {
-      this.setState({ cyclistsWomen: scores })
-    })
-    api.getScoresMen(this.props.user, 1).then( scores => {
-      this.setState({ cyclistsMen: scores, activeList: scores })
+    this.findParticipants(this.state.eventId)
+    eventApi.getEvents(this.props.user).then((events) => {
+      this.setState({ events })
     })
    }
 
@@ -70,18 +74,51 @@ class Cyclists extends Component {
     this.setState({ edit: true, cyclist })
   }
 
+  findParticipants(id){
+    console.log(`Event id in find participants ${this.state.eventId}`)
+    api.getScoresWomen(this.props.user, id).then( scores => {
+      this.setState({ cyclistsWomen: scores })
+    })
+    api.getScoresMen(this.props.user, id).then( scores => {
+      this.setState({ cyclistsMen: scores, activeList: scores })
+    })
+  }
+
+  handleChange(event){
+    this.setState({
+      selectedValue: event.target.value,
+      eventId: event.target.value
+    })
+    this.findParticipants(event.target.value)
+    console.log(event.target.value)
+  }
 
   render() {
-    const { activeList, btnActive, edit } = this.state
+    const { activeList, btnActive, edit, events } = this.state
     const { user } = this.props
     return (
       <div className="container">
       <div className="row">
       <div className="listPosition col-sm-8">
+      <div className="border-bottom" >
       <h1 className="display-3">Cyclists</h1>
+      </div>
       <div className="smal-div left-marging space-from-top btn-group" role="group" aria-label="...">
           <button id="men" type="button" className={(btnActive === 'men') ? "choice-btn-active btn btn-default" : "choice-btn btn btn-default"} onClick={() => this.changeList('men')} name="men">Men</button>
           <button id="women" type="button" className={(btnActive === 'women') ? "choice-btn-active btn btn-default" : "choice-btn btn btn-default"} onClick={() => this.changeList('women')} name="women">Women</button>
+      </div>
+      <div className="space-top form-group">
+          <select className="input-group" value={this.state.selectedValue} onChange={this.handleChange}>
+          {
+            events &&  events.map((event, i) => {
+              return (
+                // <option value="grapefruit">Grapefruit</option>
+                <option id={event.id} value={event.id}> {event.name}</option>
+
+              )
+            } )
+          }
+      </select>
       </div>
       <table className="fit table">
       <thead className="text">

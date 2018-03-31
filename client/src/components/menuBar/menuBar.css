@@ -28,3 +28,11 @@ border: none;
 .badge-right {
   margin-right: 2%;
 }
+
+.bd-success {
+  color: #16A085;
+}
+
+.bd-warning {
+  color: #FABE58;
+}

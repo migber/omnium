@@ -35,6 +35,7 @@ class CyclistScoreModal extends Component {
     this.handleChangeCategory = this.handleChangeCategory.bind(this)
     this.handleChangeDNS = this.handleChangeDNS.bind(this)
     this.handleChangeBK = this.handleChangeBK.bind(this)
+    this.handleChangeRaceNo = this.handleChangeRaceNo.bind(this)
   }
 
   componentWillMount(){
@@ -60,6 +61,7 @@ class CyclistScoreModal extends Component {
 
   updateCyclist() {
     const score = {
+      raceNumber: this.state.raceNo,
       dns: this.state.dns,
       bk: this.state.bk
     }
@@ -132,6 +134,12 @@ class CyclistScoreModal extends Component {
     console.log(` DNS : ${e.target.value}`)
     this.setState({
       dns: !this.state.dns
+    })
+  }
+
+  handleChangeRaceNo(e){
+    this.setState({
+      raceNo: e.target.value
     })
   }
 

@@ -22,7 +22,6 @@ class Requests extends Component {
 
         this.counter = this.counter.bind(this)
         this.deleteCyclist = this.deleteCyclist.bind(this)
-        this.handleChange = this.handleChange.bind(this)
         this.approve = this.approve.bind(this)
         this.editClick = this.editClick.bind(this)
         this.onSaveButtonClick = this.onSaveButtonClick.bind(this)
@@ -55,7 +54,6 @@ class Requests extends Component {
         this.state.requests.map(function(req, i) {
             countTypes.push(req)
         })
-        // console.log(countTypes.length)
        }
        this.props.badgeSet(countTypes.length)
     }
@@ -86,7 +84,9 @@ class Requests extends Component {
             <div className="container">
             <div className="row">
             <div className="listPosition col-sm-8">
-            <h1 className="display-3">Requests</h1>
+            <div className="border-bottom" >
+                <h1 className="display-3">Requests</h1>
+            </div>
             <table className="fit table table-striped">
             <thead className="left">
                 <tr >
