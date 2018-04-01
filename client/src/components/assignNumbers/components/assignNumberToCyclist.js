@@ -42,7 +42,8 @@ class AssignNumberCyclistItem extends Component {
   updateRaceNumber() {
     console.log('inside update')
     const score = {
-      raceNumber: this.state.raceNumber
+      raceNumber: this.state.raceNumber,
+      eventId: this.state.eventId
     }
     api.updateCyclistRaceNumber(this.props.user, this.state.eventId, this.state.scoreId, score).then(() => {
       console.log('Cyclist number was updated')

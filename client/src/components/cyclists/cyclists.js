@@ -22,6 +22,7 @@ class Cyclists extends Component {
       events: null,
       eventId: 1,
       selectedValue: 'Select race',
+      raceOrder: 0,
     }
 
     this.changeList = this.changeList.bind(this)
@@ -76,10 +77,20 @@ class Cyclists extends Component {
 
   findParticipants(id){
     console.log(`Event id in find participants ${this.state.eventId}`)
-    api.getScoresWomen(this.props.user, id).then( scores => {
+    api.getScoresOverall(
+      this.props.user,
+      id,
+      this.state.raceOrder,
+      'women'
+    ).then( scores => {
       this.setState({ cyclistsWomen: scores })
     })
-    api.getScoresMen(this.props.user, id).then( scores => {
+    api.getScoresOverall(
+      this.props.user,
+      id,
+      this.state.raceOrder,
+      'men'
+    ).then( scores => {
       this.setState({ cyclistsMen: scores, activeList: scores })
     })
   }

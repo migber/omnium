@@ -9,17 +9,27 @@ class FirstRidersList extends Component {
     this.state = {
       scoresM: null,
       scoresW: null,
+      raceOrder: 0,
     }
   }
   componentWillMount() {
     this.setState({ omniumId: localStorage.getItem('omniumId')})
-    api.getScoresMOverall(this.props.user, localStorage.getItem('omniumId')).then(scores => {
+    api.getScoresOverall(
+      this.props.user,
+      localStorage.getItem('omniumId'),
+      this.state.raceOrder,
+      'men',
+    ).then(scores => {
      console.log('Inside OverallOmniu MAn')
      this.setState({ scoresM: scores})
     })
-    api.getScoresWOverall(this.props.user, localStorage.getItem('omniumId')).then(scores => {
+    api.getScoresOverall(
+      this.props.user,
+      localStorage.getItem('omniumId'),
+      this.state.raceOrder,
+      'women',
+    ).then(scores => {
       console.log('Inside OverallOmniu WOmen')
-      console.log(scores)
 
       this.setState({ scoresW: scores})
      })
@@ -43,16 +53,23 @@ class FirstRidersList extends Component {
          </tr>
          </thead>
          <tbody>
-         { scoresM && scoresM.slice(0, 4).map(function(score, id) {
-            return (
-              <tr key={id} className="left fit">
-              <th key={id} scope="row">{score.finishPlace}</th>
-              <td>{score.raceNumber}</td>
-              <td> {score.Cyclist.lastName}</td>
-              <td className="center">{score.totalPoints}</td>
-              </tr>
-            )
-          })}
+           {
+             scoresM ? (
+              scoresM.slice(0, 4).map(function(score, id) {
+                return (
+                  <tr key={id} className="left fit">
+                  <th key={id} scope="row">{score.finishPlace}</th>
+                  <td>{score.raceNumber}</td>
+                  <td> {score.Cyclist.lastName}</td>
+                  <td className="center">{score.totalPoints}</td>
+                  </tr>
+                )
+              })
+             ) : (
+               <div>
+              </div>
+             )
+           }
          </tbody>
          </table>
          <h3>Women results</h3>
@@ -66,16 +83,22 @@ class FirstRidersList extends Component {
          </tr>
          </thead>
          <tbody>
-         { scoresW && scoresW.slice(0, 4).map(function(score, id) {
-            return (
-              <tr key={id} className="left fit">
-              <th key={id} scope="row">{score.finishPlace}</th>
-              <td>{score.raceNumber}</td>
-              <td> {score.Cyclist.lastName}</td>
-              <td className="center">{score.totalPoints}</td>
-              </tr>
-            )
-          })}
+           {
+             scoresW ? (
+              scoresW.slice(0, 4).map(function(score, id) {
+                return (
+                  <tr key={id} className="left fit">
+                  <th key={id} scope="row">{score.finishPlace}</th>
+                  <td>{score.raceNumber}</td>
+                  <td> {score.Cyclist.lastName}</td>
+                  <td className="center">{score.totalPoints}</td>
+                  </tr>
+                )
+              })
+             ) : (
+               <div></div>
+             )
+           }
          </tbody>
          </table>
       </div>

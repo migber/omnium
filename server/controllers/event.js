@@ -57,6 +57,12 @@ async function createEvent(req, res) {
       description: req.body.description,
       EventId: event.id,
     })
+    Race.create({
+      name: 'Overall',
+      order: 0,
+      description: req.body.description,
+      EventId: event.id,
+    })
   }).catch((error) => {
     res.status(400)
     res.send(responseBadRequest(error))

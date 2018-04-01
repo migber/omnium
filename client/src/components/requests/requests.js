@@ -5,6 +5,7 @@ import './requests.css'
 import api from './api'
 import Moment from 'moment'
 import CyclistModal from './cyclistModal'
+import eventsApi from '../events/api'
 
 class Requests extends Component {
     constructor(props){
@@ -18,6 +19,7 @@ class Requests extends Component {
           bk: false,
           edit: false,
           cyclist: null,
+          lastEventId: null,
         }
 
         this.counter = this.counter.bind(this)
@@ -32,6 +34,11 @@ class Requests extends Component {
     api.getRequests(this.props.user).then( requests => {
         this.setState({ requests })
         this.counter()
+    })
+    eventsApi.getEvents(this.props.user).then(omniums => {
+        this.setState({
+            lastEventId: omniums[omniums.length-1].id
+        })
     })
    }
 
@@ -68,7 +75,7 @@ class Requests extends Component {
 
    approve(id){
        console.log('Approving cyclist')
-       api.approveCyclist(this.props.user, id).then(() => {
+       api.approveCyclist(this.props.user, id, this.state.lastEventId).then(() => {
            console.log('approved')
            window.location.reload()
        })

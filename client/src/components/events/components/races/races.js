@@ -44,8 +44,13 @@ class Race extends Component {
     api.getRaces(this.props.user, this.props.location.pathname ).then( races => {
       this.setState({ races })
     })
-
-    api.getMenData(this.props.user, localStorage.getItem('omniumId')).then(scores => {
+    api.getScoresOfSpecificRace(
+      this.props.user,
+      localStorage.getItem('omniumId'),
+      this.state.activeTab,
+      this.state.btnActive,
+    )
+    .then(scores => {
       this.setState({ scores, listScores: scores })
       this.setStartListValueInStorage()
       this.createListOfData(scores)
@@ -75,8 +80,6 @@ class Race extends Component {
   }
 
   changeStartListState(){
-    console.log(localStorage.getItem('isStartList'))
-    console.log(typeof localStorage.getItem('isStartList'))
     if (localStorage.getItem('isStartList') === 'true') {
       this.setState({ scores: this.state.listScores })
       console.log('Changed to false')
@@ -102,9 +105,14 @@ class Race extends Component {
 
   getOmniumData(category){
     if (category === 'women'){
-      this.getWomenData()
+      this.getWomenData(category)
     } else {
-      api.getMenData(this.props.user, localStorage.getItem('omniumId')).then(scores => {
+      api.getScoresOfSpecificRace(
+        this.props.user,
+        localStorage.getItem('omniumId'),
+        this.state.activeTab,
+        category,
+      ).then(scores => {
         this.createListOfData(scores)
         // const startList = helper.CreateStartList(scores)
         // this.setState({ scores: startList })
@@ -112,23 +120,27 @@ class Race extends Component {
     }
   }
 
-  getWomenData(){
-    api.getWomenData(this.props.user, localStorage.getItem('omniumId')).then(scores => {
+  getWomenData(category){
+    api.getScoresOfSpecificRace(
+      this.props.user,
+      localStorage.getItem('omniumId'),
+      this.state.activeTab,
+      category,
+    ).then(scores => {
       this.createListOfData(scores)
     })
   }
 
   changeList(category){
-    this.getOmniumData(category)
     console.log("buttonClicked")
     this.setState({ btnActive: category })
+    this.getOmniumData(category)
   }
 
   render() {
     const { races, activeTab, omniumId, scores, btnActive} = this.state
     const active = localStorage.getItem('activeTab')
     const isStartList = localStorage.getItem('isStartList') == 'true' ? true : false
-    console.log(scores)
     return (
       <div className="main-container container">
       <h2> {this.state.eventName} </h2>
@@ -230,6 +242,7 @@ class Race extends Component {
             user={this.props.user}
             omniumId={this.state.omniumId}
             activeTab={this.state.activeTab}
+            category={this.state.btnActive}
             />
           }
         />

@@ -1,12 +1,11 @@
 
 
 const router = require('express').Router()
-const { Cyclist, Race } = require('../models/index')
+const { Cyclist, Race, Score } = require('../models/index')
 const responseBadRequest = require('../helpers/responseHelper')
 const Excel = require('exceljs')
+const { Op } = require('sequelize').Sequelize
 
-// const passport = require('passport')
-// const { Strategy } = require('passport-http-bearer')
 
 async function getCyclistsList(req, res) {
   console.log('Getting list of cyclists')
@@ -94,7 +93,7 @@ async function editCyclist(req, res) {
         birthdate: req.body.birthdate,
         gender: req.body.gender,
         category: req.body.category,
-        approved: req.body.approved,
+        approved: false,
       }).then((updatedCyclist) => {
         res.json(updatedCyclist)
         res.status(200)
@@ -115,6 +114,31 @@ async function approveCyclist(req, res) {
       cyclist.updateAttributes({
         approved: req.body.approved,
       }).then((updatedCyclist) => {
+        Race.findOne({
+          where: {
+            order: {
+              [Op.eq]: 0,
+            },
+            EventId: req.body.eventId,
+          },
+        }).then((race) => {
+          Score.create({
+            raceNumber: 0,
+            lapPlusPoints: 0,
+            lapMinusPoints: 0,
+            points: 0,
+            finishPlace: 0,
+            raceDate: '2018-09-03',
+            place: 0,
+            totalPoints: 0,
+            dns: false,
+            dnq: false,
+            dnf: false,
+            bk: false,
+            RaceId: race.id,
+            CyclistId: updatedCyclist.id,
+          })
+        })
         res.json(updatedCyclist)
         res.status(200)
       }).catch((err) => {
@@ -227,8 +251,6 @@ async function fileUpload(req, res) {
             cyclists.push(cyclist)
           }
         })
-        console.log('Cyclists')
-        console.log(cyclists)
         createCyclistsFromRegistration(cyclists)
       })
   } else {

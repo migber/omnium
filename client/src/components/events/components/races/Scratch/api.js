@@ -11,9 +11,9 @@ function getHeaders(authToken, user) {
 }
 
 const api = {
-  getRacesByCategory(user, id) {
-    const url = new URL(`${baseUrl}/api${id}`)
-    console.log(url)
+
+  getScoresOfSpecificRace(user, id, cat) {
+    const url = new URL(`${baseUrl}/api${id}/scores/category/${cat}`)
     return fetch(url, {
       method: 'GET',
       headers: getHeaders(user.accessToken, user)
@@ -21,28 +21,5 @@ const api = {
     .then(response =>
       response.json())
   },
-
-  getScores(user, id) {
-    const url = new URL(`${baseUrl}/api${id}/scores`)
-    console.log(url)
-    return fetch(url, {
-      method: 'GET',
-      headers: getHeaders(user.accessToken, user)
-    })
-    .then(response =>
-      response.json())
-  },
-
-  getCyclistForScores(user, id) {
-    const url = new URL(`${baseUrl}/api/cyclists`)
-    console.log(url)
-    return fetch(url, {
-      method: 'GET',
-      headers: getHeaders(user.accessToken, user)
-    })
-    .then(response =>
-      response.json())
-  }
-
 }
 export default api

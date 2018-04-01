@@ -127,24 +127,25 @@ async function getScoresListWomen(req, res) {
   })
 }
 
-async function getScoresListWomenOverall(req, res) {
-  console.log('Getting list of scores in event women')
+async function getScoresOfRace(req, res) {
+  console.log('Getting list of scores for specific race')
   const eventId = Number(req.params.eventId)
+  const raceOrder = Number(req.params.raceId)
+  const { cat } = req.params
   Score.findAll({
     where: {
-      dns: false,
-      bk: false,
-      dnq: false,
-      dnf: false,
+      raceNumber: {
+        [Op.ne]: 0,
+      },
     },
     include: [{
       model: Race,
-      where: { 'EventId': eventId },
+      where: { EventId: eventId, order: raceOrder },
     }, {
       model: Cyclist,
       as: 'Cyclist',
       where: {
-        category: 'women',
+        category: cat,
         approved: true,
       },
     }, {
@@ -159,9 +160,11 @@ async function getScoresListWomenOverall(req, res) {
   })
 }
 
-async function getScoresListMenOverall(req, res) {
+async function getScoresListOverall(req, res) {
   console.log('Getting list of scores in event men overall')
   const eventId = Number(req.params.eventId)
+  const raceOrder = Number(req.params.raceOrder)
+  const { cat } = req.params
   Score.findAll({
     where: {
       dns: false,
@@ -171,12 +174,15 @@ async function getScoresListMenOverall(req, res) {
     },
     include: [{
       model: Race,
-      where: { 'EventId': eventId },
+      where: {
+        EventId: eventId,
+        order: raceOrder,
+      },
     }, {
       model: Cyclist,
       as: 'Cyclist',
       where: {
-        category: 'men',
+        category: cat,
         approved: true,
       },
     }, {
@@ -219,7 +225,7 @@ async function getScoresListMen(req, res) {
     },
     include: [{
       model: Race,
-      where: { 'EventId': eventId },
+      where: { EventId: eventId },
     }, {
       model: Cyclist,
       as: 'Cyclist',
@@ -516,6 +522,33 @@ async function updateRaceNumber(req, res) {
       score.updateAttributes({
         raceNumber: req.body.raceNumber,
       }).then((updatedScore) => {
+        Race.findAll({
+          where: {
+            name: {
+              [Op.ne]: 'Overall',
+            },
+            EventId: req.body.eventId,
+          },
+        }).then((races) => {
+          races.forEach((race) => {
+            Score.create({
+              raceNumber: updatedScore.raceNumber,
+              lapPlusPoints: 0,
+              lapMinusPoints: 0,
+              points: 0,
+              finishPlace: 0,
+              raceDate: '2018-09-02',
+              place: 0,
+              totalPoints: 0,
+              dns: updatedScore.dns,
+              dnq: updatedScore.dnq,
+              dnf: updatedScore.dnf,
+              bk: updatedScore.bk,
+              RaceId: race.id,
+              CyclistId: updatedScore.CyclistId,
+            })
+          })
+        })
         res.json(updatedScore)
         res.status(200)
       }).catch((err) => {
@@ -540,13 +573,13 @@ router.get('/api/events/:eventId/scores/men', getScoresListMen)
 router.get('/api/events/:eventId/scores/women', getScoresListWomen)
 router.put('/api/events/:eventId/scores/:scoreId', updateScoreBKorDNS)
 router.put('/api/events/:eventId/scores/:scoreId/raceNumber', updateRaceNumber)
-router.get('/api/events/:eventId/scores/women/overall', getScoresListWomenOverall)
-router.get('/api/events/:eventId/scores/men/overall', getScoresListMenOverall)
+router.get('/api/events/:eventId/races/:raceOrder/scores/category/:cat/overall', getScoresListOverall)
 router.get('/api/events/:eventId/scores', getScoresListOfEvent)
 router.get('/api/scores/assignNumber', getScoresWithoutNumbers)
 router.get('/api/events/:eventId/scores/assignNumber', getListOfAssigningNumbers)
 router.get('/api/events/:eventId/races/:raceId/scores/:scoreId', getScore)
 router.post('/api/events/:eventId/races/:raceId/scores', createScore)
+router.get('/api/events/:eventId/races/:raceId/scores/category/:cat', getScoresOfRace)
 router.put('/api/events/:eventId/races/:raceId/scores/:scoreId', editScore)
 router.put('/api/events/:eventId/races/:raceId/scores/:scoreId/lapPliusPoints', updateLapPliusPoints)
 router.put('/api/events/:eventId/races/:raceId/scores/:scoreId/lapMinusPoints', updateLapMinusPoints)
@@ -580,10 +613,10 @@ module.exports = {
   getScoresListOfEvent,
   getScoresListWomen,
   getScoresListMen,
-  getScoresListWomenOverall,
-  getScoresListMenOverall,
+  getScoresListOverall,
   updateScoreBKorDNS,
   updateRaceNumber,
   getListOfAssigningNumbers,
   getScoresWithoutNumbers,
+  getScoresOfRace,
 }

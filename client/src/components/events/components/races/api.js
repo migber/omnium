@@ -32,7 +32,6 @@ const api = {
   },
   getWomenData(user, id) {
     const url = new URL(`${baseUrl}/api/events/${id}/scores/women`)
-    console.log(url)
     return fetch(url, {
       method: 'GET',
       headers: getHeaders(user.accessToken, user)
@@ -42,7 +41,16 @@ const api = {
   },
   getMenData(user, id) {
     const url = new URL(`${baseUrl}/api/events/${id}/scores/men`)
-    console.log(url)
+    return fetch(url, {
+      method: 'GET',
+      headers: getHeaders(user.accessToken, user)
+    })
+    .then(response =>
+      response.json())
+  },
+
+  getScoresOfSpecificRace(user, id, raceOrder, cat) {
+    const url = new URL(`${baseUrl}/api/events/${id}/races/${raceOrder}/scores/category/${cat}`)
     return fetch(url, {
       method: 'GET',
       headers: getHeaders(user.accessToken, user)

@@ -35,7 +35,6 @@ const api = {
 
   updateCyclist(user, id, cyclist) {
     const url = new URL(`${baseUrl}/api/cyclists/${id}`)
-    console.log(url)
     return fetch(url, {
       method: 'PUT',
       headers: getHeaders(user.accessToken, user),
@@ -55,11 +54,11 @@ const api = {
     .then()
   },
 
-  approveCyclist(user, id){
+  approveCyclist(user, id, eventId){
     const url = new URL(`${baseUrl}/api/cyclists/approve/${id}`)
-    console.log(url)
     const payload = {
       approved: true,
+      eventId
     }
     return fetch(url, {
       method: 'PUT',
@@ -73,7 +72,6 @@ const api = {
     const payload = {
     }
     const url = new URL(`${baseUrl}/api/events/${eventId}/races/${raceOrder}/scores`)
-    console.log(url)
     return fetch(url, {
       method: 'PUT',
       headers: getHeaders(user.accessToken, user),
