@@ -23,7 +23,7 @@ async function getCyclistsListNotApproved(req, res) {
     where: {
       approved: false,
     },
-    order: [['createdAt', 'DESC']],
+    order: [['team', 'ASC'], ['createdAt', 'DESC']],
   }).then((cyclist) => {
     res.json(cyclist)
   }).catch((error) => {
@@ -93,7 +93,7 @@ async function editCyclist(req, res) {
         birthdate: req.body.birthdate,
         gender: req.body.gender,
         category: req.body.category,
-        approved: false,
+        approved: req.body.approved,
       }).then((updatedCyclist) => {
         res.json(updatedCyclist)
         res.status(200)
@@ -201,8 +201,6 @@ async function createCyclistsFromRegistration(cyclists) {
           uciCode: cyclist.uciCode.toString(),
         },
       }).then()
-      console.log(found)
-      console.log(typeof found)
       if (found.length === 0) {
         Cyclist.create({
           firstName: cyclist.firstName,
@@ -239,13 +237,13 @@ async function fileUpload(req, res) {
           if (rowNumber !== 1) {
             const cyclist = {
               firstName: row.values[2],
-              lastName: row.values[3],
+              lastName: row.values[3].toUpperCase(),
               uciCode: row.values[4],
               team: row.values[5],
-              nationality: row.values[6],
+              nationality: row.values[6].toUpperCase(),
               birthdate: Date(row.values[7]),
               gender: row.values[8],
-              category: row.values[9],
+              category: row.values[9].toLowerCase(),
               approved: false,
             }
             cyclists.push(cyclist)

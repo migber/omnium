@@ -30,6 +30,7 @@ const api = {
     .then(response =>
       response.json())
   },
+
   getWomenData(user, id) {
     const url = new URL(`${baseUrl}/api/events/${id}/scores/women`)
     return fetch(url, {

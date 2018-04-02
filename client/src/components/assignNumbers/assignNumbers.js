@@ -6,6 +6,7 @@ import api from './api'
 import Moment from 'moment'
 // import CyclistModal from './cyclistModal'
 import AssignNumbersItem from './components/assignNumberToCyclist'
+import eventsApi from '../events/api'
 
 class AssignNumbers extends Component {
     constructor(props){
@@ -28,9 +29,17 @@ class AssignNumbers extends Component {
       }
 
    componentWillMount() {
-    api.getScores(this.props.user, this.state.eventId).then( scores => {
-      this.setState({ scores })
-    })
+     eventsApi.getEvents(this.props.user).then(events => {
+       if (events) {
+         this.setState({
+           eventId: events[events.length-1].id
+         })
+         api.getScores(this.props.user, events[events.length-1].id).then( scores => {
+           console.log(scores)
+          this.setState({ scores })
+        })
+       }
+     })
    }
 
    counter(){

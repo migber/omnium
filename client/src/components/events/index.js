@@ -20,24 +20,29 @@ class Event extends Component {
       show: true,
       addEvent: false,
       lastEventId: null,
+      omniumsLength: null,
     }
     this.setEventData = this.setEventData.bind(this)
     this.notShowEvents = this.notShowEvents.bind(this)
     this.addNewEvent = this.addNewEvent.bind(this)
     this.onCloseButtonClick = this.onCloseButtonClick.bind(this)
     this.onSaveButtonClick = this.onSaveButtonClick.bind(this)
+    this.isEventFinished = this.isEventFinished.bind(this)
   }
 
   componentWillMount() {
     const countEvents = []
     api.getEvents(this.props.user).then( omniums => {
       this.setState({ omniums })
-      //  this.setState({
-      //    lastEventId: omniums[omniums.length -1].id
-      //  })
+      if (omniums) {
+        this.setState({
+          lastEventId: omniums[omniums.length -1].id,
+          omniumsLength: omniums.length -1,
+        })
       }
-    )
-  }
+    }
+  )
+}
 
   setEventData(name, date, id) {
     this.setState({eventName: name, date, omniumId: id,  show: false})
@@ -69,6 +74,16 @@ class Event extends Component {
     })
   }
 
+  isEventFinished(){
+    const { omniums, lastEventId, omniumsLength } = this.state
+    if (omniums) {
+      if (lastEventId) {
+        console.log(omniums[omniumsLength].done)
+        return omniums[omniumsLength].done
+      }
+    }
+  }
+
   render() {
     const { omniums, show, addEvent } = this.state
     const { user } = this.props
@@ -78,10 +93,14 @@ class Event extends Component {
           <h2> Events </h2>
       )}
       {
-        user.email == VIP_EMAIL && (
-          <button className="btn-left upl-btn btn" type="submit" onClick={this.addNewEvent}>
-          <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Create Event
-          </button>
+        this.isEventFinished() ? (
+            user.email == VIP_EMAIL && (
+              <button className="btn-left upl-btn btn" type="submit" onClick={this.addNewEvent}>
+              <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Create Event
+              </button>
+            )
+        ) : (
+          <div></div>
         )
       }
       { omniums ? (

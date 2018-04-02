@@ -7,7 +7,7 @@ class AssignNumberCyclistItem extends Component {
     this.state = {
       raceNumber: 0,
       eventId: '',
-      scoreId: '',
+      scoreId: null,
       bk: null,
       dns: null,
       firstName: '',
@@ -19,6 +19,7 @@ class AssignNumberCyclistItem extends Component {
       counter: 0,
     }
     this.changeRaceNumber = this.changeRaceNumber.bind(this)
+    this.deleteScore = this.deleteScore.bind(this)
   }
 
   componentWillMount(){
@@ -56,6 +57,14 @@ class AssignNumberCyclistItem extends Component {
       raceNumber: event.target.value
     })
   }
+
+  deleteScore(){
+    api.deleteScore(this.props.user, this.state.scoreId).then(() => {
+      console.log(`Score id:${this.state.scoreId} was deleted`)
+    })
+    window.location.reload()
+  }
+
   render() {
     const {
             raceNumber,
@@ -83,6 +92,7 @@ class AssignNumberCyclistItem extends Component {
           <td className="txt-big text"> {nationality}</td>
           <td className="txt-big text"> {category}</td>
           <td>
+            <button type="button" onClick={() => this.deleteScore()} className="btn-float btn btn-danger">Delete</button>
             <button type="button" onClick={() => this.updateRaceNumber()} className="btn-approve btn-float btn btn-success">Assign</button>
           </td>
       </tr>

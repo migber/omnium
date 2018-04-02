@@ -2,9 +2,9 @@ function CreateStartList(scores) {
   const startList = []
   if (scores.length !== 0 ){
     scores.forEach(element => {
-      if (!element.dns && !element.dnq && !element.dnf ){
+      // if (!element.dns && !element.dnq && !element.dnf ){
         startList.push(element)
-      }
+      // }
     })
   }
   console.log(startList)

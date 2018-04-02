@@ -92,6 +92,15 @@ const api = {
     .then(response =>
       response.json())
   },
+
+  deleteScore(user, id) {
+    const url = new URL(`${baseUrl}/api/scores/${id}`)
+    return fetch(url, {
+      method: 'DELETE',
+      headers: getHeaders(user.accessToken, user),
+    })
+    .then()
+  },
 }
 
 export default api

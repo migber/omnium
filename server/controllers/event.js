@@ -31,6 +31,7 @@ async function createEvent(req, res) {
     name: req.body.name,
     startDate: req.body.startDate,
     endDate: req.body.endDate,
+    done: false,
   }).then((event) => {
     res.json(event)
     Race.create({
@@ -78,6 +79,7 @@ async function editEvent(req, res) {
         name: req.body.name,
         startDate: req.body.startDate,
         endDate: req.body.endDate,
+        done: req.body.done,
       }).then((updatedEvent) => {
         res.json(updatedEvent)
         res.status(200)

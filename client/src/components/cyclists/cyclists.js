@@ -35,9 +35,14 @@ class Cyclists extends Component {
     }
 
   componentWillMount() {
-    this.findParticipants(this.state.eventId)
     eventApi.getEvents(this.props.user).then((events) => {
       this.setState({ events })
+      if (events) {
+        this.setState({
+          eventId: events[events.length -1].id
+        })
+        this.findParticipants(events[events.length -1].id)
+      }
     })
    }
 
@@ -106,6 +111,7 @@ class Cyclists extends Component {
   render() {
     const { activeList, btnActive, edit, events } = this.state
     const { user } = this.props
+    console.log(activeList)
     return (
       <div className="container">
       <div className="row">
@@ -175,7 +181,7 @@ class Cyclists extends Component {
               user={this.props.user} auth={this.props.auth}
               onCloseButtonClick={this.onCloseButtonClick}
               action={this.onSaveButtonClick}
-              eventId={1}/>
+              eventId={this.state.eventId}/>
           </Modal.Body>
           <Modal.Footer>
           </Modal.Footer>

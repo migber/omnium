@@ -38,6 +38,7 @@ class Registration extends Component {
   onChange(e) {
     this.setState({file:e.target.files[0]})
   }
+
   fileUpload(file){
     const url = 'http://localhost:8080/api/uploadFile'
     const formData = new FormData();
@@ -47,7 +48,8 @@ class Registration extends Component {
             'content-type': 'multipart/form-data'
         }
     }
-    return  post(url, formData ,config)
+    return  post(url, formData , config)
+    window.location.reload()
   }
 
   render() {

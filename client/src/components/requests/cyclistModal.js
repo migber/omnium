@@ -56,6 +56,7 @@ class CyclistModal extends Component {
       team: this.state.team,
       nationality: this.state.nationality,
       category: this.state.category,
+      approved: false,
       birthdate: Moment(this.state.birthdate).format('YYYY-MM-YY'),
       gender: this.state.gender,
     }

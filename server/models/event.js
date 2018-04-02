@@ -14,6 +14,10 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.DATE,
       allowNull: false,
     },
+    done: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+    },
   }, {})
   Event.associate = (models) => {
     // associations can be defined here

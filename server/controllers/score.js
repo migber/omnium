@@ -61,6 +61,9 @@ async function getListOfAssigningNumbers(req, res) {
     }, {
       model: Sprint, as: 'Sprints',
     }],
+    order: [
+      ['Cyclist', 'team', 'ASC'],
+    ],
   }).then((scores) => {
     res.status(200)
     res.json(scores)
@@ -171,6 +174,9 @@ async function getScoresListOverall(req, res) {
       bk: false,
       dnq: false,
       dnf: false,
+      raceNumber: {
+        [Op.ne]: 0,
+      },
     },
     include: [{
       model: Race,
@@ -422,16 +428,43 @@ async function updateTotalPoints(req, res) {
   })
 }
 
-async function updateScoreBKorDNS(req, res) {
+async function updateScoreBKorDNSorNumber(req, res) {
   console.log('Update cyclist bk and dns functionality')
   const id = Number(req.params.scoreId)
   Score.findById(id).then((score) => {
+    const oldNumber = score.raceNumber
     if (score) {
       score.updateAttributes({
         raceNumber: req.body.raceNumber,
         dns: req.body.dns,
         bk: req.body.bk,
       }).then((updatedScore) => {
+        Score.findAll({
+          where: {
+            raceNumber: oldNumber,
+          },
+          include: [
+            {
+              model: Race,
+              where: {
+                name: {
+                  [Op.ne]: 'Overall',
+                },
+                EventId: req.body.eventId,
+              },
+            },
+          ],
+        }).then((scores) => {
+          if (scores) {
+            scores.forEach((otherScore) => {
+              otherScore.updateAttributes({
+                raceNumber: req.body.raceNumber,
+                dns: req.body.dns,
+                bk: req.body.bk,
+              })
+            })
+          }
+        })
         res.json(updatedScore)
         res.status(200)
       }).catch((err) => {
@@ -562,24 +595,37 @@ async function updateRaceNumber(req, res) {
 async function deleteScore(req, res) {
   console.log('Delete score')
   const id = Number(req.params.scoreId)
-  Score.destroy({ where: { id } }).then(() => {
-    res.status(200)
-    res.json()
+  Score.findById(id).then((score) => {
+    Cyclist.findById(score.CyclistId).then((cyclist) => {
+      if (cyclist) {
+        cyclist.updateAttributes({
+          approved: false,
+        }).then(() => {
+          Score.destroy({ where: { id } }).then(() => {
+            res.status(200)
+            res.json()
+          })
+        })
+      }
+    })
+  }).catch((err) => {
+    res.status(400)
+    res.send(responseBadRequest(err))
   })
 }
 
 router.get('/api/events/:eventId/races/:raceId/scores', getScoresList)
 router.get('/api/events/:eventId/scores/men', getScoresListMen)
 router.get('/api/events/:eventId/scores/women', getScoresListWomen)
-router.put('/api/events/:eventId/scores/:scoreId', updateScoreBKorDNS)
+router.put('/api/events/:eventId/scores/:scoreId', updateScoreBKorDNSorNumber)
 router.put('/api/events/:eventId/scores/:scoreId/raceNumber', updateRaceNumber)
 router.get('/api/events/:eventId/races/:raceOrder/scores/category/:cat/overall', getScoresListOverall)
+router.get('/api/events/:eventId/races/:raceId/scores/category/:cat', getScoresOfRace)
 router.get('/api/events/:eventId/scores', getScoresListOfEvent)
 router.get('/api/scores/assignNumber', getScoresWithoutNumbers)
 router.get('/api/events/:eventId/scores/assignNumber', getListOfAssigningNumbers)
 router.get('/api/events/:eventId/races/:raceId/scores/:scoreId', getScore)
 router.post('/api/events/:eventId/races/:raceId/scores', createScore)
-router.get('/api/events/:eventId/races/:raceId/scores/category/:cat', getScoresOfRace)
 router.put('/api/events/:eventId/races/:raceId/scores/:scoreId', editScore)
 router.put('/api/events/:eventId/races/:raceId/scores/:scoreId/lapPliusPoints', updateLapPliusPoints)
 router.put('/api/events/:eventId/races/:raceId/scores/:scoreId/lapMinusPoints', updateLapMinusPoints)
@@ -591,7 +637,7 @@ router.put('/api/events/:eventId/races/:raceId/scores/:scoreId/dns', updateDns)
 router.put('/api/events/:eventId/races/:raceId/scores/:scoreId/dnf', updateDnf)
 router.put('/api/events/:eventId/races/:raceId/scores/:scoreId/dnq', updateDnq)
 router.put('/api/events/:eventId/races/:raceId/scores/:scoreId/bk', updateBk)
-router.delete('/api/events/:eventId/races/:raceId/scores', deleteScore)
+router.delete('/api/scores/:scoreId', deleteScore)
 
 module.exports = {
   router,
@@ -614,7 +660,7 @@ module.exports = {
   getScoresListWomen,
   getScoresListMen,
   getScoresListOverall,
-  updateScoreBKorDNS,
+  updateScoreBKorDNSorNumber,
   updateRaceNumber,
   getListOfAssigningNumbers,
   getScoresWithoutNumbers,

@@ -63,7 +63,8 @@ class CyclistScoreModal extends Component {
     const score = {
       raceNumber: this.state.raceNo,
       dns: this.state.dns,
-      bk: this.state.bk
+      bk: this.state.bk,
+      eventId: this.state.eventId,
     }
     const cyclist = {
       firstName: this.state.firstName,

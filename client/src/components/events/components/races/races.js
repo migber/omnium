@@ -114,8 +114,8 @@ class Race extends Component {
         category,
       ).then(scores => {
         this.createListOfData(scores)
-        // const startList = helper.CreateStartList(scores)
-        // this.setState({ scores: startList })
+        const startList = helper.CreateStartList(scores)
+        this.setState({ scores: startList })
       })
     }
   }
@@ -208,10 +208,10 @@ class Race extends Component {
                 )}
                 <td>{score.raceNumber}</td>
                 <td> {score.Cyclist.firstName} {score.Cyclist.lastName}</td>
-                <div className="inline">
+                {/* <div className="inline"> */}
                 <td>{score.Cyclist.nationality}</td>
-                <img className="img-circle " src={foto}/>
-                </div>
+                {/* <img className="img-circle " src={foto}/> */}
+                {/* </div> */}
                 <td>Scratch points</td>
                 <td>Tempo points</td>
                 <td>Elimination points</td>
@@ -222,10 +222,11 @@ class Race extends Component {
                 <tr key={id} className="left">
                 <td>{score.raceNumber}</td>
                 <td> {score.Cyclist.firstName} {score.Cyclist.lastName}</td>
-                <span className="inline">
-                  <td>{score.Cyclist.nationality}</td>
+                <td>{score.Cyclist.nationality}</td>
+                {/* <span className="inline">
+
                   <img className="img-circle " src={foto}/>
-                </span>
+                </span> */}
                 </tr>
               )
           )})}

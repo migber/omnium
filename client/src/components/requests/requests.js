@@ -36,9 +36,11 @@ class Requests extends Component {
         this.counter()
     })
     eventsApi.getEvents(this.props.user).then(omniums => {
-        this.setState({
-            lastEventId: omniums[omniums.length-1].id
-        })
+        if (omniums.length != 0) {
+            this.setState({
+                lastEventId: omniums[omniums.length-1].id
+            })
+        }
     })
    }
 
