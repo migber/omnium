@@ -2,6 +2,12 @@
   text-align: left;
 }
 
+.com-edit {
+  background-color: #F2F1EF;
+  border-color: #F2F1EF;
+  border-radius: 4px;
+}
+
 .main-container {
   /* float:left; */
   margin-left: 2%;

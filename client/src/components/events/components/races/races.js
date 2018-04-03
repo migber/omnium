@@ -11,6 +11,7 @@ import Scratch from './Scratch/scratch'
 import TempoRace from './tempoRace/tempoRace'
 import Elimination from './elimination/elimination'
 import PointRace from './pointRace/pointRace'
+import { VIP_EMAIL } from '../../../../config/env'
 
 class Race extends Component {
   constructor(props){
@@ -26,6 +27,14 @@ class Race extends Component {
       btnActive: 'men',
       startListScores: null,
       listScores: null,
+      scratchScoresStartList: null,
+      eliminationScoresStartList: null,
+      tempoRaceScoresStartList: null,
+      pointRaceScoresStartList: null,
+      scratchScores: null,
+      eliminationScores: null,
+      tempoRaceScores: null,
+      pointRaceScores: null,
     }
     this.setActiveClass = this.setActiveClass.bind(this)
     this.changeStartListState = this.changeStartListState.bind(this)
@@ -38,6 +47,12 @@ class Race extends Component {
   }
 
   componentWillMount() {
+    if (localStorage.getItem('category')) {
+      localStorage.setItem('category', 'men')
+    } else {
+      localStorage.setItem('category', localStorage.getItem('category'))
+    }
+
     this.props.notShowEvents()
     this.setState({ eventName: localStorage.getItem('eventName')})
     this.setState({ omniumId: localStorage.getItem('omniumId')})
@@ -94,8 +109,22 @@ class Race extends Component {
   }
 
   setActiveClass(id){
+    // scratch start list
     this.setState({activeTab: id})
+    const { category } = this.state
     localStorage.setItem('activeTab', id)
+    api.getScoresOfSpecificRace(
+      this.props.user,
+      localStorage.getItem('omniumId'),
+      this.state.activeTab,
+      category,
+    ).then(scores => {
+      const startListScores = helper.CreateStartList(scores)
+      this.setState({
+        scratchScores: scores,
+        scratchScoresStartList: startListScores,
+      })
+    })
     this.props.history.push(`/events/${this.state.omniumId}/races/${id}`)
   }
 
@@ -133,7 +162,9 @@ class Race extends Component {
 
   changeList(category){
     console.log("buttonClicked")
+    console.log(`From storage ${localStorage.getItem('category')}`)
     this.setState({ btnActive: category })
+    localStorage.setItem('category', category)
     this.getOmniumData(category)
   }
 
@@ -141,6 +172,7 @@ class Race extends Component {
     const { races, activeTab, omniumId, scores, btnActive} = this.state
     const active = localStorage.getItem('activeTab')
     const isStartList = localStorage.getItem('isStartList') == 'true' ? true : false
+    console.log(` Races ${this.state.btnActive}`)
     return (
       <div className="main-container container">
       <h2> {this.state.eventName} </h2>
@@ -148,9 +180,41 @@ class Race extends Component {
       <ul className="nav nav-tabs">
       <li className={(active === '0') ? "active" : ""} role="presentation"><a onClick={() => this.setActiveClass(0)}>Overall</a></li>
       <li className={(active === '1') ? "active" : ""} role="presentation"> <a onClick={() => this.setActiveClass(1)}> Scratch </a></li>
+      {
+        this.props.user.email === VIP_EMAIL && (
+          <li className={(active === '11') ? "com-edit active" : "com-edit"} role="presentation">
+             <a onClick={() => this.setActiveClass(11)}> Scratch <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>
+             </a>
+          </li>
+        )
+      }
       <li className={(active === '2') ? "active" : ""} role="presentation"> <a onClick={() => this.setActiveClass(2)}> Tempo race </a></li>
+      {
+        this.props.user.email === VIP_EMAIL && (
+          <li className={(active === '22') ? "com-edit active" : "com-edit"} role="presentation">
+            <a onClick={() => this.setActiveClass(22)}> Tempo race <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>
+            </a>
+         </li>
+        )
+      }
       <li className={(active=== '3') ? "active" : ""} role="presentation"> <a onClick={() => this.setActiveClass(3)}> Elimination </a></li>
+     {
+        this.props.user.email === VIP_EMAIL && (
+          <li className={(active=== '33') ? "com-edit active" : "com-edit"} role="presentation">
+            <a onClick={() => this.setActiveClass(33)}> Elimination <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>
+            </a>
+          </li>
+        )
+     }
       <li className={(active === '4') ? "active" : ""} role="presentation"> <a onClick={() => this.setActiveClass(4)}> Point race </a></li>
+      {
+        this.props.user.email === VIP_EMAIL && (
+          <li className={(active === '44') ? "com-edit active" : "com-edit"} role="presentation">
+            <a onClick={() => this.setActiveClass(44)}> Point race <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>
+            </a>
+          </li>
+        )
+      }
       </ul>
       <div>
         <div className="half total-marging-left">
@@ -243,7 +307,7 @@ class Race extends Component {
             user={this.props.user}
             omniumId={this.state.omniumId}
             activeTab={this.state.activeTab}
-            category={this.state.btnActive}
+            isStartList={this.state.isStartList}
             />
           }
         />
@@ -255,6 +319,7 @@ class Race extends Component {
             user={this.props.user}
             omniumId={this.state.omniumId}
             activeTab={this.state.activeTab}
+            isStartList={this.state.isStartList}
             />
           }
         />
@@ -266,6 +331,7 @@ class Race extends Component {
             user={this.props.user}
             omniumId={this.state.omniumId}
             activeTab={this.state.activeTab}
+            isStartList={this.state.isStartList}
             />
           }
         />
@@ -277,6 +343,7 @@ class Race extends Component {
             user={this.props.user}
             omniumId={this.state.omniumId}
             activeTab={this.state.activeTab}
+            isStartList={this.state.isStartList}
             />
           }
         />

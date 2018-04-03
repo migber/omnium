@@ -19,6 +19,9 @@ module.exports = {
       lapMinusPoints: {
         type: Sequelize.INTEGER,
       },
+      positionBefore: {
+        type: Sequelize.INTEGER,
+      },
       points: {
         type: Sequelize.INTEGER,
       },

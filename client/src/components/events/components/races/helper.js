@@ -33,6 +33,12 @@ function finishOrder(scores){
   return finalScores
 }
 
+function scratchRaceStartList(scores) {
+  scores.sort(function(a, b) {
+    return a.raceNumber - b.raceNumber
+  })
+}
+
 function finishOrderInOther(scores){
   let ordered = []
   const disqualifiedScores = []
@@ -58,4 +64,5 @@ function finishOrderInOther(scores){
 module.exports = {
   CreateStartList,
   finishOrder,
+  scratchRaceStartList,
 }

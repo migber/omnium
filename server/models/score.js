@@ -12,6 +12,7 @@ module.exports = (sequelize, DataTypes) => {
     finishPlace: DataTypes.INTEGER(3),
     raceDate: DataTypes.DATE,
     place: DataTypes.INTEGER(3),
+    positionBefore: DataTypes.INTEGER,
     totalPoints: DataTypes.INTEGER(6),
     dns: {
       type: DataTypes.BOOLEAN,
