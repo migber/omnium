@@ -16,14 +16,11 @@ class PointRace extends Component {
   }
 
   componentWillMount() {
-    console.log(this.props)
     this.setState({ eventName: localStorage.getItem('eventName')})
     api.getRacesByCategory(this.props.user, this.props.location.pathname ).then( races => {
       this.setState({ races })
     })
     api.getScores(this.props.user, this.props.location.pathname).then(scores => {
-      console.log('scores')
-      console.log(scores)
       const scoresMapped = []
       scores.forEach(element => {
         const scoresObj = {
@@ -58,7 +55,6 @@ class PointRace extends Component {
         }
        scoresMapped.push(scoresObj)
       })
-      console.log(scoresMapped)
       localStorage.setItem('scores', JSON.stringify(scoresMapped))
       this.setState({ scores: scoresMapped })
     })
@@ -68,9 +64,6 @@ class PointRace extends Component {
     const { omniumId, activeTab } = this.props
     const { races, scores } = this.state
 
-    console.log(`Omnium id : ${omniumId}`)
-    console.log('Races')
-    console.log(races)
     return (
      <div className="space-from-top">
        { localStorage.getItem('activeTab') === '4' && (

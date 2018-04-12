@@ -111,7 +111,6 @@ class Cyclists extends Component {
   render() {
     const { activeList, btnActive, edit, events } = this.state
     const { user } = this.props
-    console.log(activeList)
     return (
       <div className="container">
       <div className="row">

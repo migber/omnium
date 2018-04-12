@@ -78,7 +78,6 @@ class Event extends Component {
     const { omniums, lastEventId, omniumsLength } = this.state
     if (omniums) {
       if (lastEventId) {
-        console.log(omniums[omniumsLength].done)
         return omniums[omniumsLength].done
       }
     }
@@ -87,6 +86,7 @@ class Event extends Component {
   render() {
     const { omniums, show, addEvent } = this.state
     const { user } = this.props
+    const activeTab = localStorage.getItem('activeTab') ? localStorage.getItem('activeTab') : 0
     return (
       <div className="container">
       { show && (

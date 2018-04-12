@@ -22,7 +22,6 @@ const api = {
   },
   getScores(user, id) {
     const url = new URL(`${baseUrl}/api/events/${id}/scores`)
-    console.log(url)
     return fetch(url, {
       method: 'GET',
       headers: getHeaders(user.accessToken, user)
@@ -59,5 +58,27 @@ const api = {
     .then(response =>
       response.json())
   },
+
+  updateRacePointsBasedOnPlace(user, id, raceOrder, scoreId, score) {
+    const url = new URL(`${baseUrl}/api/events/${id}/races/${raceOrder}/scores/${scoreId}/points`)
+    return fetch(url, {
+      method: 'PUT',
+      body: JSON.stringify(score),
+      headers: getHeaders(user.accessToken, user)
+    })
+    .then(response =>
+      response.json())
+  },
+
+  updateTotalScoresOmniumOverall(user, id, data) {
+    const url = new URL(`${baseUrl}/api/events/${id}/races/0/scores/specific`)
+    return fetch(url, {
+      method: 'PUT',
+      body: JSON.stringify(data),
+      headers: getHeaders(user.accessToken, user)
+    })
+    .then(response =>
+      response.json())
+  }
 }
 export default api

@@ -1,0 +1,46 @@
+.btn-small{
+  border-radius: 50%;
+  height: 25px;
+  width: 27px;
+}
+
+.col-lg-4-alig {
+  display:block;
+  text-align:center
+}
+
+.item {
+  height: 10px;
+  width: 15px;
+}
+
+.ab {
+  font-size: 14px;
+  top: 0;
+  right: 0;
+}
+
+.gb_b{
+  color: #000;
+  cursor: pointer;
+  /* height: 10px;
+  width: 10px; */
+  text-decoration: none;
+}
+
+.span-algn {
+  align-items: center;
+  margin-top: 4px;
+}
+
+.a-red{
+  background: #F2784B;
+}
+
+.a-green {
+  background: #87D37C;
+}
+
+.tr-size {
+  width: auto;
+}

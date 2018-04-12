@@ -40,7 +40,6 @@ class CyclistScoreModal extends Component {
 
   componentWillMount(){
     const { cyclist, eventId } = this.props
-      console.log(cyclist)
       this.setState({
         eventId,
         scoreId: cyclist.id,
@@ -124,7 +123,6 @@ class CyclistScoreModal extends Component {
   }
 
   handleChangeBK(e){
-    console.log(`BK : ${e.target.value}`)
     const bk = e.target.value === 'on' ? true : false
     this.setState({
       bk: !this.state.bk
@@ -132,7 +130,6 @@ class CyclistScoreModal extends Component {
   }
 
   handleChangeDNS(e){
-    console.log(` DNS : ${e.target.value}`)
     this.setState({
       dns: !this.state.dns
     })

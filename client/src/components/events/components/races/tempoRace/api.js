@@ -13,7 +13,6 @@ function getHeaders(authToken, user) {
 const api = {
   getRacesByCategory(user, id) {
     const url = new URL(`${baseUrl}/api${id}`)
-    console.log(url)
     return fetch(url, {
       method: 'GET',
       headers: getHeaders(user.accessToken, user)
@@ -23,7 +22,6 @@ const api = {
   },
   getScores(user, id) {
     const url = new URL(`${baseUrl}/api${id}/scores`)
-    console.log(url)
     return fetch(url, {
       method: 'GET',
       headers: getHeaders(user.accessToken, user)

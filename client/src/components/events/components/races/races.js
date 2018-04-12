@@ -11,7 +11,10 @@ import Scratch from './Scratch/scratch'
 import TempoRace from './tempoRace/tempoRace'
 import Elimination from './elimination/elimination'
 import PointRace from './pointRace/pointRace'
+import ScratchEdit from './Scratch/scratchEdit'
 import { VIP_EMAIL } from '../../../../config/env'
+import placePoints from './constants/constants'
+import OmniumItem from '../OmniumListItem/omniumItem'
 
 class Race extends Component {
   constructor(props){
@@ -44,6 +47,8 @@ class Race extends Component {
     this.setStartListValueInStorage = this.setStartListValueInStorage.bind(this)
     this.changeList = this.changeList.bind(this)
     this.createListOfData = this.createListOfData.bind(this)
+    this.saveFinishPlaces = this.saveFinishPlaces.bind(this)
+    this.updateOverallOmnium = this.updateOverallOmnium.bind(this)
   }
 
   componentWillMount() {
@@ -52,8 +57,6 @@ class Race extends Component {
     } else {
       localStorage.setItem('category', localStorage.getItem('category'))
     }
-
-    this.props.notShowEvents()
     this.setState({ eventName: localStorage.getItem('eventName')})
     this.setState({ omniumId: localStorage.getItem('omniumId')})
     api.getRaces(this.props.user, this.props.location.pathname ).then( races => {
@@ -66,7 +69,6 @@ class Race extends Component {
       this.state.btnActive,
     )
     .then(scores => {
-      this.setState({ scores, listScores: scores })
       this.setStartListValueInStorage()
       this.createListOfData(scores)
     })
@@ -74,14 +76,18 @@ class Race extends Component {
 
   createListOfData(scores){
     if (localStorage.getItem('isStartList') === 'true'){
+      console.log('true')
       const startList = helper.CreateStartList(scores)
       this.setState({ scores: helper.finishOrder(startList),
-         listScores: helper.finishOrder(scores),
-         startListScores: startList })
+         listScores: helper.orderByPointsBigger(scores),
+         startListScores: helper.CreateStartList(startList) })
     } else {
-      this.setState({ scores: helper.finishOrder(scores),
-         listScores: helper.finishOrder(scores)})
+      console.log('else')
+      console.log(scores)
+      this.setState({ scores: helper.orderByPointsBigger(scores),
+         listScores: helper.CreateStartList(scores)})
     }
+
   }
 
   setStartListValueInStorage(){
@@ -96,15 +102,37 @@ class Race extends Component {
 
   changeStartListState(){
     if (localStorage.getItem('isStartList') === 'true') {
-      this.setState({ scores: this.state.listScores })
+      this.setState({ scores: helper.orderByPointsBigger(this.state.listScores) })
       console.log('Changed to false')
       localStorage.setItem('isStartList', false)
       this.setState({isStartList: false}) }
     else {
       const startListScores = helper.CreateStartList(this.state.scores)
-      this.setState({ scores: startListScores, startListScores })
+      this.setState({ scores: helper.orderByPointsBigger(startListScores), startListScores })
       localStorage.setItem('isStartList', true)
       this.setState({isStartList: true})
+    }
+  }
+
+  updateOverallOmnium(scores){
+    if (scores) {
+      let scoreP
+      scores.forEach((score) => {
+        scoreP = score
+        const data = {
+          score: {
+            CyclistId: score.CyclistId,
+            uciId: score.Cyclist.uciCode,
+            raceNumber: score.raceNumber,
+            points: score.points,
+          },
+          category: localStorage.getItem('category'),
+        }
+        console.log(data)
+        api.updateTotalScoresOmniumOverall(this.props.user, this.state.omniumId, data).then((score) => {
+          console.log(score)
+        })
+      })
     }
   }
 
@@ -144,7 +172,7 @@ class Race extends Component {
       ).then(scores => {
         this.createListOfData(scores)
         const startList = helper.CreateStartList(scores)
-        this.setState({ scores: startList })
+        this.setState({ scores: helper.orderByPointsBigger(scores), startList })
       })
     }
   }
@@ -160,56 +188,84 @@ class Race extends Component {
     })
   }
 
-  changeList(category){
-    console.log("buttonClicked")
+  changeList(category) {
     console.log(`From storage ${localStorage.getItem('category')}`)
     this.setState({ btnActive: category })
     localStorage.setItem('category', category)
     this.getOmniumData(category)
   }
 
+  saveFinishPlaces(activeTab) {
+    let scoresD
+    let races
+    switch (activeTab) {
+      case 11:
+        races = 1
+        break;
+      case 22:
+        races = 2
+        break
+      case 33:
+        races = 3
+        break
+      case 44:
+        races = 4
+        break
+      default:
+        break;
+    }
+    api.getScoresOfSpecificRace(this.props.user, this.state.omniumId, races, 'men').then((scores) => {
+      scoresD = scores
+      console.log(scoresD)
+      const updatedScores = helper.calculateFinalRaceOrder(scoresD)
+      console.log(updatedScores)
+      updatedScores.forEach((score) => {
+        api.updateScore(this.props.user, this.state.omniumId, races, score.id, score).then(() => {})
+      })
+    })
+  }
+
   render() {
     const { races, activeTab, omniumId, scores, btnActive} = this.state
-    const active = localStorage.getItem('activeTab')
+    const active = localStorage.getItem('activeTab') ? Number(localStorage.getItem('activeTab')) : activeTab
     const isStartList = localStorage.getItem('isStartList') == 'true' ? true : false
-    console.log(` Races ${this.state.btnActive}`)
     return (
       <div className="main-container container">
       <h2> {this.state.eventName} </h2>
-      <div className="space-from-top left-half">
+      <div className={(active === 11 || active === 22 || active === 33 || active === 44 ) ? "space-from-top" : "space-from-top left-half"}>
       <ul className="nav nav-tabs">
-      <li className={(active === '0') ? "active" : ""} role="presentation"><a onClick={() => this.setActiveClass(0)}>Overall</a></li>
-      <li className={(active === '1') ? "active" : ""} role="presentation"> <a onClick={() => this.setActiveClass(1)}> Scratch </a></li>
+      <li className={(active === 0) ? "active" : ""} role="presentation"><a onClick={() => this.setActiveClass(0)}>Overall</a></li>
+      <li className={(active === 1) ? "active" : ""} role="presentation"> <a onClick={() => this.setActiveClass(1)}> Scratch </a></li>
       {
         this.props.user.email === VIP_EMAIL && (
-          <li className={(active === '11') ? "com-edit active" : "com-edit"} role="presentation">
+          <li className={(active === 11) ? "com-edit active" : "com-edit"} role="presentation">
              <a onClick={() => this.setActiveClass(11)}> Scratch <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>
              </a>
           </li>
         )
       }
-      <li className={(active === '2') ? "active" : ""} role="presentation"> <a onClick={() => this.setActiveClass(2)}> Tempo race </a></li>
+      <li className={(active === 2) ? "active" : ""} role="presentation"> <a onClick={() => this.setActiveClass(2)}> Tempo race </a></li>
       {
         this.props.user.email === VIP_EMAIL && (
-          <li className={(active === '22') ? "com-edit active" : "com-edit"} role="presentation">
+          <li className={(active === 22) ? "com-edit active" : "com-edit"} role="presentation">
             <a onClick={() => this.setActiveClass(22)}> Tempo race <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>
             </a>
          </li>
         )
       }
-      <li className={(active=== '3') ? "active" : ""} role="presentation"> <a onClick={() => this.setActiveClass(3)}> Elimination </a></li>
+      <li className={(active === 3) ? "active" : ""} role="presentation"> <a onClick={() => this.setActiveClass(3)}> Elimination </a></li>
      {
         this.props.user.email === VIP_EMAIL && (
-          <li className={(active=== '33') ? "com-edit active" : "com-edit"} role="presentation">
+          <li className={(active === 33) ? "com-edit active" : "com-edit"} role="presentation">
             <a onClick={() => this.setActiveClass(33)}> Elimination <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>
             </a>
           </li>
         )
      }
-      <li className={(active === '4') ? "active" : ""} role="presentation"> <a onClick={() => this.setActiveClass(4)}> Point race </a></li>
+      <li className={(active === 4) ? "active" : ""} role="presentation"> <a onClick={() => this.setActiveClass(4)}> Point race </a></li>
       {
         this.props.user.email === VIP_EMAIL && (
-          <li className={(active === '44') ? "com-edit active" : "com-edit"} role="presentation">
+          <li className={(active === 44) ? "com-edit active" : "com-edit"} role="presentation">
             <a onClick={() => this.setActiveClass(44)}> Point race <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>
             </a>
           </li>
@@ -237,6 +293,7 @@ class Race extends Component {
               <th scope="col">Rank</th>
               <th scope="col">No</th>
               <th scope="col">Name</th>
+              <th scope="col">UCI ID</th>
               <th scope="col">Nationality</th>
               <th scope="col">Scratch</th>
               <th scope="col">Tempo race</th>
@@ -246,53 +303,28 @@ class Race extends Component {
            </tr>
           ) : (
             <tr >
+            <th scope="col"></th>
             <th scope="col">No</th>
             <th scope="col">Name</th>
+            <th scope="col">UCI ID</th>
             <th scope="col">Nationality</th>
          </tr>
           )
         }
          </thead>
          <tbody>
-         { scores && scores.map(function(score, id) {
+         { scores && scores.map((score, id) => {
             return (
-               !isStartList ? (
-                <tr key={id} className="left">
-                { score.dns && (
-                  <th key={id} scope="row">DNS</th>
-                )}
-                { score.dnf && (
-                  <th key={id} scope="row">DNF</th>
-                )}
-                { score.dnq && (
-                  <th key={id} scope="row">DNQ</th>
-                )}
-                { !score.dnq && !score.dns && !score.dnf && (
-                  <th key={id} scope="row">{id + 1}</th>
-                )}
-                <td>{score.raceNumber}</td>
-                <td> {score.Cyclist.firstName} {score.Cyclist.lastName}</td>
-                {/* <div className="inline"> */}
-                <td>{score.Cyclist.nationality}</td>
-                {/* <img className="img-circle " src={foto}/> */}
-                {/* </div> */}
-                <td>Scratch points</td>
-                <td>Tempo points</td>
-                <td>Elimination points</td>
-                <td>Point Race points</td>
-                <td>{score.totalPoints}</td>
-                </tr>
-              ) : (
-                <tr key={id} className="left">
-                <td>{score.raceNumber}</td>
-                <td> {score.Cyclist.firstName} {score.Cyclist.lastName}</td>
-                <td>{score.Cyclist.nationality}</td>
-                {/* <span className="inline">
-
-                  <img className="img-circle " src={foto}/>
-                </span> */}
-                </tr>
-              )
+              <OmniumItem
+              key={`${score.id}${Math.random()}`}
+              user={this.props.user}
+              score={score}
+              rankId={id}
+              eventId={this.state.omniumId}
+              activeTab={this.state.activeTab}
+              isStartList={this.state.isStartList}
+              updateOverallOmnium={this.updateOverallOmnium}
+              />
           )})}
          </tbody>
          </table>
@@ -303,6 +335,19 @@ class Race extends Component {
           exact path={`${this.props.match.path}/1`}
           render={( props ) =>
             <Scratch
+            {...props}
+            user={this.props.user}
+            omniumId={this.state.omniumId}
+            activeTab={this.state.activeTab}
+            isStartList={this.state.isStartList}
+            updateOverallOmnium={this.updateOverallOmnium}
+            />
+          }
+        />
+        <Route
+          exact path={`${this.props.match.path}/11`}
+          render={( props ) =>
+            <ScratchEdit
             {...props}
             user={this.props.user}
             omniumId={this.state.omniumId}
@@ -349,7 +394,15 @@ class Race extends Component {
         />
       </div>
       </div>
-      <TopRiders  user={this.props.user}/>
+      {
+        (active !== 11 &&  active !== 22 && active !== 33 && active !== 44) ? (
+          <TopRiders  user={this.props.user}/>
+        ) : (
+          <div>
+            {/* <a id="saveResults" role="button" type="button" className={(btnActive === 'men') ? "choice-btn-active btn btn-default" : "choice-btn btn btn-default"} onClick={() => this.saveFinishPlaces(active)} name="men">Save Results</a> */}
+          </div>
+        )
+      }
       </div>
     )
   }

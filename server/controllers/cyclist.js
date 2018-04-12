@@ -235,6 +235,7 @@ async function fileUpload(req, res) {
         const worksheet = workbook.getWorksheet('registration')
         worksheet.eachRow({ includeEmpty: false }, (row, rowNumber) => {
           if (rowNumber !== 1) {
+            console.log(row.values)
             const cyclist = {
               firstName: row.values[2],
               lastName: row.values[3].toUpperCase(),

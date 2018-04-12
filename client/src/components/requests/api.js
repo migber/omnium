@@ -13,7 +13,6 @@ function getHeaders(authToken, user) {
 const api = {
   getRequests(user) {
     const url = new URL(`${baseUrl}/api/cyclists/notApproved`)
-    console.log(url)
     return fetch(url, {
       method: 'GET',
       headers: getHeaders(user.accessToken, user)
@@ -24,7 +23,6 @@ const api = {
 
   getCyclist(user, id) {
     const url = new URL(`${baseUrl}/api/cyclists/${id}`)
-    console.log(url)
     return fetch(url, {
       method: 'GET',
       headers: getHeaders(user.accessToken, user)
@@ -46,7 +44,6 @@ const api = {
 
   deleteCyclist(user, id){
     const url = new URL(`${baseUrl}/api/cyclists/${id}`)
-    console.log(url)
     return fetch(url, {
       method: 'DELETE',
       headers: getHeaders(user.accessToken, user)

@@ -68,7 +68,6 @@ class Requests extends Component {
     }
 
    deleteCyclist(id) {
-       console.log(id)
        api.deleteCyclist(this.props.user, id).then(() => {
            console.log('User was deleted')
            window.location.reload()

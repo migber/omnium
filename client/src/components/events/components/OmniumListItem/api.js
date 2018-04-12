@@ -11,18 +11,9 @@ function getHeaders(authToken, user) {
 }
 
 const api = {
-  getRacesByCategory(user, id) {
-    const url = new URL(`${baseUrl}/api${id}`)
-    return fetch(url, {
-      method: 'GET',
-      headers: getHeaders(user.accessToken, user)
-    })
-    .then(response =>
-      response.json())
-  },
 
-  getScores(user, id) {
-    const url = new URL(`${baseUrl}/api${id}/scores`)
+  getScoresFromRaces(user, id, raceNumber) {
+    const url = new URL(`${baseUrl}/api/events/${id}/races/scores/${raceNumber}/allRaces`)
     return fetch(url, {
       method: 'GET',
       headers: getHeaders(user.accessToken, user)

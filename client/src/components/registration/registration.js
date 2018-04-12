@@ -54,7 +54,6 @@ class Registration extends Component {
 
   render() {
     const { success, failed , authenticated, user} = this.state
-    console.log(user)
     return (
       <div className="txt container">
       <article>

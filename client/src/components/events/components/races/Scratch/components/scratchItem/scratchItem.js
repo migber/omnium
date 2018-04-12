@@ -110,7 +110,7 @@ class ScratchItem extends Component {
           ) : dnq ? (
             <td className="txt-big text">DNQ</td>
           ) : (
-            <td className="txt-big text">{rankId + 1}</td>
+            <td className="txt-big text">{place}</td>
           )
         }
         <td className="raceNo txt-big text">{raceNumber}</td>
@@ -119,12 +119,12 @@ class ScratchItem extends Component {
         <td className="txt-big text">{nationality}</td>
         {
           !isStartList && (
-            <td className="txt-big text">{lapPlusPoints}</td>
+            <td className="txt-big text">+{lapPlusPoints}</td>
             )
           }
         {
           !isStartList && (
-            <td className="txt-big text">{lapMinusPoints}</td>
+            <td className="txt-big text">-{lapMinusPoints}</td>
           )
         }
         {
@@ -134,7 +134,11 @@ class ScratchItem extends Component {
         }
         {
           !isStartList && (
-            <td className="txt-big text">{totalPoints}</td>
+              (!dns && !dnq && !dnf) ?(
+                <td className="txt-big text">{totalPoints}</td>
+              ) : (
+                <td className="txt-big text"></td>
+              )
           )
         }
         {/* <td>

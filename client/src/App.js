@@ -36,7 +36,6 @@ class App extends Component {
   }
 
   componentWillMount() {
-    console.log(localStorage)
     const user = JSON.parse(localStorage.getItem('user'))
     if (localStorage.getItem('authenticated')) {
       this.badgeSet(user)
@@ -48,7 +47,6 @@ class App extends Component {
   }
 
   onLogin(response) {
-    console.log("login")
     const { profileObj } = response
     const user = {
       email: profileObj.email,
@@ -66,7 +64,6 @@ class App extends Component {
   }
 
   onLogout() {
-    console.log('logout')
     localStorage.removeItem('user')
     localStorage.removeItem('authenticated')
     this.setState({ authenticated: false, user: null })

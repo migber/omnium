@@ -33,7 +33,6 @@ class CyclistModal extends Component {
 
   componentWillMount(){
     const { cyclist } = this.props
-      console.log(cyclist)
       this.setState({
         id: cyclist.id,
         firstName: cyclist.firstName,

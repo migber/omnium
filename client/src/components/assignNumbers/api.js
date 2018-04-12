@@ -13,7 +13,6 @@ function getHeaders(authToken, user) {
 const api = {
   getScores(user, eventId) {
     const url = new URL(`${baseUrl}/api/events/${eventId}/scores/assignNumber`)
-    console.log(url)
     return fetch(url, {
       method: 'GET',
       headers: getHeaders(user.accessToken, user)
@@ -24,7 +23,6 @@ const api = {
 
   getScoresForBagdes(user) {
     const url = new URL(`${baseUrl}/api/scores/assignNumber`)
-    console.log(url)
     return fetch(url, {
       method: 'GET',
       headers: getHeaders(user.accessToken, user)
@@ -35,7 +33,6 @@ const api = {
 
   getScoresWomen(user, eventId) {
     const url = new URL(`${baseUrl}/api/events/${eventId}/scores/women`)
-    console.log(url)
     return fetch(url, {
       method: 'GET',
       headers: getHeaders(user.accessToken, user)
@@ -46,7 +43,6 @@ const api = {
 
   getScoresMen(user, eventId) {
     const url = new URL(`${baseUrl}/api/events/${eventId}/scores/men`)
-    console.log(url)
     return fetch(url, {
       method: 'GET',
       headers: getHeaders(user.accessToken, user)
@@ -57,7 +53,6 @@ const api = {
 
   updateCyclist(user, id, cyclist) {
     const url = new URL(`${baseUrl}/api/cyclists/${id}`)
-    console.log(url)
     return fetch(url, {
       method: 'PUT',
       headers: getHeaders(user.accessToken, user),
@@ -69,7 +64,6 @@ const api = {
 
   updateCyclistRaceNumber(user, eventId,  id, score) {
     const url = new URL(`${baseUrl}/api/events/${eventId}/scores/${id}/raceNumber`)
-    console.log(url)
     return fetch(url, {
       method: 'PUT',
       headers: getHeaders(user.accessToken, user),
@@ -80,10 +74,7 @@ const api = {
   },
 
   updateScore(user, eventId, id, score) {
-    console.log(id, eventId)
-    console.log(score)
     const url = new URL(`${baseUrl}/api/events/${eventId}/scores/${id}`)
-    console.log(url)
     return fetch(url, {
       method: 'PUT',
       headers: getHeaders(user.accessToken, user),

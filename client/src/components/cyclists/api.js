@@ -24,7 +24,6 @@ const api = {
 
   updateCyclist(user, id, cyclist) {
     const url = new URL(`${baseUrl}/api/cyclists/${id}`)
-    console.log(url)
     return fetch(url, {
       method: 'PUT',
       headers: getHeaders(user.accessToken, user),
@@ -35,10 +34,7 @@ const api = {
   },
 
   updateScore(user, eventId, id, score) {
-    console.log(id, eventId)
-    console.log(score)
     const url = new URL(`${baseUrl}/api/events/${eventId}/scores/${id}`)
-    console.log(url)
     return fetch(url, {
       method: 'PUT',
       headers: getHeaders(user.accessToken, user),

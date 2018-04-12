@@ -17,7 +17,6 @@ class MenuBar extends Component {
   }
 
   onLoginFail(resp) {
-    console.log(resp)
   }
 
   render() {

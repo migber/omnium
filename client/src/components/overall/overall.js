@@ -14,12 +14,6 @@ class Overall extends Component {
     }
   }
 
-  onAboutClick() {
-    console.log('click!')
-    this.setState({
-    })
-  }
-
   render() {
     return (
       <div className="right-half">

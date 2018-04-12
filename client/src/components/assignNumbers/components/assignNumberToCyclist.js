@@ -23,7 +23,6 @@ class AssignNumberCyclistItem extends Component {
   }
 
   componentWillMount(){
-    console.log('inside')
     const { score, eventId } = this.props
       this.setState({
         raceNumber: score.raceNumber,
@@ -41,13 +40,11 @@ class AssignNumberCyclistItem extends Component {
   }
 
   updateRaceNumber() {
-    console.log('inside update')
     const score = {
       raceNumber: this.state.raceNumber,
       eventId: this.state.eventId
     }
     api.updateCyclistRaceNumber(this.props.user, this.state.eventId, this.state.scoreId, score).then(() => {
-      console.log('Cyclist number was updated')
     })
     window.location.reload()
   }
@@ -60,7 +57,6 @@ class AssignNumberCyclistItem extends Component {
 
   deleteScore(){
     api.deleteScore(this.props.user, this.state.scoreId).then(() => {
-      console.log(`Score id:${this.state.scoreId} was deleted`)
     })
     window.location.reload()
   }

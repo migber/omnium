@@ -35,7 +35,6 @@ class AssignNumbers extends Component {
            eventId: events[events.length-1].id
          })
          api.getScores(this.props.user, events[events.length-1].id).then( scores => {
-           console.log(scores)
           this.setState({ scores })
         })
        }

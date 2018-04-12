@@ -13,13 +13,14 @@ const {
 } = require('../models/index')
 const responseBadRequest = require('../helpers/responseHelper')
 
+const TWENTY = 20
+
 async function getScoresList(req, res) {
   console.log('Getting list of scores')
   // const eventId = Number(req.params.eventId)
   const raceId = Number(req.params.raceId)
   const eventId = Number(req.params.eventId)
-  const category = req.body.category
-
+  const { category } = req.body
   Score.findAll({
     include: [{
       model: Race,
@@ -37,6 +38,48 @@ async function getScoresList(req, res) {
   }).catch((error) => {
     res.status(400)
     res.send(responseBadRequest(error))
+  })
+}
+
+async function putScoresInSpecificRace(req, res) {
+  console.log('Getting score of specific race')
+  const raceId = Number(req.params.raceId)
+  const eventId = Number(req.params.eventId)
+  console.log(req.body)
+  const { category } = req.body
+  const { score } = req.body
+  console.log(score)
+  console.log(category)
+  Score.findAll({
+    where: {
+      CyclistId: score.CyclistId,
+      raceNumber: score.raceNumber,
+    },
+    include: [{
+      model: Race,
+      where: { order: raceId, 'EventId': eventId},
+    }, {
+      model: Cyclist,
+      as: 'Cyclist',
+      where: { category, approved: 'true', uciCode: score.uciId },
+    }, {
+      model: Sprint, as: 'Sprints',
+    }],
+  }).then((foundScore) => {
+    console.log(foundScore)
+    if (foundScore) {
+      const total = foundScore.totalPoints ? (foundScore.totalPoints + score.points) : score.points
+      console.log(total)
+      foundScore[0].updateAttributes({
+        totalPoints: total,
+      }).then((updatedScore) => {
+        res.json(updatedScore)
+        res.status(200)
+      }).catch((error) => {
+        res.status(400)
+        res.send(responseBadRequest(error))
+      })
+    }
   })
 }
 
@@ -63,6 +106,40 @@ async function getListOfAssigningNumbers(req, res) {
     }],
     order: [
       ['Cyclist', 'team', 'ASC'],
+    ],
+  }).then((scores) => {
+    res.status(200)
+    res.json(scores)
+  }).catch((error) => {
+    res.status(400)
+    res.send(responseBadRequest(error))
+  })
+}
+
+async function scoresFromAllRaces(req, res) {
+  console.log('Getting list of scores from all races')
+  const eventId = Number(req.params.eventId)
+  const raceNumb = Number(req.params.raceNumb)
+  Score.findAll({
+    where: {
+      raceNumber: {
+        [Op.eq]: raceNumb,
+      },
+    },
+    include: [{
+      model: Race,
+      where: { 'EventId': eventId },
+    }, {
+      model: Cyclist,
+      as: 'Cyclist',
+      where: {
+        approved: true,
+      },
+    }, {
+      model: Sprint, as: 'Sprints',
+    }],
+    order: [
+      ['Race', 'order', 'ASC'],
     ],
   }).then((scores) => {
     res.status(200)
@@ -310,7 +387,7 @@ async function editScore(req, res) {
         dnf: req.body.dnf,
         bk: req.body.bk,
         CyclistId: req.body.CyclistId,
-        RaceId: raceId,
+        // RaceId: raceId,
       }).then((updatedScore) => {
         res.json(updatedScore)
         res.status(200)
@@ -327,8 +404,12 @@ async function updateLapPliusPoints(req, res) {
   const id = Number(req.params.scoreId)
   Score.findById(id).then((score) => {
     if (score) {
+      const plus = score.lapPlusPoints + TWENTY
+      const totalP = score.totalPoints
+      const totalRecalc = totalP + TWENTY
       score.updateAttributes({
-        lapPlusPoints: req.body.lapPlusPoints,
+        lapPlusPoints: plus,
+        totalPoints: totalRecalc,
       }).then((updatedScore) => {
         res.json(updatedScore)
         res.status(200)
@@ -345,8 +426,12 @@ async function updateLapMinusPoints(req, res) {
   const id = Number(req.params.scoreId)
   Score.findById(id).then((score) => {
     if (score) {
+      const minus = score.lapMinusPoints + TWENTY
+      const totalP = score.totalPoints
+      const totalRecalc = totalP - TWENTY
       score.updateAttributes({
-        lapMinusPoints: req.body.lapMinusPoints,
+        lapMinusPoints: minus,
+        totalPoints: totalRecalc,
       }).then((updatedScore) => {
         res.json(updatedScore)
         res.status(200)
@@ -482,8 +567,9 @@ async function updateDns(req, res) {
   const id = Number(req.params.scoreId)
   Score.findById(id).then((score) => {
     if (score) {
+      const { dns } = score
       score.updateAttributes({
-        dns: req.body.dns,
+        dns: !dns,
       }).then((updatedScore) => {
         res.json(updatedScore)
         res.status(200)
@@ -500,8 +586,9 @@ async function updateDnf(req, res) {
   const id = Number(req.params.scoreId)
   Score.findById(id).then((score) => {
     if (score) {
+      const { dnf } = score
       score.updateAttributes({
-        dnf: req.body.dnf,
+        dnf: !dnf,
       }).then((updatedScore) => {
         res.json(updatedScore)
         res.status(200)
@@ -518,8 +605,9 @@ async function updateDnq(req, res) {
   const id = Number(req.params.scoreId)
   Score.findById(id).then((score) => {
     if (score) {
+      const { dnq } = score
       score.updateAttributes({
-        dnq: req.body.dnq,
+        dnq: !dnq,
       }).then((updatedScore) => {
         res.json(updatedScore)
         res.status(200)
@@ -617,6 +705,8 @@ async function deleteScore(req, res) {
 }
 
 router.get('/api/events/:eventId/races/:raceId/scores', getScoresList)
+router.put('/api/events/:eventId/races/:raceId/scores/specific', putScoresInSpecificRace)
+router.get('/api/events/:eventId/races/scores/:raceNumb/allRaces', scoresFromAllRaces)
 router.get('/api/events/:eventId/scores/men', getScoresListMen)
 router.get('/api/events/:eventId/scores/women', getScoresListWomen)
 router.put('/api/events/:eventId/scores/:scoreId', updateScoreBKorDNSorNumber)

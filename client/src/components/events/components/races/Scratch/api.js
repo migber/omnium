@@ -1,5 +1,6 @@
 const baseUrl = 'http://localhost:8080'
 
+
 function getHeaders(authToken, user) {
   const headers = new Headers()
   headers.append('Content-Type', 'application/json')
@@ -21,5 +22,16 @@ const api = {
     .then(response =>
       response.json())
   },
+
+  updateScore(user, id, raceOrder, scoreId, score) {
+    const url = new URL(`${baseUrl}/api/events/${id}/races/${raceOrder}/scores/${scoreId}`)
+    return fetch(url, {
+      method: 'PUT',
+      body: JSON.stringify(score),
+      headers: getHeaders(user.accessToken, user)
+    })
+    .then(response =>
+      response.json())
+  }
 }
 export default api

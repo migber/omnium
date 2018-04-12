@@ -2,6 +2,7 @@
 import React, { Component } from 'react'
 import './topRidersList.css'
 import api from './api'
+import helper from '../races/helper'
 
 class FirstRidersList extends Component {
   constructor(props){
@@ -21,7 +22,7 @@ class FirstRidersList extends Component {
       'men',
     ).then(scores => {
      console.log('Inside OverallOmniu MAn')
-     this.setState({ scoresM: scores})
+     this.setState({ scoresM: helper.orderByPointsBigger(scores)})
     })
     api.getScoresOverall(
       this.props.user,
@@ -31,7 +32,7 @@ class FirstRidersList extends Component {
     ).then(scores => {
       console.log('Inside OverallOmniu WOmen')
 
-      this.setState({ scoresW: scores})
+      this.setState({ scoresW: helper.orderByPointsBigger(scores)})
      })
   }
 
@@ -58,7 +59,7 @@ class FirstRidersList extends Component {
               scoresM.slice(0, 4).map(function(score, id) {
                 return (
                   <tr key={id} className="left fit">
-                  <th key={id} scope="row">{score.finishPlace}</th>
+                  <th key={id} scope="row">{id + 1}</th>
                   <td>{score.raceNumber}</td>
                   <td> {score.Cyclist.lastName}</td>
                   <td className="center">{score.totalPoints}</td>
@@ -88,7 +89,7 @@ class FirstRidersList extends Component {
               scoresW.slice(0, 4).map(function(score, id) {
                 return (
                   <tr key={id} className="left fit">
-                  <th key={id} scope="row">{score.finishPlace}</th>
+                  <th key={id} scope="row">{id + 1}</th>
                   <td>{score.raceNumber}</td>
                   <td> {score.Cyclist.lastName}</td>
                   <td className="center">{score.totalPoints}</td>

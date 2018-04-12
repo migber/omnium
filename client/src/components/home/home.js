@@ -21,7 +21,6 @@ class Home extends Component {
     if (redirect) {
       return <Redirect to='/events' push/>
     }
-    console.log(this.state.user)
     return (
       <div className="container">
       <div className="left-half">
