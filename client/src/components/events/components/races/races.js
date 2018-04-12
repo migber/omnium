@@ -219,6 +219,7 @@ class Race extends Component {
       console.log(scoresD)
       const updatedScores = helper.calculateFinalRaceOrder(scoresD)
       console.log(updatedScores)
+      this.updateOverallOmnium(updatedScores)
       updatedScores.forEach((score) => {
         api.updateScore(this.props.user, this.state.omniumId, races, score.id, score).then(() => {})
       })
@@ -353,6 +354,7 @@ class Race extends Component {
             omniumId={this.state.omniumId}
             activeTab={this.state.activeTab}
             isStartList={this.state.isStartList}
+            saveFinishPlaces={this.saveFinishPlaces}
             />
           }
         />

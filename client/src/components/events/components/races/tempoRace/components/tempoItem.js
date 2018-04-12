@@ -1,57 +1,45 @@
 import React, { Component } from 'react'
 import api from './api'
 
-class ScratchItem extends Component {
+class TempoItem extends Component {
   constructor(props){
     super(props)
     this.state = {
-      rankId: null,
-      raceNumber: 0,
-      eventId: null,
-      scoreId: null,
-      bk: null,
-      dns: null,
-      dnf: null,
-      dnq: null,
-      lapPlusPoints: null,
-      lapMinusPoints: null,
-      positionBefore: null,
-      points: null,
-      finishPlace: null,
-      place: null,
-      totalPoints: null,
-      firstName: null,
-      lastName: null,
-      uciCode: null,
-      nationality: null,
+      rankId: props.rankId,
+      raceNumber: props.score.raceNumber,
+      eventId: props.eventId,
+      scoreId: props.score.id,
+      bk: props.score.bk,
+      dns: props.score.dns,
+      dnf: props.score.dnf,
+      dnq: props.score.dnq,
+      lapPlusPoints: props.score.lapPlusPoints,
+      lapMinusPoints: props.score.lapMinusPoints,
+      positionBefore: props.score.positionBefore,
+      points: props.score.points,
+      finishPlace: props.score.finishPlace,
+      place: props.score.place,
+      totalPoints: props.score.totalPoints,
+      firstName: props.score.Cyclist.firstName,
+      lastName: props.score.Cyclist.lastName,
+      uciCode: props.score.Cyclist.uciCode,
+      nationality: props.score.Cyclist.nationality,
+      sprintsString: null,
     }
     this.changeRaceNumber = this.changeRaceNumber.bind(this)
     this.deleteScore = this.deleteScore.bind(this)
   }
 
-  componentWillMount(){
-    const { score, eventId, rankId } = this.props
-      this.setState({
-        rankId: rankId,
-        raceNumber: score.raceNumber,
-        eventId: eventId,
-        scoreId: score.id,
-        bk: score.bk,
-        dns: score.dns,
-        dnf: score.dnf,
-        dnq: score.dnq,
-        positionBefore: score.positionBefore,
-        lapPlusPoints: score.lapPlusPoints,
-        lapMinusPoints: score.lapMinusPoints,
-        points: score.points,
-        finishPlace: score.finishPlace,
-        place: score.place,
-        totalPoints: score.totalPoints,
-        firstName: score.Cyclist.firstName,
-        lastName: score.Cyclist.lastName,
-        uciCode: score.Cyclist.uciCode,
-        nationality: score.Cyclist.nationality,
-      })
+  componentDidMount(){
+    // const sprints = this.props.score.Sprints
+    const sprints = [{sprintNumber: 1, sprintPoints:1 }, {sprintNumber: 4, sprintPoints:1 }, {sprintNumber: 5, sprintPoints:1 }]
+    var sprintsString = sprints.map((sprint) => {
+      return sprint.sprintNumber
+    }).join(",")
+    this.setState({
+      sprintsString
+    })
+    console.log(sprintsString)
   }
 
   updateRaceNumber() {
@@ -98,6 +86,7 @@ class ScratchItem extends Component {
       lastName,
       uciCode,
       nationality,
+      sprintsString
     } = this.state
     const { isStartList } = this.props
     return (
@@ -115,8 +104,22 @@ class ScratchItem extends Component {
         }
         <td className="raceNo txt-big text">{raceNumber}</td>
         <td className="txt-big text">{lastName} {firstName}</td>
-        <td className="txt-big text">{uciCode}</td>
+        {
+          isStartList && (
+            <td className="txt-big text">{uciCode}</td>
+          )
+        }
         <td className="txt-big text">{nationality}</td>
+        {
+          !isStartList && (
+              <td className="txt-big text">{sprintsString}</td>
+          )
+        }
+        {
+          !isStartList && (
+            <td className="txt-big text">{finishPlace}</td>
+          )
+        }
         {
           !isStartList && (
             <td className="txt-big text">+{lapPlusPoints}</td>
@@ -129,12 +132,7 @@ class ScratchItem extends Component {
         }
         {
           !isStartList && (
-            <td className="txt-big text">{finishPlace}</td>
-          )
-        }
-        {
-          !isStartList && (
-              (!dns && !dnq && !dnf) ?(
+              (!dns && !dnq && !dnf) ? (
                 <td className="txt-big text">{totalPoints}</td>
               ) : (
                 <td className="txt-big text"></td>
@@ -146,4 +144,4 @@ class ScratchItem extends Component {
   }
 }
 
-export default ScratchItem
+export default TempoItem

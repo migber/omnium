@@ -73,6 +73,7 @@ class ScratchEdit extends Component {
     updatedScores.forEach((score) => {
       raceApi.updateScore(this.props.user, this.state.omniumId, races, score.id, score).then(() => {})
     })
+    this.props.saveFinishPlaces(active)
   }
 
   onDragEnd(result) {

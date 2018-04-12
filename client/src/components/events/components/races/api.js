@@ -51,6 +51,7 @@ const api = {
 
   getScoresOfSpecificRace(user, id, raceOrder, cat) {
     const url = new URL(`${baseUrl}/api/events/${id}/races/${raceOrder}/scores/category/${cat}`)
+    console.log(url)
     return fetch(url, {
       method: 'GET',
       headers: getHeaders(user.accessToken, user)

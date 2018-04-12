@@ -154,17 +154,6 @@ class Scratch extends Component {
           )
         )
       }
-          {/* //   return (
-          //     <tr key={id} className="left">
-          //     <th key={id} scope="row">{score.finishPlace}</th>
-          //     <td className="number">{score.raceNumber}</td>
-          //     <td>{score.Cyclist.firstName} {score.Cyclist.lastName}</td>
-          //     <td>{score.Cyclist.nationality}</td>
-          //     <td>{score.points}</td>
-          //     <td>{score.totalPoints}</td>
-          //     </tr>
-          //   )
-          // })} */}
           </tbody>
         </table>
       )}
