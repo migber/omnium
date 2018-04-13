@@ -146,7 +146,7 @@ class TempoEdit extends Component {
     raceApi.getScoresOfSpecificRace(
       this.props.user,
       this.props.omniumId,
-      2,
+      this.state.raceOrder,
       category,
      ).then( scores => {
       const startList = helper.scratchRaceStartList(scores)
@@ -317,7 +317,7 @@ class TempoEdit extends Component {
         </td>
         {
           !isStartList && (
-            <td className="">
+            <td>
               <a type="button" role="button" onClick={() => this.addTwenty(score.id)} class="a-green btn-small btn-group btn-group-xs btn-default" aria-label="Left Align">
                 <span class="span-algn glyphicon glyphicon-plus" aria-hidden="true"></span>
               </a>

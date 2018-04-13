@@ -7,7 +7,9 @@
   font-weight: lighter;
   margin-right: 3px;
 }
-
+.mrg-inp{
+  margin-left: 3px;
+}
 .inblock{
   display: inline-block;
   text-align: left;

@@ -25,6 +25,7 @@ class TempoRace extends Component {
   }
 
   componentWillMount() {
+    this.props.notShowEvents()
     localStorage.setItem('activeTab', 2)
     const raceBeforePath = '/events/10/races/1'
     this.setState({ eventName: localStorage.getItem('eventName')})

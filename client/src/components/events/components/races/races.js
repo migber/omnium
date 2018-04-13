@@ -17,6 +17,7 @@ import placePoints from './constants/constants'
 import OmniumItem from '../OmniumListItem/omniumItem'
 import scratchApi from './Scratch/api'
 import TempoRaceEdit from './tempoRace/tempoEdit'
+import EliminationEdit from './elimination/eliminationEdit'
 
 class Race extends Component {
   constructor(props){
@@ -54,6 +55,7 @@ class Race extends Component {
   }
 
   componentWillMount() {
+    this.props.notShowEvents()
     if (localStorage.getItem('category')) {
       localStorage.setItem('category', 'men')
     } else {
@@ -201,6 +203,7 @@ class Race extends Component {
     console.log(`From storage ${localStorage.getItem('category')}`)
     this.setState({ btnActive: category })
     localStorage.setItem('category', category)
+    this.child.changeList(category)
     this.getOmniumData(category)
   }
 
@@ -332,6 +335,7 @@ class Race extends Component {
             activeTab={this.state.activeTab}
             isStartList={this.state.isStartList}
             updateOverallOmnium={this.updateOverallOmnium}
+            notShowEvents={this.props.notShowEvents}
             />
           }
         />
@@ -345,6 +349,7 @@ class Race extends Component {
             activeTab={this.state.activeTab}
             isStartList={this.state.isStartList}
             saveFinishPlaces={this.saveFinishPlaces}
+            notShowEvents={this.props.notShowEvents}
             />
           }
         />
@@ -357,6 +362,7 @@ class Race extends Component {
             omniumId={this.state.omniumId}
             activeTab={this.state.activeTab}
             isStartList={this.state.isStartList}
+            notShowEvents={this.props.notShowEvents}
             />
           }
         />
@@ -370,6 +376,7 @@ class Race extends Component {
             activeTab={this.state.activeTab}
             isStartList={this.state.isStartList}
             saveFinishPlaces={this.saveFinishPlaces}
+            notShowEvents={this.props.notShowEvents}
             />
           }
         />
@@ -382,6 +389,24 @@ class Race extends Component {
             omniumId={this.state.omniumId}
             activeTab={this.state.activeTab}
             isStartList={this.state.isStartList}
+            saveFinishPlaces={this.saveFinishPlaces}
+            notShowEvents={this.props.notShowEvents}
+            />
+          }
+        />
+        <Route
+          exact path={`${this.props.match.path}/33`}
+          render={( props ) =>
+            <EliminationEdit
+            {...props}
+            onRef={ref => (this.child = ref)}
+            user={this.props.user}
+            omniumId={this.state.omniumId}
+            category={this.state.btnActive}
+            activeTab={this.state.activeTab}
+            isStartList={this.state.isStartList}
+            saveFinishPlaces={this.saveFinishPlaces}
+            notShowEvents={this.props.notShowEvents}
             />
           }
         />
@@ -394,6 +419,22 @@ class Race extends Component {
             omniumId={this.state.omniumId}
             activeTab={this.state.activeTab}
             isStartList={this.state.isStartList}
+            saveFinishPlaces={this.saveFinishPlaces}
+            notShowEvents={this.props.notShowEvents}
+            />
+          }
+        />
+         <Route
+          exact path={`${this.props.match.path}/44`}
+          render={( props ) =>
+            <PointRace
+            {...props}
+            user={this.props.user}
+            omniumId={this.state.omniumId}
+            activeTab={this.state.activeTab}
+            isStartList={this.state.isStartList}
+            saveFinishPlaces={this.saveFinishPlaces}
+            notShowEvents={this.props.notShowEvents}
             />
           }
         />

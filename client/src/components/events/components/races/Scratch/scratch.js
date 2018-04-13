@@ -23,6 +23,7 @@ class Scratch extends Component {
   }
 
   componentWillMount() {
+    this.props.notShowEvents()
     localStorage.setItem('activeTab', 1)
     this.setState({ eventName: localStorage.getItem('eventName')})
     this.setState({
@@ -37,7 +38,6 @@ class Scratch extends Component {
         const startList = helper.scratchRaceStartList(scores)
         const orderedScores = helper.orderByPlace(scores)
         console.log(orderedScores)
-        // this.props.updateOverallOmnium(scores)
         this.setState({ menScores: orderedScores, menScoresStartList: startList})
     })
     raceApi.getScoresOfSpecificRace(

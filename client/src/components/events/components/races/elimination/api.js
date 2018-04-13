@@ -11,20 +11,12 @@ function getHeaders(authToken, user) {
 }
 
 const api = {
-  getRacesByCategory(user, id) {
-    const url = new URL(`${baseUrl}/api${id}`)
-    return fetch(url, {
-      method: 'GET',
-      headers: getHeaders(user.accessToken, user)
-    })
-    .then(response =>
-      response.json())
-  },
 
-  getScores(user, id) {
-    const url = new URL(`${baseUrl}/api${id}/scores`)
+  eliminateCyclist(user, id, raceOrder, scoreId, score) {
+    const url = new URL(`${baseUrl}/api/events/${id}/races/${raceOrder}/scores/${scoreId}/finishPlace`)
     return fetch(url, {
-      method: 'GET',
+      method: 'PUT',
+      body: JSON.stringify(score),
       headers: getHeaders(user.accessToken, user)
     })
     .then(response =>
