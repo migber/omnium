@@ -15,6 +15,7 @@ import ScratchEdit from './Scratch/scratchEdit'
 import { VIP_EMAIL } from '../../../../config/env'
 import placePoints from './constants/constants'
 import OmniumItem from '../OmniumListItem/omniumItem'
+import scratchApi from './Scratch/api'
 
 class Race extends Component {
   constructor(props){
@@ -114,7 +115,8 @@ class Race extends Component {
     }
   }
 
-  updateOverallOmnium(scores){
+  updateOverallOmnium(scores, category){
+    console.log('update omnium overall')
     if (scores) {
       let scoreP
       scores.forEach((score) => {
@@ -126,7 +128,7 @@ class Race extends Component {
             raceNumber: score.raceNumber,
             points: score.points,
           },
-          category: localStorage.getItem('category'),
+          category: category,
         }
         console.log(data)
         api.updateTotalScoresOmniumOverall(this.props.user, this.state.omniumId, data).then((score) => {
@@ -137,20 +139,22 @@ class Race extends Component {
   }
 
   setActiveClass(id){
-    // scratch start list
     this.setState({activeTab: id})
-    const { category } = this.state
+    const { btnActive } = this.state
     localStorage.setItem('activeTab', id)
+    console.log('set active class')
     api.getScoresOfSpecificRace(
       this.props.user,
       localStorage.getItem('omniumId'),
-      this.state.activeTab,
-      category,
+      id,
+      btnActive,
     ).then(scores => {
+      console.log(scores)
       const startListScores = helper.CreateStartList(scores)
+      const order = helper.orderByPointsBigger(scores)
       this.setState({
-        scratchScores: scores,
-        scratchScoresStartList: startListScores,
+        scores: order,
+        startListScores,
       })
     })
     this.props.history.push(`/events/${this.state.omniumId}/races/${id}`)
@@ -195,34 +199,14 @@ class Race extends Component {
     this.getOmniumData(category)
   }
 
-  saveFinishPlaces(activeTab) {
+  saveFinishPlaces(scores, activeTab, category) {
+    console.log('finsihplacesss')
     let scoresD
-    let races
-    switch (activeTab) {
-      case 11:
-        races = 1
-        break;
-      case 22:
-        races = 2
-        break
-      case 33:
-        races = 3
-        break
-      case 44:
-        races = 4
-        break
-      default:
-        break;
-    }
-    api.getScoresOfSpecificRace(this.props.user, this.state.omniumId, races, 'men').then((scores) => {
-      scoresD = scores
-      console.log(scoresD)
-      const updatedScores = helper.calculateFinalRaceOrder(scoresD)
-      console.log(updatedScores)
-      this.updateOverallOmnium(updatedScores)
-      updatedScores.forEach((score) => {
-        api.updateScore(this.props.user, this.state.omniumId, races, score.id, score).then(() => {})
-      })
+    scoresD = scores
+    const updatedScores = helper.calculateFinalRaceOrder(scoresD)
+    this.updateOverallOmnium(updatedScores, category)
+    updatedScores.forEach((score) => {
+      scratchApi.updateScore(this.props.user, this.state.omniumId, activeTab, score.id, score).then(() => {})
     })
   }
 

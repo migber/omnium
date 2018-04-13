@@ -45,52 +45,28 @@ class ScratchEdit extends Component {
     this.handleChangeDNF = this.handleChangeDNF.bind(this)
     this.changeFinishOrder = this.changeFinishOrder.bind(this)
     this.apiListRequest = this.apiListRequest.bind(this)
-    this.saveFinishPlaces = this.saveFinishPlaces.bind(this)
+    this.saveFinishPlacesInside = this.saveFinishPlacesInside.bind(this)
   }
 
-  saveFinishPlaces(active){
+  saveFinishPlacesInside(){
     console.log('Best I can do ')
-    console.log(this.state.menScores)
+    const active = localStorage.getItem('activeTab')
     const updatedScores = changeFinishOrder(this.state.menScores)
-    let scoresD
-    let races
-    switch (active) {
-      case 11:
-        races = 1
-        break;
-      case 22:
-        races = 2
-        break
-      case 33:
-        races = 3
-        break
-      case 44:
-        races = 4
-        break
-      default:
-        break;
-    }
-    updatedScores.forEach((score) => {
-      raceApi.updateScore(this.props.user, this.state.omniumId, races, score.id, score).then(() => {})
-    })
-    this.props.saveFinishPlaces(active)
+    this.props.saveFinishPlaces(updatedScores, 1, 'men')
   }
 
   onDragEnd(result) {
-    // dropped outside the list
     if (!result.destination) {
       return;
     }
-
     const menScores = reorder(
       this.state.menScores,
       result.source.index,
       result.destination.index
-    );
-
+    )
     this.setState({
       menScores,
-    });
+    })
   }
 
   changeFinishOrder(e){
@@ -167,6 +143,7 @@ class ScratchEdit extends Component {
 
   componentDidMount() {
     console.log('ScratchInsideEDIt')
+    console.log(localStorage.getItem('category'))
     localStorage.setItem('activeTab', 11)
     this.setState({ eventName: localStorage.getItem('eventName')})
     this.setState({
@@ -177,7 +154,7 @@ class ScratchEdit extends Component {
     raceApi.getScoresOfSpecificRace(
       this.props.user,
       path,
-      localStorage.getItem('category'),
+      'men',
      ).then( scores => {
       const startList = helper.scratchRaceStartList(scores)
       this.setState({ menScores: scores, menScoresStartList: startList})
@@ -353,7 +330,7 @@ class ScratchEdit extends Component {
         </table>
       )}
        <div>
-        <a id="saveResults" role="button" type="button" className={(activeTab === 'men') ? "choice-btn-active btn btn-default" : "choice-btn btn btn-default"} onClick={() => this.saveFinishPlaces(activeTab)} name="men">Save Results</a>
+        <a id="saveResults" role="button" type="button" className={(activeTab === 'men') ? "choice-btn-active btn btn-default" : "choice-btn btn btn-default"} onClick={() => this.saveFinishPlacesInside(activeTab)} name="men">Save Results</a>
       </div>
       </div>
 

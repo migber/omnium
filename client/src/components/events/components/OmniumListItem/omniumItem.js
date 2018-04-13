@@ -10,6 +10,9 @@ class OmniumItem extends Component {
       raceNumber: props.score.raceNumber,
       eventId: props.eventId,
       scoreId: props.score.id,
+      dns: props.score.dns,
+      dnf: props.score.dnf,
+      dnq: props.score.dnq,
       positionBefore: props.score.positionBefore,
       points: props.score.points,
       place: props.score.place,
@@ -41,6 +44,9 @@ class OmniumItem extends Component {
       points,
       finishPlace,
       place,
+      dns,
+      dnf,
+      dnq,
       totalPoints,
       firstName,
       lastName,
@@ -51,7 +57,17 @@ class OmniumItem extends Component {
     const { isStartList } = this.props
     return (
       <tr>
-        <td className="txt-big text">{rankId + 1}</td>
+        {
+           dns ? (
+            <td className="txt-big text">DNS</td>
+          ) : dnf ? (
+            <td className="txt-big text">DNF</td>
+          ) : dnq ? (
+            <td className="txt-big text">DNQ</td>
+          ) : (
+            <td className="txt-big text">{rankId + 1}</td>
+          )
+        }
         <td className="raceNo txt-big text">{raceNumber}</td>
         <td className="txt-big text">{lastName} {firstName}</td>
         <td className="txt-big text">{uciCode}</td>

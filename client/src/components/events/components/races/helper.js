@@ -109,6 +109,7 @@ function givePlacePoints(scores) {
 }
 
 function calculateFinalRaceOrder(scores) {
+  console.log("race helper calculate final")
   let orderWithSamePoints = []
   if (scores.length !== 0) {
     const orderedScores = orderByPointsBigger(scores)
@@ -122,7 +123,8 @@ function calculateFinalRaceOrder(scores) {
     const finalCyclistList = finished.concat(disqualified)
     console.log(finalCyclistList)
     finalCyclistList.forEach((score, id) => {
-      console.log(score.dnf )
+      console.log(score.dnf)
+      if (!score.dns && !score.dnq && !score.dnf) {
         if ((id + 1) < 21) {
           console.log('change')
           score.points = placePoints[id + 1]
@@ -132,6 +134,10 @@ function calculateFinalRaceOrder(scores) {
         }
         score.place = id + 1
         score.positionBefore = id + 1
+      } else {
+        console.log('should be here')
+        score.points = 0
+      }
     })
     return finalCyclistList
   }

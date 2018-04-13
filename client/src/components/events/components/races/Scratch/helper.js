@@ -1,6 +1,8 @@
 function changeFinishOrder(scores) {
   if(scores){
     let scoresUpdate = []
+    console.log('changeFinish order')
+    console.log(scores)
     scores.forEach((score, index) => {
       if (!score.dns || !score.dnq || !score.dnf) {
         score.finishPlace =  index + 1
