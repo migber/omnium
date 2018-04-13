@@ -16,6 +16,7 @@ import { VIP_EMAIL } from '../../../../config/env'
 import placePoints from './constants/constants'
 import OmniumItem from '../OmniumListItem/omniumItem'
 import scratchApi from './Scratch/api'
+import TempoRaceEdit from './tempoRace/tempoEdit'
 
 class Race extends Component {
   constructor(props){
@@ -141,6 +142,7 @@ class Race extends Component {
   setActiveClass(id){
     this.setState({activeTab: id})
     const { btnActive } = this.state
+    console.log(id)
     localStorage.setItem('activeTab', id)
     console.log('set active class')
     api.getScoresOfSpecificRace(
@@ -213,6 +215,7 @@ class Race extends Component {
   render() {
     const { races, activeTab, omniumId, scores, btnActive} = this.state
     const active = localStorage.getItem('activeTab') ? Number(localStorage.getItem('activeTab')) : activeTab
+    console.log(`Active ${active}`)
     const isStartList = localStorage.getItem('isStartList') == 'true' ? true : false
     return (
       <div className="main-container container">
@@ -346,6 +349,18 @@ class Race extends Component {
           exact path={`${this.props.match.path}/2`}
           render={( props ) =>
             <TempoRace
+            {...props}
+            user={this.props.user}
+            omniumId={this.state.omniumId}
+            activeTab={this.state.activeTab}
+            isStartList={this.state.isStartList}
+            />
+          }
+        />
+         <Route
+          exact path={`${this.props.match.path}/22`}
+          render={( props ) =>
+            <TempoRaceEdit
             {...props}
             user={this.props.user}
             omniumId={this.state.omniumId}

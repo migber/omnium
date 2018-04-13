@@ -26,29 +26,45 @@ class TempoRace extends Component {
 
   componentWillMount() {
     localStorage.setItem('activeTab', 2)
+    const raceBeforePath = '/events/10/races/1'
     this.setState({ eventName: localStorage.getItem('eventName')})
     this.setState({
       category: localStorage.getItem('category')
     })
+    console.log(this.props.location.pathname)
     raceApi.getScoresOfSpecificRace(
       this.props.user,
       this.props.location.pathname,
       'men',
      ).then( scores => {
         console.log(scores)
-        const startList = raceHelper.scratchRaceStartList(scores)
         const orderedScores = raceHelper.orderByPlace(scores)
-        console.log(orderedScores)
-        this.setState({ menScores: orderedScores, menScoresStartList: startList})
+        this.setState({ menScores: orderedScores})
+    })
+    raceApi.getScoresOfSpecificRace(
+      this.props.user,
+      raceBeforePath,
+      'men',
+     ).then( scores => {
+        console.log(scores)
+        const startList = helper.orderByPoints(scores)
+        this.setState({ menScoresStartList: startList})
     })
     raceApi.getScoresOfSpecificRace(
       this.props.user,
       this.props.location.pathname,
       'women'
      ).then( scores => {
-        const startList = raceHelper.scratchRaceStartList(scores)
         const orderedScores = raceHelper.orderByPlace(scores)
-        this.setState({ womenScores: orderedScores, womenStartList: startList })
+        this.setState({ womenScores: orderedScores})
+    })
+    raceApi.getScoresOfSpecificRace(
+      this.props.user,
+      raceBeforePath,
+      'women'
+     ).then( scores => {
+        const startList = helper.orderByPoints(scores)
+        this.setState({ womenStartList: startList})
     })
   }
 

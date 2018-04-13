@@ -1,0 +1,14 @@
+.btn-create {
+  margin-left: 70%;
+}
+
+.lbl-text {
+  font-size: 10px;
+  font-weight: lighter;
+  margin-right: 3px;
+}
+
+.inblock{
+  display: inline-block;
+  text-align: left;
+}

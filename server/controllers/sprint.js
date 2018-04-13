@@ -3,6 +3,7 @@
 const router = require('express').Router()
 const { Sprint, Score } = require('../models/index')
 const responseBadRequest = require('../helpers/responseHelper')
+const { Op } = require('sequelize').Sequelize
 
 async function getSprintsList(req, res) {
   console.log('Getting list of sprints')
@@ -32,15 +33,33 @@ async function getSprint(req, res) {
 async function createSprint(req, res) {
   console.log('Create sprint')
   const scoreId = Number(req.params.scoreId)
-  Sprint.create({
-    sprintNumber: req.body.sprintNumber,
-    sprintPoints: req.body.sprintPoints,
-    ScoreId: scoreId,
-  }).then((sprint) => {
-    res.json(sprint)
-  }).catch((error) => {
-    res.status(400)
-    res.send(responseBadRequest(error))
+  Sprint.findAll({
+    where: {
+      ScoreId: {
+        [Op.eq]: scoreId,
+      },
+      sprintNumber: {
+        [Op.eq]: req.body.sprintNumber,
+      },
+    },
+  }).then((sprints) => {
+    console.log(sprints)
+    if (sprints.length !== 0) {
+      const sprintDelete = sprints[0]
+      Sprint.destroy({ where: { id: sprintDelete.id } }).then(() => {
+      })
+    } else {
+      Sprint.create({
+        sprintNumber: req.body.sprintNumber,
+        sprintPoints: req.body.sprintPoints,
+        ScoreId: scoreId,
+      }).then((sprint) => {
+        res.json(sprint)
+      }).catch((error) => {
+        res.status(400)
+        res.send(responseBadRequest(error))
+      })
+    }
   })
 }
 

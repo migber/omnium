@@ -240,6 +240,48 @@ async function getScoresOfRace(req, res) {
   })
 }
 
+async function getScoresOfRaceWithourDnx(req, res) {
+  console.log('Getting list of scores for specific race without dns, dnq, dnf')
+  const eventId = Number(req.params.eventId)
+  const raceOrder = Number(req.params.raceId)
+  const { cat } = req.params
+  Score.findAll({
+    where: {
+      raceNumber: {
+        [Op.ne]: 0,
+      },
+      dns: {
+        [Op.ne]: true,
+      },
+      dnf: {
+        [Op.ne]: true,
+      },
+      dnq: {
+        [Op.ne]: true,
+      },
+    },
+    include: [{
+      model: Race,
+      where: { EventId: eventId, order: raceOrder },
+    }, {
+      model: Cyclist,
+      as: 'Cyclist',
+      where: {
+        category: cat,
+        approved: true,
+      },
+    }, {
+      model: Sprint, as: 'Sprints',
+    }],
+  }).then((scores) => {
+    res.status(200)
+    res.json(scores)
+  }).catch((error) => {
+    res.status(400)
+    res.send(responseBadRequest(error))
+  })
+}
+
 async function getScoresListOverall(req, res) {
   console.log('Getting list of scores in event men overall')
   const eventId = Number(req.params.eventId)
@@ -800,6 +842,7 @@ router.put('/api/events/:eventId/scores/:scoreId', updateScoreBKorDNSorNumber)
 router.put('/api/events/:eventId/scores/:scoreId/raceNumber', updateRaceNumber)
 router.get('/api/events/:eventId/races/:raceOrder/scores/category/:cat/overall', getScoresListOverall)
 router.get('/api/events/:eventId/races/:raceId/scores/category/:cat', getScoresOfRace)
+router.get('/api/events/:eventId/races/:raceId/scores/category/:cat/dnx', getScoresOfRaceWithourDnx)
 router.get('/api/events/:eventId/scores', getScoresListOfEvent)
 router.get('/api/scores/assignNumber', getScoresWithoutNumbers)
 router.get('/api/events/:eventId/scores/assignNumber', getListOfAssigningNumbers)
@@ -844,4 +887,5 @@ module.exports = {
   getListOfAssigningNumbers,
   getScoresWithoutNumbers,
   getScoresOfRace,
+  getScoresOfRaceWithourDnx,
 }
