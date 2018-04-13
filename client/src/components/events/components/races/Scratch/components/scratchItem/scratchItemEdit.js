@@ -45,7 +45,6 @@ class ScratchItemEdit extends Component {
     }
 
     this.changeFinishOrder = this.changeFinishOrder.bind(this)
-    this.deleteScore = this.deleteScore.bind(this)
     this.addTwenty = this.addTwenty.bind(this)
     this.subtractTwenty = this.subtractTwenty.bind(this)
     this.addMessage = this.addMessage.bind(this)
@@ -80,12 +79,6 @@ class ScratchItemEdit extends Component {
       api.updateCyclistFinisPlace(this.props.user, this.state.eventId, 1, this.state.scoreId, score).then(() => {})
     }
     console.log(e.target.value)
-  }
-
-  deleteScore(){
-    api.deleteScore(this.props.user, this.state.scoreId).then(() => {
-      console.log(`Score id:${this.state.scoreId} was deleted`)
-    })
   }
 
   addTwenty() {

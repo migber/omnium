@@ -129,7 +129,11 @@ class ScratchItem extends Component {
         }
         {
           !isStartList && (
-            <td className="txt-big text">{finishPlace}</td>
+            (!dns && !dnq && !dnf) ?(
+              <td className="txt-big text">{finishPlace}</td>
+            ) : (
+              <td className="txt-big text"></td>
+            )
           )
         }
         {

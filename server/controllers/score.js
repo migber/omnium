@@ -565,17 +565,46 @@ async function updateScoreBKorDNSorNumber(req, res) {
 async function updateDns(req, res) {
   console.log('Update cyclist DNS in score')
   const id = Number(req.params.scoreId)
+  const raceOrder = Number(req.params.raceId)
+  const eventId = Number(req.params.eventId)
   Score.findById(id).then((score) => {
     if (score) {
       const { dns } = score
       score.updateAttributes({
         dns: !dns,
       }).then((updatedScore) => {
-        res.json(updatedScore)
-        res.status(200)
-      }).catch((err) => {
-        res.status(400)
-        res.send(responseBadRequest(err))
+        Score.findAll({
+          where: {
+            raceNumber: {
+              [Op.eq]: updatedScore.raceNumber,
+            },
+          },
+          include: [
+            {
+              model: Race,
+              where: {
+                order: {
+                  [Op.ne]: raceOrder,
+                },
+                EventId: eventId,
+              },
+            },
+          ],
+        }).then((scores) => {
+          if (scores) {
+            scores.forEach((otherScore) => {
+              const dnsOther = otherScore.dns
+              otherScore.updateAttributes({
+                dns: !dnsOther,
+              })
+            })
+          }
+          res.send(updatedScore)
+          res.status(200)
+        }).catch((err) => {
+          res.status(400)
+          res.send(responseBadRequest(err))
+        })
       })
     }
   })
@@ -584,17 +613,46 @@ async function updateDns(req, res) {
 async function updateDnf(req, res) {
   console.log('Update cyclist DNF in score')
   const id = Number(req.params.scoreId)
+  const raceOrder = Number(req.params.raceId)
+  const eventId = Number(req.params.eventId)
   Score.findById(id).then((score) => {
     if (score) {
       const { dnf } = score
       score.updateAttributes({
         dnf: !dnf,
       }).then((updatedScore) => {
-        res.json(updatedScore)
-        res.status(200)
-      }).catch((err) => {
-        res.status(400)
-        res.send(responseBadRequest(err))
+        Score.findAll({
+          where: {
+            raceNumber: {
+              [Op.eq]: updatedScore.raceNumber,
+            },
+          },
+          include: [
+            {
+              model: Race,
+              where: {
+                order: {
+                  [Op.ne]: raceOrder,
+                },
+                EventId: eventId,
+              },
+            },
+          ],
+        }).then((scores) => {
+          if (scores) {
+            scores.forEach((otherScore) => {
+              const dnfOther = otherScore.dnf
+              otherScore.updateAttributes({
+                dnf: !dnfOther,
+              })
+            })
+          }
+          res.send(updatedScore)
+          res.status(200)
+        }).catch((err) => {
+          res.status(400)
+          res.send(responseBadRequest(err))
+        })
       })
     }
   })
@@ -603,17 +661,46 @@ async function updateDnf(req, res) {
 async function updateDnq(req, res) {
   console.log('Update cyclist DNQ in score')
   const id = Number(req.params.scoreId)
+  const raceOrder = Number(req.params.raceId)
+  const eventId = Number(req.params.eventId)
   Score.findById(id).then((score) => {
     if (score) {
       const { dnq } = score
       score.updateAttributes({
         dnq: !dnq,
       }).then((updatedScore) => {
-        res.json(updatedScore)
-        res.status(200)
-      }).catch((err) => {
-        res.status(400)
-        res.send(responseBadRequest(err))
+        Score.findAll({
+          where: {
+            raceNumber: {
+              [Op.eq]: updatedScore.raceNumber,
+            },
+          },
+          include: [
+            {
+              model: Race,
+              where: {
+                order: {
+                  [Op.ne]: raceOrder,
+                },
+                EventId: eventId,
+              },
+            },
+          ],
+        }).then((scores) => {
+          if (scores) {
+            scores.forEach((otherScore) => {
+              const dnqOther = otherScore.dnq
+              otherScore.updateAttributes({
+                dnq: !dnqOther,
+              })
+            })
+          }
+          res.send(updatedScore)
+          res.status(200)
+        }).catch((err) => {
+          res.status(400)
+          res.send(responseBadRequest(err))
+        })
       })
     }
   })

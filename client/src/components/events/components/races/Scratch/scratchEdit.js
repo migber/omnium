@@ -126,6 +126,7 @@ class ScratchEdit extends Component {
   }
 
   apiListRequest(category){
+    console.log('apiList')
     const path = `/events/${this.props.omniumId}/races/1`
     raceApi.getScoresOfSpecificRace(
       this.props.user,
@@ -157,7 +158,9 @@ class ScratchEdit extends Component {
   }
 
   handleChangeDNF(scoreId) {
+    console.log('DNF')
     api.updateDNF(this.props.user, this.state.eventId, 1, scoreId).then(() => {
+      console.log('hererere')
       this.apiListRequest(localStorage.getItem('category'))
     })
   }
