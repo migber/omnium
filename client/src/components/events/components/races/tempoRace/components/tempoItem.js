@@ -31,8 +31,10 @@ class TempoItem extends Component {
   }
 
   componentDidMount(){
-    // const sprints = this.props.score.Sprints
-    const sprints = [{sprintNumber: 1, sprintPoints:1 }, {sprintNumber: 4, sprintPoints:1 }, {sprintNumber: 5, sprintPoints:1 }]
+    const sprints = this.props.score.Sprints
+    sprints.sort((a, b) => {
+      return a.sprintNumber - b.sprintNumber
+    })
     var sprintsString = sprints.map((sprint) => {
       return sprint.sprintNumber
     }).join(",")
@@ -122,12 +124,20 @@ class TempoItem extends Component {
         }
         {
           !isStartList && (
-            <td className="txt-big text">+{lapPlusPoints}</td>
+              (lapPlusPoints === 0) ? (
+                <td className="txt-big text"></td>
+              ) : (
+                <td className="txt-big text">+{lapPlusPoints}</td>
+              )
             )
           }
         {
           !isStartList && (
-            <td className="txt-big text">-{lapMinusPoints}</td>
+           (lapMinusPoints === 0) ? (
+                <td className="txt-big text"></td>
+              ) : (
+                <td className="txt-big text">-{lapMinusPoints}</td>
+              )
           )
         }
         {

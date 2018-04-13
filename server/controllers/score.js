@@ -48,7 +48,7 @@ async function putScoresInSpecificRace(req, res) {
   console.log(req.body)
   const { category } = req.body
   const { score } = req.body
-  console.log(score)
+  console.log(`Score ${score}`)
   console.log(category)
   Score.findAll({
     where: {
@@ -66,12 +66,16 @@ async function putScoresInSpecificRace(req, res) {
       model: Sprint, as: 'Sprints',
     }],
   }).then((foundScore) => {
-    console.log(foundScore)
+    console.log(foundScore.length)
     if (foundScore) {
-      const total = foundScore.totalPoints ? (foundScore.totalPoints + score.points) : score.points
-      console.log(total)
+      console.log(`Found total scores : ${foundScore[0].totalPoints}`)
+      const total = foundScore[0].totalPoints ? (foundScore[0].totalPoints + score.points) : score.points
+      console.log(`Total ${total}`)
       foundScore[0].updateAttributes({
         totalPoints: total,
+        finishPlace: score.finishPlace,
+        place: score.place,
+        positionBefore: score.positionBefore,
       }).then((updatedScore) => {
         res.json(updatedScore)
         res.status(200)

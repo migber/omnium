@@ -22,7 +22,7 @@ class FirstRidersList extends Component {
       'men',
     ).then(scores => {
      console.log('Inside OverallOmniu MAn')
-     this.setState({ scoresM: helper.orderByPointsBigger(scores)})
+     this.setState({ scoresM: helper.omniumOrder(scores)})
     })
     api.getScoresOverall(
       this.props.user,
@@ -32,7 +32,7 @@ class FirstRidersList extends Component {
     ).then(scores => {
       console.log('Inside OverallOmniu WOmen')
 
-      this.setState({ scoresW: helper.orderByPointsBigger(scores)})
+      this.setState({ scoresW: helper.omniumOrder(scores)})
      })
   }
 

@@ -78,6 +78,7 @@ class TempoRace extends Component {
             menScoresStartList,
             womenStartList  } = this.state
     const category = localStorage.getItem('category')
+    console.log(menScores)
     return (
       <div className="space-from-top">
        { localStorage.getItem('activeTab') === '2' && (
@@ -109,8 +110,8 @@ class TempoRace extends Component {
               <th scope="col">Nationality</th>
               <th scope="col">Sprints won</th>
               <th scope="col">Finish place</th>
-              <th scope="col">+20</th>
-              <th scope="col">-20</th>
+              <th scope="col">+</th>
+              <th scope="col">-</th>
               <th scope="col">Total points</th>
               </tr>
             )

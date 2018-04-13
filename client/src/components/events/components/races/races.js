@@ -73,6 +73,7 @@ class Race extends Component {
     .then(scores => {
       this.setStartListValueInStorage()
       this.createListOfData(scores)
+      console.log(scores)
     })
   }
 
@@ -81,12 +82,12 @@ class Race extends Component {
       console.log('true')
       const startList = helper.CreateStartList(scores)
       this.setState({ scores: helper.finishOrder(startList),
-         listScores: helper.orderByPointsBigger(scores),
+         listScores: helper.omniumOrder(scores),
          startListScores: helper.CreateStartList(startList) })
     } else {
       console.log('else')
       console.log(scores)
-      this.setState({ scores: helper.orderByPointsBigger(scores),
+      this.setState({ scores: helper.omniumOrder(scores),
          listScores: helper.CreateStartList(scores)})
     }
 
@@ -104,13 +105,13 @@ class Race extends Component {
 
   changeStartListState(){
     if (localStorage.getItem('isStartList') === 'true') {
-      this.setState({ scores: helper.orderByPointsBigger(this.state.listScores) })
+      this.setState({ scores: helper.omniumOrder(this.state.listScores) })
       console.log('Changed to false')
       localStorage.setItem('isStartList', false)
       this.setState({isStartList: false}) }
     else {
       const startListScores = helper.CreateStartList(this.state.scores)
-      this.setState({ scores: helper.orderByPointsBigger(startListScores), startListScores })
+      this.setState({ scores: helper.omniumOrder(startListScores), startListScores })
       localStorage.setItem('isStartList', true)
       this.setState({isStartList: true})
     }
@@ -120,20 +121,22 @@ class Race extends Component {
     console.log('update omnium overall')
     if (scores) {
       let scoreP
-      scores.forEach((score) => {
-        scoreP = score
+      const sortedScores = helper.omniumOrder(scores)
+      sortedScores.forEach((scoreP, index) => {
+        console.log(scoreP)
         const data = {
           score: {
-            CyclistId: score.CyclistId,
-            uciId: score.Cyclist.uciCode,
-            raceNumber: score.raceNumber,
-            points: score.points,
+            CyclistId: scoreP.CyclistId,
+            uciId: scoreP.Cyclist.uciCode,
+            raceNumber: scoreP.raceNumber,
+            points: scoreP.points,
+            finishPlace: scoreP.finishPlace,
+            place: scoreP.place,
+            positionBefore: (index + 1),
           },
           category: category,
         }
-        console.log(data)
         api.updateTotalScoresOmniumOverall(this.props.user, this.state.omniumId, data).then((score) => {
-          console.log(score)
         })
       })
     }
@@ -153,7 +156,7 @@ class Race extends Component {
     ).then(scores => {
       console.log(scores)
       const startListScores = helper.CreateStartList(scores)
-      const order = helper.orderByPointsBigger(scores)
+      const order = helper.omniumOrder(scores)
       this.setState({
         scores: order,
         startListScores,
@@ -178,7 +181,7 @@ class Race extends Component {
       ).then(scores => {
         this.createListOfData(scores)
         const startList = helper.CreateStartList(scores)
-        this.setState({ scores: helper.orderByPointsBigger(scores), startList })
+        this.setState({ scores: helper.omniumOrder(scores), startList })
       })
     }
   }
@@ -215,7 +218,7 @@ class Race extends Component {
   render() {
     const { races, activeTab, omniumId, scores, btnActive} = this.state
     const active = localStorage.getItem('activeTab') ? Number(localStorage.getItem('activeTab')) : activeTab
-    console.log(`Active ${active}`)
+    console.log(scores)
     const isStartList = localStorage.getItem('isStartList') == 'true' ? true : false
     return (
       <div className="main-container container">
@@ -366,6 +369,7 @@ class Race extends Component {
             omniumId={this.state.omniumId}
             activeTab={this.state.activeTab}
             isStartList={this.state.isStartList}
+            saveFinishPlaces={this.saveFinishPlaces}
             />
           }
         />

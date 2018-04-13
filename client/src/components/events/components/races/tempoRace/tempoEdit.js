@@ -49,11 +49,13 @@ class TempoEdit extends Component {
     this.createSprints = this.createSprints.bind(this)
     this.addSprint = this.addSprint.bind(this)
     this.handleCheck = this.handleCheck.bind(this)
+    this.handleCheckedDNF = this.handleCheckedDNF.bind(this)
+    this.handleCheckedDNS = this.handleCheckedDNS.bind(this)
+    this.handleCheckedDNQ = this.handleCheckedDNQ.bind(this)
   }
 
   componentDidMount() {
     console.log('TempoItemDelete')
-    console.log(localStorage.getItem('category'))
     localStorage.setItem('activeTab', 22)
     this.setState({ eventName: localStorage.getItem('eventName')})
     this.setState({
@@ -62,7 +64,7 @@ class TempoEdit extends Component {
     api.getScoresOfSpecificRaceWIthoutDNX(
       this.props.user,
       this.props.omniumId,
-      2,
+      this.state.raceOrder,
       'men',
      ).then( scores => {
       const startList = helper.scratchRaceStartList(scores)
@@ -71,7 +73,7 @@ class TempoEdit extends Component {
     api.getScoresOfSpecificRaceWIthoutDNX(
       this.props.user,
       this.props.omniumId,
-      2,
+      this.state.raceOrder,
       'women'
      ).then( scores => {
       const startList = helper.scratchRaceStartList(scores)
@@ -86,13 +88,11 @@ class TempoEdit extends Component {
       sprintPoints: 1,
     }
     api.addSprint(this.props.user, this.state.eventId, this.state.raceOrder, scoreId, sprint).then(() => {
-      console.log('sprint was added')
+      this.apiListRequest(localStorage.getItem('category'))
     })
-    this.apiListRequest(localStorage.getItem('category'))
   }
 
   saveFinishPlacesInside(){
-    console.log('Best I can do ')
     const active = localStorage.getItem('activeTab')
     const updatedScores = changeFinishOrder(this.state.menScores)
     this.props.saveFinishPlaces(updatedScores, 1, 'men')
@@ -120,32 +120,29 @@ class TempoEdit extends Component {
       finishPlace: e.target.value
     }
     if (e.target.value) {
-      scratchApi.updateCyclistFinisPlace(this.props.user, this.state.eventId, 1, this.state.scoreId, score).then(() => {})
+      scratchApi.updateCyclistFinisPlace(
+        this.props.user,
+        this.state.eventId,
+        this.state.raceOrder,
+        this.state.scoreId,
+        score
+      ).then(() => {})
     }
-    console.log(e.target.value)
   }
 
   addTwenty(scoreId) {
-    console.log('add 20')
-    console.log(scoreId)
-    scratchApi.addTwenty(this.props.user, this.state.eventId, 1, scoreId).then((score) => {
-      console.log(score.totalPoints)
-      console.log(`Score id:${scoreId} was updated Got + 20 `)
+    scratchApi.addTwenty(this.props.user, this.state.eventId, this.state.raceOrder, scoreId).then((score) => {
       this.apiListRequest(localStorage.getItem('category'))
     })
   }
 
   subtractTwenty(scoreId) {
-    console.log(scoreId)
-    scratchApi.subtractTwenty(this.props.user, this.state.eventId, 1, scoreId).then((score) => {
-      console.log(`Score id:${scoreId} was updated Got - 20 `)
-      console.log(score.totalPoints)
+    scratchApi.subtractTwenty(this.props.user, this.state.eventId, this.state.raceOrder, scoreId).then((score) => {
       this.apiListRequest(localStorage.getItem('category'))
     })
   }
 
   apiListRequest(category){
-    console.log('apiList')
     raceApi.getScoresOfSpecificRace(
       this.props.user,
       this.props.omniumId,
@@ -165,20 +162,22 @@ class TempoEdit extends Component {
   }
 
   handleChangeDNS(scoreId) {
-    scratchApi.updateDNS(this.props.user, this.state.eventId, 1, scoreId).then(() => {
+    console.log('DNS')
+    scratchApi.updateDNS(this.props.user, this.state.eventId, 2, scoreId).then(() => {
       this.apiListRequest(localStorage.getItem('category'))
     })
   }
 
   handleChangeDNQ(scoreId) {
-    scratchApi.updateDNQ(this.props.user, this.state.eventId, 1, scoreId).then(() => {
+    console.log('DNQ')
+    scratchApi.updateDNQ(this.props.user, this.state.eventId, 2, scoreId).then(() => {
       this.apiListRequest(localStorage.getItem('category'))
     })
   }
 
   handleChangeDNF(scoreId) {
     console.log('DNF')
-    scratchApi.updateDNF(this.props.user, this.state.eventId, 1, scoreId).then(() => {
+    scratchApi.updateDNF(this.props.user, this.state.eventId, 2, scoreId).then(() => {
       console.log('hererere')
       this.apiListRequest(localStorage.getItem('category'))
     })
@@ -205,6 +204,19 @@ class TempoEdit extends Component {
   handleCheck(id, score) {
     return score.Sprints.some(item => id === item.sprintNumber)
   }
+
+  handleCheckedDNF(score){
+    return score.dnf
+  }
+
+  handleCheckedDNS(score){
+    return score.dns
+  }
+
+  handleCheckedDNQ(score){
+    return score.dnq
+  }
+
 
   render() {
     const { omniumId, activeTab, isStartList } = this.props
@@ -337,7 +349,7 @@ class TempoEdit extends Component {
           !isStartList && (
             <td className="contact-selector">
               <input type="checkbox"
-                    checked={score.dns}
+                    checked={this.handleCheckedDNS(score) ? true : false}
                     onChange={() => this.handleChangeDNS(score.id)}
               />
             </td>
@@ -347,7 +359,7 @@ class TempoEdit extends Component {
           !isStartList && (
             <td className="contact-selector">
               <input type="checkbox"
-                    checked={score.dnq}
+                    checked={this.handleCheckedDNQ(score) ? true : false}
                     onChange={() => this.handleChangeDNQ(score.id)}
               />
             </td>
@@ -357,7 +369,7 @@ class TempoEdit extends Component {
           !isStartList && (
             <td className="contact-selector">
               <input type="checkbox"
-                    checked={score.dnf}
+                    checked={this.handleCheckedDNF(score) ? true : false}
                     onChange={() => this.handleChangeDNF(score.id)}
               />
             </td>

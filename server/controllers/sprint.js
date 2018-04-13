@@ -46,7 +46,16 @@ async function createSprint(req, res) {
     console.log(sprints)
     if (sprints.length !== 0) {
       const sprintDelete = sprints[0]
-      Sprint.destroy({ where: { id: sprintDelete.id } }).then(() => {
+      Score.findById(scoreId).then((score) => {
+        const total = score.totalPoints - 1
+        score.updateAttributes({
+          totalPoints: total,
+        }).then(() => {
+          Sprint.destroy({ where: { id: sprintDelete.id } }).then(() => {
+            res.json('deleted')
+            res.status(200)
+          })
+        })
       })
     } else {
       Sprint.create({
@@ -54,7 +63,14 @@ async function createSprint(req, res) {
         sprintPoints: req.body.sprintPoints,
         ScoreId: scoreId,
       }).then((sprint) => {
-        res.json(sprint)
+        Score.findById(scoreId).then((score) => {
+          const total = score.totalPoints + 1
+          score.updateAttributes({
+            totalPoints: total,
+          }).then(() => {
+            res.json(sprint)
+          })
+        })
       }).catch((error) => {
         res.status(400)
         res.send(responseBadRequest(error))

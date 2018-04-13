@@ -49,6 +49,16 @@ function orderByPointsBigger(scores) {
   })
 }
 
+function omniumOrder(scores) {
+  return scores.sort(function(a, b) {
+    if (a.totalPoints === b.totalPoints) {
+      return a.place - b.place
+    } else {
+      return b.totalPoints - a.totalPoints
+    }
+  })
+}
+
 function finishOrderInOther(scores){
   let ordered = []
   const disqualifiedScores = []
@@ -159,6 +169,15 @@ function orderByPlace(scores) {
   })
 }
 
+function updatePosition(scores){
+  if (scores) {
+    scores.sort((a, b) => {
+      return b.totalPoints - a.totalPoints
+    })
+
+  }
+}
+
 module.exports = {
   CreateStartList,
   finishOrder,
@@ -167,4 +186,6 @@ module.exports = {
   calculateFinalRaceOrder,
   orderByPlace,
   orderByPointsBigger,
+  updatePosition,
+  omniumOrder,
 }
