@@ -525,20 +525,40 @@ async function updateFinishPlace(req, res) {
   })
 }
 
+function isDNX(score) {
+  return (score.dns || score.dnq || score.dnf)
+}
+
 async function updatePlace(req, res) {
   console.log('Update cyclist place in score')
   const id = Number(req.params.scoreId)
   Score.findById(id).then((score) => {
     if (score) {
-      score.updateAttributes({
-        place: req.body.place,
-      }).then((updatedScore) => {
-        res.json(updatedScore)
-        res.status(200)
-      }).catch((err) => {
-        res.status(400)
-        res.send(responseBadRequest(err))
-      })
+      console.log(isDNX(score))
+      console.log(req.body)
+      if (score.points === 0 && !isDNX(score)) {
+        score.updateAttributes({
+          points: req.body.points,
+          place: req.body.place,
+        }).then((updatedScore) => {
+          res.json(updatedScore)
+          res.status(200)
+        }).catch((err) => {
+          res.status(400)
+          res.send(responseBadRequest(err))
+        })
+      } else {
+        score.updateAttributes({
+          points: 0,
+          place: 0,
+        }).then((updatedScore) => {
+          res.json(updatedScore)
+          res.status(200)
+        }).catch((err) => {
+          res.status(400)
+          res.send(responseBadRequest(err))
+        })
+      }
     }
   })
 }

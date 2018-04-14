@@ -52,6 +52,7 @@ class Race extends Component {
     this.createListOfData = this.createListOfData.bind(this)
     this.saveFinishPlaces = this.saveFinishPlaces.bind(this)
     this.updateOverallOmnium = this.updateOverallOmnium.bind(this)
+    this.saveFinishPlacesElimination = this.saveFinishPlacesElimination.bind(this)
   }
 
   componentWillMount() {
@@ -216,6 +217,11 @@ class Race extends Component {
     updatedScores.forEach((score) => {
       scratchApi.updateScore(this.props.user, this.state.omniumId, activeTab, score.id, score).then(() => {})
     })
+  }
+
+  saveFinishPlacesElimination(scores, category){
+    console.log('races finish places')
+    this.updateOverallOmnium(scores, category)
   }
 
   render() {
@@ -407,6 +413,7 @@ class Race extends Component {
             isStartList={this.state.isStartList}
             saveFinishPlaces={this.saveFinishPlaces}
             notShowEvents={this.props.notShowEvents}
+            saveFinishPlacesElimination={this.saveFinishPlacesElimination}
             />
           }
         />

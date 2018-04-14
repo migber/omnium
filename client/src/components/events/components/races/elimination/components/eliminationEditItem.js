@@ -29,7 +29,7 @@ class EliminationItemEdit extends Component {
     this.handleChangeDNF = this.handleChangeDNF.bind(this)
     this.handleChangeDNQ = this.handleChangeDNQ.bind(this)
     this.handleChangeDNS = this.handleChangeDNS.bind(this)
-    this.eliminateCyclist = this.eliminateCyclist.bind(this)
+    this.eliminateCyclistChild = this.eliminateCyclistChild.bind(this)
   }
 
   componentWillMount() {
@@ -39,51 +39,31 @@ class EliminationItemEdit extends Component {
     })
   }
 
-  handleChangeDNF(){
-    scratchItemApi.updateDNF(
-      this.props.user,
-      this.state.eventId,
-      this.state.raceOrder,
-      this.state.scoreId,
-    ).then((score) => {
-      this.setState({
-        dnf: score.dnf,
-      })
-    })
-  }
-
-  handleChangeDNS(){
-    scratchItemApi.updateDNS(
-      this.props.user,
-      this.state.eventId,
-      this.state.raceOrder,
-      this.state.scoreId,
-    ).then((score) => {
-      this.setState({
-        dns: score.dns,
-      })
-    })
-  }
-
-  handleChangeDNQ(){
-    scratchItemApi.updateDNQ(
-      this.props.user,
-      this.state.eventId,
-      this.state.raceOrder,
-      this.state.scoreId,
-    ).then((score) => {
-      this.setState({
-        dnq: score.dnq,
-      })
-    })
-  }
-
-  eliminateCyclist(scoreId){
-    console.log("clicked")
-    const elimin = this.state.eliminated
+  handleChangeDNF(score){
     this.setState({
-      eliminated: !elimin,
+      dnf: score.dnf
     })
+  }
+
+  handleChangeDNS(score){
+    this.setState({
+      dns: score.dns
+    })
+  }
+
+  handleChangeDNQ(score){
+    this.setState({
+      dnq: this.state.dnq
+    })
+  }
+
+  eliminateCyclistChild(scoreId){
+    console.log("clicked")
+    const eliminated = this.state.points !== 0 ? true : false
+    this.setState({
+      eliminated
+    })
+    this.props.eliminateCyclist(scoreId)
   }
 
   render() {
@@ -105,11 +85,10 @@ class EliminationItemEdit extends Component {
       eliminated,
     } = this.state
     const { isStartList } = this.props
-
-    console.log(eliminated)
     return (
+    <div>
       <a role="button" className={eliminated ? "elmn list-group-item list-group-item-action list-group-item-primary" : "list-group-item list-group-item-action list-group-item-primary"}
-        onClick={() => this.eliminateCyclist(scoreId)}
+        onClick={() => this.eliminateCyclistChild(scoreId)}
       >
         {
           !isStartList && dns ? (
@@ -125,14 +104,15 @@ class EliminationItemEdit extends Component {
           )
         }
         <strong> {raceNumber} </strong> {lastName}   {firstName} {uciCode}  {nationality}
-        <div>
+    </a>
+    <div>
           <label key={`${scoreId}${Math.random()}`} className="lbl-text"> DNS
           <br></br>
           <input key={`${scoreId}${Math.random()}`}
                  type="checkbox"
                  className="mrg-inp"
                  checked={dns}
-                 onChange={this.handleChangeDNS}
+                 onChange={() => this.props.handleChangeDNS(this.state.raceOrder, this.state.scoreId)}
           />
           </label>
           <label key={`${scoreId}${Math.random()}`} className="lbl-text"> DNQ
@@ -141,7 +121,7 @@ class EliminationItemEdit extends Component {
                  type="checkbox"
                  className="mrg-inp"
                  checked={dnq}
-                 onChange={this.handleChangeDNQ}
+                 onChange={() => this.props.handleChangeDNQ(this.state.raceOrder, this.state.scoreId)}
           />
           </label>
           <label key={`${scoreId}${Math.random()}`} className="lbl-text"> DNF
@@ -150,11 +130,11 @@ class EliminationItemEdit extends Component {
                  type="checkbox"
                  className="mrg-inp"
                  checked={dnf}
-                 onChange={this.handleChangeDNF}
+                 onChange={() => this.props.handleChangeDNF(this.state.raceOrder, this.state.scoreId)}
           />
           </label>
         </div>
-    </a>
+    </div>
     )
   }
 }

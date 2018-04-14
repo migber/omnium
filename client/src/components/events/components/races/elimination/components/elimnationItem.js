@@ -54,7 +54,7 @@ class EliminationItem extends Component {
           ) : bk ? (
             <td className="txt-big text">BK</td>
           ) : (
-            <td className="txt-big text">{rankId + 1}</td>
+            <td className="txt-big text">{place}</td>
           )
         }
         <td className="raceNo txt-big text">{raceNumber}</td>

@@ -13,7 +13,7 @@ function getHeaders(authToken, user) {
 const api = {
 
   eliminateCyclist(user, id, raceOrder, scoreId, score) {
-    const url = new URL(`${baseUrl}/api/events/${id}/races/${raceOrder}/scores/${scoreId}/finishPlace`)
+    const url = new URL(`${baseUrl}/api/events/${id}/races/${raceOrder}/scores/${scoreId}/place`)
     return fetch(url, {
       method: 'PUT',
       body: JSON.stringify(score),

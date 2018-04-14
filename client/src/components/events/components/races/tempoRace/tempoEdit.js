@@ -95,7 +95,7 @@ class TempoEdit extends Component {
   saveFinishPlacesInside(){
     const active = localStorage.getItem('activeTab')
     const updatedScores = changeFinishOrder(this.state.menScores)
-    this.props.saveFinishPlaces(updatedScores, 1, 'men')
+    this.props.saveFinishPlaces(updatedScores, this.state.raceOrder, 'men')
   }
 
   onDragEnd(result) {
