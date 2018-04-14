@@ -4,69 +4,79 @@ import { Route, Link } from 'react-router-dom'
 import './tempoRace.css'
 import api from './api'
 import raceApi from '../Scratch/api'
-import helper from './helper'
 import raceHelper from '../helper'
+import helper from './helper'
 import TempoItem from './components/tempoItem'
+import ScratchItemAPI from '../Scratch/components/scratchItem/api'
 
 class TempoRace extends Component {
   constructor(props){
     super(props)
     this.state = {
-      menScores: null,
+      scores: null,
       raceId: null,
       eventName: null,
       cyclists: null,
-      raceOrder: 1,
+      raceOrder: 2,
+      omniumOverall: 0,
       category: null,
-      womenScores: null,
-      womenStartList: null,
-      menScoresStartList: null,
+      startList: null,
     }
   }
 
   componentWillMount() {
     this.props.notShowEvents()
     localStorage.setItem('activeTab', 2)
-    const raceBeforePath = '/events/10/races/1'
     this.setState({ eventName: localStorage.getItem('eventName')})
     this.setState({
       category: localStorage.getItem('category')
     })
-    console.log(this.props.location.pathname)
-    raceApi.getScoresOfSpecificRace(
+    ScratchItemAPI.getScoresOfSpecificRace(
       this.props.user,
-      this.props.location.pathname,
-      'men',
-     ).then( scores => {
+      this.props.omniumId,
+      this.state.raceOrder,
+      localStorage.getItem('category'),
+     ).then((scores) => {
         console.log(scores)
         const orderedScores = raceHelper.orderByPlace(scores)
-        this.setState({ menScores: orderedScores})
+        this.setState({ scores: orderedScores})
     })
-    raceApi.getScoresOfSpecificRace(
+    ScratchItemAPI.getScoresOfSpecificRace(
       this.props.user,
-      raceBeforePath,
-      'men',
-     ).then( scores => {
-        console.log(scores)
+      this.props.omniumId,
+      this.state.omniumOverall,
+      localStorage.getItem('category'),
+     ).then((scores) => {
         const startList = helper.orderByPoints(scores)
-        this.setState({ menScoresStartList: startList})
+        this.setState({ startList})
     })
-    raceApi.getScoresOfSpecificRace(
+  }
+
+  changeList(category){
+    console.log("inside")
+    ScratchItemAPI.getScoresOfSpecificRace(
       this.props.user,
-      this.props.location.pathname,
-      'women'
-     ).then( scores => {
+      this.props.omniumId,
+      this.state.raceOrder,
+      category,
+     ).then((scores) => {
+       console.log(scores)
+        const startList = raceHelper.scratchRaceStartList(scores)
         const orderedScores = raceHelper.orderByPlace(scores)
-        this.setState({ womenScores: orderedScores})
+        this.setState({
+           scores: orderedScores,
+           startList,
+           eliminatedCounter: orderedScores.length,
+        })
     })
-    raceApi.getScoresOfSpecificRace(
-      this.props.user,
-      raceBeforePath,
-      'women'
-     ).then( scores => {
-        const startList = helper.orderByPoints(scores)
-        this.setState({ womenStartList: startList})
-    })
+  }
+
+  componentDidMount() {
+    this.props.onRef(this)
+  }
+
+  componentWillUnmount() {
+    this.props.onRef(null)
   }
 
   render() {
@@ -75,11 +85,9 @@ class TempoRace extends Component {
             scores,
             cyclists,
             menScores,
-            womenScores,
-            menScoresStartList,
-            womenStartList  } = this.state
+            startList,
+          } = this.state
     const category = localStorage.getItem('category')
-    console.log(menScores)
     return (
       <div className="space-from-top">
        { localStorage.getItem('activeTab') === '2' && (
@@ -119,9 +127,9 @@ class TempoRace extends Component {
           }
         </thead>
         <tbody>
-        { category === 'men' ? (
+        {
           isStartList ? (
-            menScoresStartList &&  menScoresStartList.map((score, id) => (
+            startList &&  startList.map((score, id) => (
               <TempoItem
                 key={`${score.id}${Math.random()}`}
                 score={score}
@@ -133,7 +141,7 @@ class TempoRace extends Component {
               />
             ))
           ) : (
-            menScores &&  menScores.map((score, id) => (
+            scores && scores.map((score, id) => (
               <TempoItem
                 key={`${score.id}${Math.random()}`}
                 score={score}
@@ -145,34 +153,7 @@ class TempoRace extends Component {
               />
             ))
           )
-        ) : (
-          isStartList ? (
-            womenStartList && womenStartList.map((score, id) => (
-              <TempoItem
-                key={`${score.id}${Math.random()}`}
-                score={score}
-                eventId={this.state.eventId}
-                user={this.props.user}
-                rankId={id}
-                isStartList={this.props.isStartList}
-                category={this.state.category}
-              />
-            ))
-          ) : (
-            womenScores && womenScores.map((score, id) => (
-              <TempoItem
-                key={`${score.id}${Math.random()}`}
-                score={score}
-                eventId={this.state.eventId}
-                user={this.props.user}
-                rankId={id}
-                isStartList={this.props.isStartList}
-                category={this.state.category}
-              />
-            ))
-          )
-        )
-      }
+        }
           </tbody>
         </table>
       )}

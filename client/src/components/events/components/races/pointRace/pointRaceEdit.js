@@ -1,10 +1,10 @@
 
 import React, { Component } from 'react'
 import { Route, Link } from 'react-router-dom'
-import './tempoRace.css'
+import './pointRace.css'
 import raceApi from '../api'
 import scratchApi from '../Scratch/components/scratchItem/api'
-import api from './api'
+import tempoApi from '../tempoRace/api'
 import helper from '../helper'
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd'
 import { changeFinishOrder, reorder } from '../Scratch/helper'
@@ -22,7 +22,7 @@ const getItemStyle = (isDragging, draggableStyle) => ({
   ...draggableStyle,
 })
 
-class TempoEdit extends Component {
+class PointRaceEdit extends Component {
   constructor(props){
     super(props)
     this.state = {
@@ -30,7 +30,7 @@ class TempoEdit extends Component {
       raceId: null,
       eventName: null,
       eventId:props.omniumId,
-      raceOrder: 2,
+      raceOrder: 4,
       category: null,
       scoresList: null,
       sprints: null,
@@ -55,12 +55,12 @@ class TempoEdit extends Component {
 
   componentWillMount() {
     console.log('TempoItemDelete')
-    localStorage.setItem('activeTab', 22)
+    localStorage.setItem('activeTab', 44)
     this.setState({ eventName: localStorage.getItem('eventName')})
     this.setState({
       category: localStorage.getItem('category')
     })
-    api.getScoresOfSpecificRaceWIthoutDNX(
+    tempoApi.getScoresOfSpecificRaceWIthoutDNX(
       this.props.user,
       this.props.omniumId,
       this.state.raceOrder,
@@ -77,7 +77,7 @@ class TempoEdit extends Component {
       sprintNumber: sprintId,
       sprintPoints: 1,
     }
-    api.addSprint(this.props.user, this.state.eventId, this.state.raceOrder, scoreId, sprint).then(() => {
+    tempoApi.addSprint(this.props.user, this.state.eventId, this.state.raceOrder, scoreId, sprint).then(() => {
       this.apiListRequest(localStorage.getItem('category'))
     })
   }
@@ -237,7 +237,7 @@ class TempoEdit extends Component {
     const category = localStorage.getItem('category')
     return (
       <div className="space-from-top">
-       { localStorage.getItem('activeTab') === '22' && (
+       { localStorage.getItem('activeTab') === '44' && (
         <table className="table table-striped">
         <thead>
         {
@@ -402,5 +402,5 @@ class TempoEdit extends Component {
   }
 }
 
-export default TempoEdit
+export default PointRaceEdit
 

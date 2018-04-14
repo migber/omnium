@@ -8,6 +8,7 @@ import ScratchItemEdit from './components/scratchItem/scratchItemEdit'
 import helper from '../helper'
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd'
 import { changeFinishOrder, reorder } from './helper'
+import scratchItemApi from './components/scratchItem/api'
 
 const getListStyle = isDraggingOver => ({
   background: isDraggingOver ? '#F2F1EF' : '#BDC3C7',
@@ -25,18 +26,16 @@ class ScratchEdit extends Component {
   constructor(props){
     super(props)
     this.state = {
-      menScores: null,
+      scores: null,
       raceId: null,
       eventName: null,
       eventId:props.omniumId,
       cyclists: null,
       raceOrder: 1,
       category: null,
-      womenScores: null,
-      menScoresStartList: null,
-      womenStartList: null,
-      render: false
+      scoresList: null,
     }
+
     this.onDragEnd = this.onDragEnd.bind(this)
     this.addTwenty = this.addTwenty.bind(this)
     this.subtractTwenty = this.subtractTwenty.bind(this)
@@ -46,12 +45,32 @@ class ScratchEdit extends Component {
     this.changeFinishOrder = this.changeFinishOrder.bind(this)
     this.apiListRequest = this.apiListRequest.bind(this)
     this.saveFinishPlacesInside = this.saveFinishPlacesInside.bind(this)
+    this.changeList = this.changeList.bind(this)
+  }
+
+  componentWillMount() {
+    console.log('ScratchInsideEDIt')
+    localStorage.setItem('activeTab', 11)
+    this.setState({ eventName: localStorage.getItem('eventName')})
+    this.setState({
+      category: localStorage.getItem('category')
+    })
+    scratchItemApi.getScoresOfSpecificRace(
+      this.props.user,
+      this.props.omniumId,
+      this.state.raceOrder,
+      localStorage.getItem('category'),
+     ).then((scores) => {
+      console.log(scores)
+      const startList = helper.scratchRaceStartList(scores)
+      this.setState({ scores, scoresList: startList})
+    })
   }
 
   saveFinishPlacesInside(){
     console.log('Best I can do ')
     const active = localStorage.getItem('activeTab')
-    const updatedScores = changeFinishOrder(this.state.menScores)
+    const updatedScores = changeFinishOrder(this.state.scores)
     this.props.saveFinishPlaces(updatedScores, 1, 'men')
   }
 
@@ -59,13 +78,13 @@ class ScratchEdit extends Component {
     if (!result.destination) {
       return;
     }
-    const menScores = reorder(
-      this.state.menScores,
+    const scores = reorder(
+      this.state.scores,
       result.source.index,
       result.destination.index
     )
     this.setState({
-      menScores,
+      scores,
     })
   }
 
@@ -77,9 +96,14 @@ class ScratchEdit extends Component {
       finishPlace: e.target.value
     }
     if (e.target.value) {
-      api.updateCyclistFinisPlace(this.props.user, this.state.eventId, 1, this.state.scoreId, score).then(() => {})
+      api.updateCyclistFinisPlace(
+        this.props.user,
+        this.state.eventId,
+        this.state.raceOrder,
+        this.state.scoreId,
+        score,
+      ).then(() => {})
     }
-    console.log(e.target.value)
   }
 
   addTwenty(scoreId) {
@@ -103,70 +127,66 @@ class ScratchEdit extends Component {
 
   apiListRequest(category){
     console.log('apiList')
-    const path = `/events/${this.props.omniumId}/races/1`
-    raceApi.getScoresOfSpecificRace(
+    scratchItemApi.getScoresOfSpecificRace(
       this.props.user,
-      path,
+      this.props.omniumId,
+      this.state.raceOrder,
       category,
      ).then( scores => {
       const startList = helper.scratchRaceStartList(scores)
-      switch (category) {
-        case 'men':
-          this.setState({ menScores: scores, menScoresStartList: startList})
-          break;
-        default:
-          this.setState({ womenScores: scores, womenStartList: startList})
-          break;
-      }
+      this.setState({ scores: scores, scoresList: startList})
     })
   }
 
   handleChangeDNS(scoreId) {
-    api.updateDNS(this.props.user, this.state.eventId, 1, scoreId).then(() => {
+    api.updateDNS(
+      this.props.user,
+      this.state.eventId,
+      this.state.raceOrder,
+      scoreId,
+    ).then(() => {
       this.apiListRequest(localStorage.getItem('category'))
     })
   }
 
   handleChangeDNQ(scoreId) {
-    api.updateDNQ(this.props.user, this.state.eventId, 1, scoreId).then(() => {
+    api.updateDNQ(this.props.user, this.state.eventId, this.state.raceOrder, scoreId).then(() => {
       this.apiListRequest(localStorage.getItem('category'))
     })
   }
 
   handleChangeDNF(scoreId) {
     console.log('DNF')
-    api.updateDNF(this.props.user, this.state.eventId, 1, scoreId).then(() => {
+    api.updateDNF(this.props.user, this.state.eventId, this.state.raceOrder, scoreId).then(() => {
       console.log('hererere')
       this.apiListRequest(localStorage.getItem('category'))
     })
   }
 
+  changeList(category){
+    console.log("inside")
+    scratchItemApi.getScoresOfSpecificRace(
+      this.props.user,
+      this.props.omniumId,
+      this.state.raceOrder,
+      category,
+     ).then((scores) => {
+       console.log(scores)
+        const startList = helper.scratchRaceStartList(scores)
+        const orderedScores = helper.orderByPlace(scores)
+        this.setState({
+           scores: orderedScores,
+           scoresList: startList,
+        })
+    })
+  }
+
   componentDidMount() {
-    console.log('ScratchInsideEDIt')
-    console.log(localStorage.getItem('category'))
-    localStorage.setItem('activeTab', 11)
-    this.setState({ eventName: localStorage.getItem('eventName')})
-    this.setState({
-      category: localStorage.getItem('category')
-    })
-    console.log(this.props.location.pathname)
-    const path = `/events/${this.props.omniumId}/races/1`
-    raceApi.getScoresOfSpecificRace(
-      this.props.user,
-      path,
-      'men',
-     ).then( scores => {
-      const startList = helper.scratchRaceStartList(scores)
-      this.setState({ menScores: scores, menScoresStartList: startList})
-    })
-    raceApi.getScoresOfSpecificRace(
-      this.props.user,
-      path,
-      'women'
-     ).then( scores => {
-      const startList = helper.scratchRaceStartList(scores)
-      this.setState({ womenScores: scores, womenStartList: startList })
-    })
+    this.props.onRef(this)
+  }
+
+  componentWillUnmount() {
+    this.props.onRef(null)
   }
 
   render() {
@@ -174,10 +194,8 @@ class ScratchEdit extends Component {
     const { races,
       scores,
       cyclists,
-      menScores,
-      womenScores,
-      menScoresStartList,
-      womenStartList  } = this.state
+      scoresList,
+    } = this.state
     const category = localStorage.getItem('category')
     return (
       <div className="space-from-top">
@@ -228,7 +246,7 @@ class ScratchEdit extends Component {
                 style={getListStyle(snapshot.isDraggingOver)}
               >
        {
-          menScores &&  menScores.map((score, id) => (
+          scores && scores.map((score, id) => (
             <Draggable key={score.id} draggableId={score.id} index={id}>
             {(provided, snapshot) => (
               <tr

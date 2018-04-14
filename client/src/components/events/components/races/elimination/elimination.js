@@ -10,16 +10,17 @@ class Elimination extends Component {
   constructor(props){
     super(props)
     this.state = {
-      menScores: null,
+      scores: null,
       raceId: null,
       eventName: null,
       cyclists: null,
       raceOrder: 3,
       category: null,
-      womenScores: null,
+      startList: null,
       womenStartList: null,
       menScoresStartList: null,
     }
+    this.changeList = this.changeList.bind(this)
   }
 
   componentWillMount() {
@@ -39,7 +40,7 @@ class Elimination extends Component {
         const startList = helper.scratchRaceStartList(scores)
         const orderedScores = helper.orderByPlace(scores)
         console.log(orderedScores)
-        this.setState({ menScores: orderedScores, menScoresStartList: startList})
+        this.setState({ scores: orderedScores, startList: startList})
     })
     raceApi.getScoresOfSpecificRace(
       this.props.user,
@@ -53,6 +54,31 @@ class Elimination extends Component {
     })
   }
 
+  changeList(category){
+    raceApi.getScoresOfSpecificRace(
+      this.props.user,
+      this.props.omniumId,
+      this.state.raceOrder,
+      category,
+     ).then( scores => {
+        const startList = helper.scratchRaceStartList(scores)
+        const orderedScores = helper.orderByPlace(scores)
+        this.setState({
+           scores: orderedScores,
+           startList,
+           eliminatedCounter: orderedScores.length,
+        })
+    })
+  }
+
+  componentDidMount() {
+    this.props.onRef(this)
+  }
+
+  componentWillUnmount() {
+    this.props.onRef(null)
+  }
+
   render() {
     const { omniumId, activeTab, isStartList } = this.props
     const { races,
@@ -60,7 +86,7 @@ class Elimination extends Component {
             cyclists,
             menScores,
             womenScores,
-            menScoresStartList,
+            startList,
             womenStartList  } = this.state
     const category = localStorage.getItem('category')
     return (
@@ -100,7 +126,7 @@ class Elimination extends Component {
         <tbody>
         { category === 'men' ? (
           isStartList ? (
-            menScoresStartList &&  menScoresStartList.map((score, id) => (
+            startList &&  startList.map((score, id) => (
               <EliminationItem
                 key={`${score.id}${Math.random()}`}
                 score={score}
@@ -112,7 +138,7 @@ class Elimination extends Component {
               />
             ))
           ) : (
-            menScores &&  menScores.map((score, id) => (
+            scores &&  scores.map((score, id) => (
               <EliminationItem
                 key={`${score.id}${Math.random()}`}
                 score={score}

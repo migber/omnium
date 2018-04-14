@@ -5,21 +5,21 @@ import './scratch.css'
 import raceApi from './api'
 import ScratchItem from './components/scratchItem/scratchItem'
 import helper from '../helper'
+import scratchItemApi from './components/scratchItem/api'
 
 class Scratch extends Component {
   constructor(props){
     super(props)
     this.state = {
-      menScores: null,
+      scores: null,
       raceId: null,
       eventName: null,
       cyclists: null,
       raceOrder: 1,
       category: null,
-      womenScores: null,
-      womenStartList: null,
-      menScoresStartList: null,
+      scoresList: null,
     }
+    this.changeList = this.changeList.bind(this)
   }
 
   componentWillMount() {
@@ -29,26 +29,43 @@ class Scratch extends Component {
     this.setState({
       category: localStorage.getItem('category')
     })
-    raceApi.getScoresOfSpecificRace(
+    scratchItemApi.getScoresOfSpecificRace(
       this.props.user,
-      this.props.location.pathname,
+      this.props.omniumId,
+      this.state.raceOrder,
       localStorage.getItem('category'),
-     ).then( scores => {
-        console.log(scores)
+     ).then((scores) => {
         const startList = helper.scratchRaceStartList(scores)
         const orderedScores = helper.orderByPlace(scores)
         console.log(orderedScores)
-        this.setState({ menScores: orderedScores, menScoresStartList: startList})
+        this.setState({ scores: orderedScores, scoresList: startList})
     })
-    raceApi.getScoresOfSpecificRace(
+  }
+
+  changeList(category){
+    console.log("inside")
+    scratchItemApi.getScoresOfSpecificRace(
       this.props.user,
-      this.props.location.pathname,
-      'women'
-     ).then( scores => {
+      this.props.omniumId,
+      this.state.raceOrder,
+      category,
+     ).then((scores) => {
+       console.log(scores)
         const startList = helper.scratchRaceStartList(scores)
         const orderedScores = helper.orderByPlace(scores)
-        this.setState({ womenScores: orderedScores, womenStartList: startList })
+        this.setState({
+           scores: orderedScores,
+           scoresList: startList,
+        })
     })
+  }
+
+  componentDidMount() {
+    this.props.onRef(this)
+  }
+
+  componentWillUnmount() {
+    this.props.onRef(null)
   }
 
   render() {
@@ -56,10 +73,8 @@ class Scratch extends Component {
     const { races,
             scores,
             cyclists,
-            menScores,
-            womenScores,
-            menScoresStartList,
-            womenStartList  } = this.state
+            scoresList,
+          } = this.state
     const category = localStorage.getItem('category')
     return (
       <div className="space-from-top">
@@ -100,9 +115,9 @@ class Scratch extends Component {
           }
         </thead>
         <tbody>
-        { category === 'men' ? (
+        {
           isStartList ? (
-            menScoresStartList &&  menScoresStartList.map((score, id) => (
+            scoresList &&  scoresList.map((score, id) => (
               <ScratchItem
                 key={`${score.id}${Math.random()}`}
                 score={score}
@@ -114,7 +129,7 @@ class Scratch extends Component {
               />
             ))
           ) : (
-            menScores &&  menScores.map((score, id) => (
+            scores &&  scores.map((score, id) => (
               <ScratchItem
                 key={`${score.id}${Math.random()}`}
                 score={score}
@@ -126,33 +141,6 @@ class Scratch extends Component {
               />
             ))
           )
-        ) : (
-          isStartList ? (
-            womenStartList && womenStartList.map((score, id) => (
-              <ScratchItem
-                key={`${score.id}${Math.random()}`}
-                score={score}
-                eventId={this.state.eventId}
-                user={this.props.user}
-                rankId={id}
-                isStartList={this.props.isStartList}
-                category={this.state.category}
-              />
-            ))
-          ) : (
-            womenScores && womenScores.map((score, id) => (
-              <ScratchItem
-                key={`${score.id}${Math.random()}`}
-                score={score}
-                eventId={this.state.eventId}
-                user={this.props.user}
-                rankId={id}
-                isStartList={this.props.isStartList}
-                category={this.state.category}
-              />
-            ))
-          )
-        )
       }
           </tbody>
         </table>

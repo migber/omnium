@@ -18,6 +18,7 @@ import OmniumItem from '../OmniumListItem/omniumItem'
 import scratchApi from './Scratch/api'
 import TempoRaceEdit from './tempoRace/tempoEdit'
 import EliminationEdit from './elimination/eliminationEdit'
+import PointRaceEdit from './pointRace/pointRaceEdit'
 
 class Race extends Component {
   constructor(props){
@@ -204,7 +205,9 @@ class Race extends Component {
     console.log(`From storage ${localStorage.getItem('category')}`)
     this.setState({ btnActive: category })
     localStorage.setItem('category', category)
-    this.child.changeList(category)
+    if (localStorage.getItem('activeTab') !== 0){
+      this.child.changeList(category)
+    }
     this.getOmniumData(category)
   }
 
@@ -336,6 +339,7 @@ class Race extends Component {
           render={( props ) =>
             <Scratch
             {...props}
+            onRef={ref => (this.child = ref)}
             user={this.props.user}
             omniumId={this.state.omniumId}
             activeTab={this.state.activeTab}
@@ -350,6 +354,7 @@ class Race extends Component {
           render={( props ) =>
             <ScratchEdit
             {...props}
+            onRef={ref => (this.child = ref)}
             user={this.props.user}
             omniumId={this.state.omniumId}
             activeTab={this.state.activeTab}
@@ -364,6 +369,7 @@ class Race extends Component {
           render={( props ) =>
             <TempoRace
             {...props}
+            onRef={ref => (this.child = ref)}
             user={this.props.user}
             omniumId={this.state.omniumId}
             activeTab={this.state.activeTab}
@@ -377,6 +383,7 @@ class Race extends Component {
           render={( props ) =>
             <TempoRaceEdit
             {...props}
+            onRef={ref => (this.child = ref)}
             user={this.props.user}
             omniumId={this.state.omniumId}
             activeTab={this.state.activeTab}
@@ -391,6 +398,7 @@ class Race extends Component {
           render={( props ) =>
             <Elimination
             {...props}
+            onRef={ref => (this.child = ref)}
             user={this.props.user}
             omniumId={this.state.omniumId}
             activeTab={this.state.activeTab}
@@ -422,8 +430,10 @@ class Race extends Component {
           render={( props ) =>
             <PointRace
             {...props}
+            onRef={ref => (this.child = ref)}
             user={this.props.user}
             omniumId={this.state.omniumId}
+            category={this.state.btnActive}
             activeTab={this.state.activeTab}
             isStartList={this.state.isStartList}
             saveFinishPlaces={this.saveFinishPlaces}
@@ -434,10 +444,12 @@ class Race extends Component {
          <Route
           exact path={`${this.props.match.path}/44`}
           render={( props ) =>
-            <PointRace
+            <PointRaceEdit
             {...props}
+            onRef={ref => (this.child = ref)}
             user={this.props.user}
             omniumId={this.state.omniumId}
+            category={this.state.btnActive}
             activeTab={this.state.activeTab}
             isStartList={this.state.isStartList}
             saveFinishPlaces={this.saveFinishPlaces}

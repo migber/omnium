@@ -5,27 +5,23 @@ import './scratch.css'
 import raceApi from './api'
 import ScratchItemEdit from './components/scratchItem/scratchItemEdit'
 import helper from '../helper'
+import scratchItemApi from './components/scratchItem/api'
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd'
 
 const getItems = count =>
 Array.from({ length: count }, (v, k) => k).map(k => ({
   id: `item-${k}`,
   content: `item ${k}`,
-}));
+}))
 
 // a little function to help us with reordering the result
-
 const getListStyle = isDraggingOver => ({
   background: isDraggingOver ? 'lightblue' : 'lightgrey',
-  // padding: grid,
-  // width: 1000,
-});
+})
+
 const getItemStyle = (isDragging, draggableStyle) => ({
   // some basic styles to make the items look a bit nicer
   userSelect: 'none',
-  // padding: grid * 2,
-  // margin: `0 0 ${grid}px 0`,
-  // width: 1000,
 
   // change background colour if dragging
   background: isDragging ? 'lightgreen' : 'grey',
@@ -45,17 +41,16 @@ class ScratchEdit extends Component {
   constructor(props){
     super(props)
     this.state = {
-      menScores: null,
+      scores: null,
       raceId: null,
       eventName: null,
       cyclists: null,
       raceOrder: 1,
       category: null,
-      womenScores: null,
-      menScoresStartList: null,
-      womenStartList: null,
+      scoresList: null,
     }
-    this.onDragEnd = this.onDragEnd.bind(this);
+    this.onDragEnd = this.onDragEnd.bind(this)
+    this.changeList = this.changeList.bind(this)
   }
 
   onDragEnd(result) {
@@ -82,24 +77,41 @@ class ScratchEdit extends Component {
     this.setState({
       category: localStorage.getItem('category')
     })
-    console.log(this.props.location.pathname)
-    const path = `/events/${this.props.omniumId}/races/1`
-    raceApi.getScoresOfSpecificRace(
+    scratchItemApi.getScoresOfSpecificRace(
       this.props.user,
-      path,
+      this.props.omniumId,
+      this.state.raceOrder,
       localStorage.getItem('category'),
      ).then( scores => {
       const startList = helper.scratchRaceStartList(scores)
-      this.setState({ menScores: scores, menScoresStartList: startList})
+      this.setState({ scores, scoresList: startList})
     })
-    raceApi.getScoresOfSpecificRace(
+  }
+
+  changeList(category){
+    console.log("inside")
+    scratchItemApi.getScoresOfSpecificRace(
       this.props.user,
-      path,
-      'women'
-     ).then( scores => {
-      const startList = helper.scratchRaceStartList(scores)
-      this.setState({ womenScores: scores, womenStartList: startList })
+      this.props.omniumId,
+      this.state.raceOrder,
+      category,
+     ).then((scores) => {
+       console.log(scores)
+        const startList = raceHelper.scratchRaceStartList(scores)
+        const orderedScores = raceHelper.orderByPlace(scores)
+        this.setState({
+           scores: orderedScores,
+           scoresList: startList,
+        })
     })
+  }
+
+  componentDidMount() {
+    this.props.onRef(this)
+  }
+
+  componentWillUnmount() {
+    this.props.onRef(null)
   }
 
   render() {
@@ -108,9 +120,8 @@ class ScratchEdit extends Component {
       scores,
       cyclists,
       menScores,
-      womenScores,
-      menScoresStartList,
-      womenStartList  } = this.state
+      scoresList,
+    } = this.state
     console.log(Number(localStorage.getItem('activeTab')))
     const category = localStorage.getItem('category')
     return (
@@ -161,12 +172,9 @@ class ScratchEdit extends Component {
                 ref={provided.innerRef}
                 style={getListStyle(snapshot.isDraggingOver)}
               >
-      {/* <tbody> */}
-
-
-      { category === 'men' ? (
+      {
         isStartList ? (
-          menScoresStartList &&  menScoresStartList.map((score, id) => (
+          scoresList &&  scoresList.map((score, id) => (
         <Draggable key={score.id} draggableId={score.id} index={id}>
                   {(provided, snapshot) => (
                     <tbody
@@ -197,7 +205,7 @@ class ScratchEdit extends Component {
         </Draggable>
           ))
         ) : (
-          menScores &&  menScores.map((score, id) => (
+          scores &&  scores.map((score, id) => (
             <Draggable key={score.id} draggableId={score.id} index={id}>
             {(provided, snapshot) => (
               <div
@@ -223,47 +231,7 @@ class ScratchEdit extends Component {
         </Draggable>
           ))
         )
-      ) : (
-        isStartList ? (
-          womenStartList && womenStartList.map((score, id) => (
-            <ScratchItemEdit
-              key={`${score.id}${Math.random()}`}
-              score={score}
-              eventId={this.props.omniumId}
-              user={this.props.user}
-              rankId={id}
-              isStartList={this.props.isStartList}
-              category={this.state.category}
-            />
-          ))
-        ) : (
-          womenScores && womenScores.map((score, id) => (
-            <ScratchItemEdit
-              key={`${score.id}${Math.random()}`}
-              score={score}
-              eventId={this.props.omniumId}
-              user={this.props.user}
-              rankId={id}
-              isStartList={this.props.isStartList}
-              category={this.state.category}
-            />
-          ))
-        )
-      )
     }
-        {/* //   return (
-        //     <tr key={id} className="left">
-        //     <th key={id} scope="row">{score.finishPlace}</th>
-        //     <td className="number">{score.raceNumber}</td>
-        //     <td>{score.Cyclist.firstName} {score.Cyclist.lastName}</td>
-        //     <td>{score.Cyclist.nationality}</td>
-        //     <td>{score.points}</td>
-        //     <td>{score.totalPoints}</td>
-        //     </tr>
-        //   )
-        // })} */}
-
-        {/* </tbody> */}
         {provided.placeholder}
         </div>
       )}

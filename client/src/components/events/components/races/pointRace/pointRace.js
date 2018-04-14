@@ -3,97 +3,156 @@ import React, { Component } from 'react'
 import { Route, Link } from 'react-router-dom'
 import './pointRace.css'
 import api from './api'
+import helper from './helper'
+import scratchIteamAPI from '../Scratch/components/scratchItem/api'
+import raceHelper from '../helper'
+import TempoItem from './components/pointraceItem'
 
 class PointRace extends Component {
   constructor(props){
     super(props)
     this.state = {
-      races: null,
+      scores: null,
       raceId: null,
       eventName: null,
-      scores: null,
+      cyclists: null,
+      raceOrder: 4,
+      omniumOverall: 0,
+      category: null,
+      scoresList: null,
+      womenStartList: null,
+      menScoresStartList: null,
     }
+    this.changeList = this.changeList.bind(this)
   }
 
   componentWillMount() {
+    this.props.notShowEvents()
+    console.log(localStorage.getItem('activeTab'))
+    localStorage.setItem('activeTab', 4)
     this.setState({ eventName: localStorage.getItem('eventName')})
-    api.getRacesByCategory(this.props.user, this.props.location.pathname ).then( races => {
-      this.setState({ races })
+    this.setState({
+      category: localStorage.getItem('category')
     })
-    api.getScores(this.props.user, this.props.location.pathname).then(scores => {
-      const scoresMapped = []
-      scores.forEach(element => {
-        const scoresObj = {
-          "id": element.id,
-          "raceNumber": element.raceNumber,
-          "lapPlusPoints": element.lapPlusPoints,
-          "lapMinusPoints": element.lapMinusPoints,
-          "points": element.points,
-          "finishPlace": element.finishPlace,
-          "raceDate": element.raceDate,
-          "place": element.place,
-          "totalPoints": element.totalPoints,
-          "dns": element.dns,
-          "dnq": element.dnq,
-          "dnf": element.dnf,
-          "bk": element.bk,
-          "createdAt": element.createdAt,
-          "updatedAt": element.updatedAt,
-          "cyclistId": element['CyclistId'],
-          "raceId": element['RaceId'],
-          "race": {
-              "id": element['Race'].id,
-              "elapseTime": element['Race'].elapseTime,
-              "name": element['Race'].name,
-              "avgSpeed": element['Race'].avgSpeed,
-              "order": element['Race'].order,
-              "description": element['Race'].description,
-              "createdAt": element['Race'].createdAt,
-              "updatedAt": element['Race'].updatedAt,
-              "eventId": element['Race']['EventId']
-          }
-        }
-       scoresMapped.push(scoresObj)
-      })
-      localStorage.setItem('scores', JSON.stringify(scoresMapped))
-      this.setState({ scores: scoresMapped })
+    scratchIteamAPI.getScoresOfSpecificRace(
+      this.props.user,
+      this.props.omniumId,
+      this.state.raceOrder,
+      localStorage.getItem('category'),
+     ).then((scores) => {
+        const orderedScores = helper.orderByPoints(scores)
+        this.setState({ scores: orderedScores})
+    })
+    scratchIteamAPI.getScoresOfSpecificRace(
+      this.props.user,
+      this.props.omniumId,
+      this.state.omniumOverall,
+      localStorage.getItem('category'),
+     ).then( scores => {
+        const orderedScores = raceHelper.orderByPointsBigger(scores)
+        this.setState({ scoresList: orderedScores})
     })
   }
 
-  render() {
-    const { omniumId, activeTab } = this.props
-    const { races, scores } = this.state
+  changeList(category){
+    scratchIteamAPI.getScoresOfSpecificRace(
+      this.props.user,
+      this.props.omniumId,
+      this.state.raceOrder,
+      category,
+     ).then((scores) => {
+        const startList = raceHelper.scratchRaceStartList(scores)
+        const orderedScores = raceHelper.orderByPlace(scores)
+        this.setState({
+           scores: orderedScores,
+           scoresList: startList,
+        })
+    })
+  }
 
+  componentDidMount() {
+    this.props.onRef(this)
+  }
+
+  componentWillUnmount() {
+    this.props.onRef(null)
+  }
+
+  render() {
+    const { omniumId, activeTab, isStartList } = this.props
+    const { races,
+            scores,
+            cyclists,
+            scoresList,
+            } = this.state
+    const category = localStorage.getItem('category')
     return (
-     <div className="space-from-top">
+      <div className="space-from-top">
        { localStorage.getItem('activeTab') === '4' && (
         <table className="table table-striped">
         <thead>
-        <tr >
-        <th scope="col">Rank</th>
-        <th scope="col">No</th>
-        <th scope="col">Name</th>
-        <th scope="col">Nationality</th>
-        <th scope="col">Points</th>
-        <th scope="col">Total points</th>
-        </tr>
-        </thead>
-        { scores ? (
-          <tbody>
-           { scores.map((score, id) => {
-            return (
-              <tr className="left">
-              <th scope="row">{score.finishPlace}</th>
-              <td>{score.raceNumber}</td>
-              {/* <td> {score.cyclist.lastName}</td> */}
-              <td>{}</td>
-              <td>{score.points}</td>
-              <td>{score.totalPoints}</td>
+          {
+            isStartList ? (
+              <tr >
+              <th scope="col">Order</th>
+              <th scope="col">No</th>
+              <th scope="col">Name</th>
+              <th scope="col">UCI code</th>
+              <th scope="col">Nationality</th>
+              </tr>
+            ) : (
+              <tr>
+                {
+                  ( Number(localStorage.getItem('activeTab')) === 11 ||
+                    Number(localStorage.getItem('activeTab')) === 22 ||
+                    Number(localStorage.getItem('activeTab')) === 33 ||
+                    Number(localStorage.getItem('activeTab')) === 44) ? (
+                    <th scope="col"></th>
+                  ): (
+                    <th scope="col">Rank</th>
+                  )
+                }
+              <th scope="col">No</th>
+              <th scope="col">Name</th>
+              <th scope="col">Nationality</th>
+              <th scope="col">Sprints won</th>
+              <th scope="col">Finish place</th>
+              <th scope="col">+</th>
+              <th scope="col">-</th>
+              <th scope="col">Total points</th>
               </tr>
             )
-          })} </tbody> ) : (
-            <div> </div>
-          )}
+          }
+        </thead>
+        <tbody>
+        {
+          isStartList ? (
+            scoresList && scoresList.map((score, id) => (
+              <TempoItem
+                key={`${score.id}${Math.random()}`}
+                score={score}
+                eventId={this.state.eventId}
+                user={this.props.user}
+                rankId={id}
+                isStartList={this.props.isStartList}
+                category={this.state.category}
+              />
+            ))
+          ) : (
+            scores && scores.map((score, id) => (
+              <TempoItem
+                key={`${score.id}${Math.random()}`}
+                score={score}
+                eventId={this.state.eventId}
+                user={this.props.user}
+                rankId={id}
+                isStartList={this.props.isStartList}
+                category={this.state.category}
+              />
+            ))
+          )
+      }
+          </tbody>
         </table>
       )}
       </div>
