@@ -30,6 +30,28 @@ async function getSprint(req, res) {
   })
 }
 
+async function createSprintOnly(req, res) {
+  console.log('Create sprint')
+  const scoreId = Number(req.params.scoreId)
+  Sprint.create({
+    sprintNumber: req.body.sprintNumber,
+    sprintPoints: req.body.sprintPoints,
+    ScoreId: scoreId,
+  }).then((sprint) => {
+    Score.findById(scoreId).then((score) => {
+      const total = score.totalPoints + 1
+      score.updateAttributes({
+        totalPoints: total,
+      }).then(() => {
+        res.json(sprint)
+      })
+    })
+  }).catch((error) => {
+    res.status(400)
+    res.send(responseBadRequest(error))
+  })
+}
+
 async function createSprint(req, res) {
   console.log('Create sprint')
   const scoreId = Number(req.params.scoreId)
@@ -82,17 +104,50 @@ async function createSprint(req, res) {
 async function editSprint(req, res) {
   console.log('Updating sprint')
   const id = Number(req.params.sprintId)
+  const scoreId = Number(req.params.scoreId)
   Sprint.findById(id).then((sprint) => {
     if (sprint) {
-      sprint.updateAttributes({
-        sprintNumber: req.body.sprintNumber,
-        sprintPoints: req.body.sprintPoints,
-      }).then((updatedSprint) => {
-        res.json(updatedSprint)
-        res.status(200)
-      }).catch((err) => {
-        res.status(400)
-        res.send(responseBadRequest(err))
+      Score.findById(scoreId).then((score) => {
+        const total = score.totalPoints
+        console.log(total)
+        const { sprintPoints } = sprint
+        console.log(sprintPoints)
+        const minus = total - sprintPoints
+        console.log(minus)
+        const plus = total + req.body.sprintPoints
+        console.log(plus)
+        console.log(sprintPoints)
+        if (sprintPoints !== 0) {
+          sprint.updateAttributes({
+            sprintNumber: req.body.sprintNumber,
+            sprintPoints: 0,
+          }).then(() => {
+            score.updateAttributes({
+              totalPoints: minus,
+            }).then((scoreUp) => {
+              res.json(scoreUp)
+              res.status(200)
+            })
+          }).catch((err) => {
+            res.status(400)
+            res.send(responseBadRequest(err))
+          })
+        } else {
+          sprint.updateAttributes({
+            sprintNumber: req.body.sprintNumber,
+            sprintPoints: req.body.sprintPoints,
+          }).then(() => {
+            score.updateAttributes({
+              totalPoints: plus,
+            }).then((scoreUp) => {
+              res.json(scoreUp)
+              res.status(200)
+            })
+          }).catch((err) => {
+            res.status(400)
+            res.send(responseBadRequest(err))
+          })
+        }
       })
     }
   })
@@ -109,6 +164,7 @@ async function deleteSprint(req, res) {
 
 router.get('/api/events/:eventId/races/:raceId/scores/:scoreId/sprints', getSprintsList)
 router.get('/api/events/:eventId/races/:raceId/scores/:scoreId/sprints/:sprintId', getSprint)
+router.post('/api/events/:eventId/races/:raceId/scores/:scoreId/sprints/only', createSprintOnly)
 router.post('/api/events/:eventId/races/:raceId/scores/:scoreId/sprints', createSprint)
 router.put('/api/events/:eventId/races/:raceId/scores/:scoreId/sprints/:sprintId', editSprint)
 router.delete('/api/events/:eventId/races/:raceId/scores/:scoreId/sprints/:sprintId', deleteSprint)

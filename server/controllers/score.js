@@ -2,7 +2,6 @@
 
 const router = require('express').Router()
 const { Op } = require('sequelize').Sequelize
-// const Op = Sequelize.Op
 
 const {
   Race,

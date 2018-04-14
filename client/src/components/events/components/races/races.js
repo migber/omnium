@@ -301,7 +301,6 @@ class Race extends Component {
               <th scope="col">Scratch</th>
               <th scope="col">Tempo race</th>
               <th scope="col">Elimination</th>
-              <th scope="col">Point race</th>
               <th scope="col">Total points</th>
            </tr>
           ) : (

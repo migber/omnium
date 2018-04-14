@@ -9,15 +9,18 @@ import helper from '../helper'
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd'
 import { changeFinishOrder, reorder } from '../Scratch/helper'
 import sprintsNumbers from './constants/sprints'
+import api from './api'
+import Sprint from './components/sprints/sprints'
+import PointRaceSprintItem from './components/sprints/pointRaceItem'
 
 const getListStyle = isDraggingOver => ({
   background: isDraggingOver ? '#F2F1EF' : '#BDC3C7',
-  'border-radius': '5px',
+  'borderRadius': '5px',
 })
 
 const getItemStyle = (isDragging, draggableStyle) => ({
   userSelect: 'none',
-  'border-radius': '5px',
+  'borderRadius': '5px',
   background: isDragging ? '#BDC3C7' : '#ECF0F1',
   ...draggableStyle,
 })
@@ -30,12 +33,15 @@ class PointRaceEdit extends Component {
       raceId: null,
       eventName: null,
       eventId:props.omniumId,
-      raceOrder: 4,
+      raceOrder: 0,
       category: null,
       scoresList: null,
       sprints: null,
+      activeSprint: 44,
+      sprintOrder: 1,
     }
     this.onDragEnd = this.onDragEnd.bind(this)
+    this.onDragEndSprints = this.onDragEndSprints.bind(this)
     this.addTwenty = this.addTwenty.bind(this)
     this.subtractTwenty = this.subtractTwenty.bind(this)
     this.handleChangeDNS = this.handleChangeDNS.bind(this)
@@ -51,6 +57,10 @@ class PointRaceEdit extends Component {
     this.handleCheckedDNS = this.handleCheckedDNS.bind(this)
     this.handleCheckedDNQ = this.handleCheckedDNQ.bind(this)
     this.changeList = this.changeList.bind(this)
+    this.setActiveSprint = this.setActiveSprint.bind(this)
+    this.addSprintsToRace = this.addSprintsToRace.bind(this)
+    this.recalculateSprintsCounter = this.recalculateSprintsCounter.bind(this)
+    this.setSprintsCounter = this.setSprintsCounter.bind(this)
   }
 
   componentWillMount() {
@@ -65,11 +75,12 @@ class PointRaceEdit extends Component {
       this.props.omniumId,
       this.state.raceOrder,
       localStorage.getItem('category'),
-     ).then( scores => {
-      const startList = helper.scratchRaceStartList(scores)
-      this.setState({ scores, scoresList: startList})
+     ).then((scores) => {
+      const startList = helper.sortByRaceNumbers(scores)
+      const sorted = helper.orderByPointsBigger(scores)
+      this.setState({ scores: sorted, scoresList: startList})
+      this.createSprints(localStorage.getItem('category'))
     })
-    this.createSprints(localStorage.getItem('category'))
   }
 
   addSprint(scoreId, sprintId) {
@@ -83,9 +94,25 @@ class PointRaceEdit extends Component {
   }
 
   saveFinishPlacesInside(){
+    console.log('updateFInishPlace inside')
     const active = localStorage.getItem('activeTab')
     const updatedScores = changeFinishOrder(this.state.scores)
-    this.props.saveFinishPlaces(updatedScores, this.state.raceOrder, 'men')
+    updatedScores.forEach((score, id) => {
+        const sendThisScore = {
+          finishPlace: score.finishPlace,
+        }
+        api.updateFinishPlace(
+          this.props.user,
+          this.props.omniumId,
+          this.state.raceOrder,
+          score.id,
+          sendThisScore,
+        ).then(() => {
+          if (id+1 === updatedScores.length) {
+            this.apiListRequest(localStorage.getItem('category'))
+          }
+        })
+    })
   }
 
   onDragEnd(result) {
@@ -99,6 +126,20 @@ class PointRaceEdit extends Component {
     )
     this.setState({
       scores,
+    })
+  }
+
+  onDragEndSprints(result) {
+    if (!result.destination) {
+      return;
+    }
+    const sprints = reorder(
+      this.state.sprints,
+      result.source.index,
+      result.destination.index
+    )
+    this.setState({
+      sprints,
     })
   }
 
@@ -118,6 +159,25 @@ class PointRaceEdit extends Component {
         score
       ).then(() => {})
     }
+  }
+
+  addSprintsToRace(scoreId) {
+    const { sprints } = this.state
+    for (let i = 0; i < sprints.length; i++) {
+          const sprint = {
+            sprintNumber: i+1,
+            sprintPoints: 0
+          }
+          api.createSprints(
+            this.props.user,
+            this.props.omniumId,
+            this.state.raceOrder,
+            scoreId,
+            sprint,
+          ).then((sprint) => {
+            this.apiListRequest(localStorage.getItem('category'))
+          })
+        }
   }
 
   addTwenty(scoreId) {
@@ -140,28 +200,40 @@ class PointRaceEdit extends Component {
       category,
      ).then( scores => {
       const startList = helper.scratchRaceStartList(scores)
-      this.setState({ scores, scoresList: startList})
+      const sorted = helper.orderByPointsBigger(scores)
+      this.setState({ scores: sorted, scoresList: startList})
     })
   }
 
-  handleChangeDNS(scoreId) {
-    console.log('DNS')
-    scratchApi.updateDNS(this.props.user, this.state.eventId, 2, scoreId).then(() => {
+  handleChangeDNF(scoreId){
+    scratchApi.updateDNF(
+      this.props.user,
+      this.props.omniumId,
+      this.state.raceOrder,
+      scoreId,
+    ).then((score) => {
       this.apiListRequest(localStorage.getItem('category'))
     })
   }
 
-  handleChangeDNQ(scoreId) {
-    console.log('DNQ')
-    scratchApi.updateDNQ(this.props.user, this.state.eventId, 2, scoreId).then(() => {
+  handleChangeDNS(scoreId){
+    scratchApi.updateDNS(
+      this.props.user,
+      this.props.omniumId,
+      this.state.raceOrder,
+      scoreId,
+    ).then((score) => {
       this.apiListRequest(localStorage.getItem('category'))
     })
   }
 
-  handleChangeDNF(scoreId) {
-    console.log('DNF')
-    scratchApi.updateDNF(this.props.user, this.state.eventId, 2, scoreId).then(() => {
-      console.log('hererere')
+  handleChangeDNQ(scoreId){
+    scratchApi.updateDNQ(
+      this.props.user,
+      this.props.omniumId,
+      this.state.raceOrder,
+      scoreId,
+    ).then((score) => {
       this.apiListRequest(localStorage.getItem('category'))
     })
   }
@@ -173,8 +245,8 @@ class PointRaceEdit extends Component {
     if (sprintsNumber) {
       for (let i = 0; i < sprintsNumber; i++){
         const sprint = {
-          sprintNumber: 0,
-          sprintPoints: 1,
+          sprintNumber: i+1,
+          sprintPoints: 0,
         }
         sprints.push(sprint)
       }
@@ -227,17 +299,56 @@ class PointRaceEdit extends Component {
     this.props.onRef(null)
   }
 
+  setActiveSprint(id){
+    this.setSprintsCounter()
+    console.log(id)
+    this.setState({
+      activeSprint: id
+    })
+    this.apiListRequest(localStorage.getItem('category'))
+  }
+
+  recalculateSprintsCounter(){
+    const order = this.state.sprintOrder
+    this.setState({
+      sprintOrder: order + 1
+    })
+  }
+
+  setSprintsCounter(){
+    console.log('set sprints counter')
+    this.setState({
+      sprintOrder: 1
+    })
+  }
+
   render() {
     const { omniumId, activeTab, isStartList } = this.props
     const { races,
       scores,
       cyclists,
       scoresList,
-      sprints  } = this.state
+      sprints,
+      activeSprint,
+      } = this.state
+      console.log(scoresList)
     const category = localStorage.getItem('category')
     return (
       <div className="space-from-top">
-       { localStorage.getItem('activeTab') === '44' && (
+
+       <div>
+       <ul className="nav nav-tabs">
+       <li className={(activeSprint === 44) ? "active" : ""} role="presentation"> <a onClick={() => this.setActiveSprint(44)}> Race </a></li>
+        {
+           sprints && sprints.map((sprint, id) => (
+            <li key={`${id}${Math.random()}${Math.random()}`} className={(activeSprint === id+1) ? "active" : ""} role="presentation"> <a onClick={() => this.setActiveSprint(id+1)}> {`${id+1} Sprint`} </a></li>
+           ))
+        }
+       </ul>
+     </div>
+     <div>
+     { localStorage.getItem('activeTab') === '44' &&
+       activeSprint === 44 && (
         <table className="table table-striped">
         <thead>
         {
@@ -263,7 +374,14 @@ class PointRaceEdit extends Component {
             <th scope="col">No</th>
             <th scope="col">Name</th>
             <th scope="col">Nationality</th>
-            <th scope="col">Sprints</th>
+            {
+               sprints && sprints.map((sprint, id) => (
+                  <td key={`${id}${Math.random()}${Math.random()}`}
+                      className="raceNo txt-big text">
+                      {sprint.sprintNumber}
+                  </td>
+                ))
+            }
             <th scope="col">+20</th>
             <th scope="col">-20</th>
             <th scope="col">Finish place</th>
@@ -283,10 +401,11 @@ class PointRaceEdit extends Component {
                 style={getListStyle(snapshot.isDraggingOver)}
               >
        {
-          scores &&  scores.map((score, id) => (
+          scores && scores.map((score, id) => (
             <Draggable key={score.id} draggableId={score.id} index={id}>
             {(provided, snapshot) => (
               <tr
+                key={`${score.id}${Math.random()}`}
                 ref={provided.innerRef}
                 {...provided.draggableProps}
                 {...provided.dragHandleProps}
@@ -309,18 +428,27 @@ class PointRaceEdit extends Component {
         <td className="raceNo txt-big text">{score.raceNumber}</td>
         <td className="txt-big text">{score.Cyclist.lastName} {score.Cyclist.firstName}</td>
         <td className="txt-big text">{score.Cyclist.nationality}</td>
-        <td className="inblock contact-selector">
-        { !isStartList && sprints && sprints.map((sprint, id) => (
-              <label key={`${id}${Math.random()}`} className="lbl-text">{id + 1}
-               <input type="checkbox"
-                    key={`${id}${Math.random()}`}
-                    checked={this.handleCheck(id+1, score) ? true : false}
-                    onChange={() => this.addSprint(score.id, (id + 1))}
-              />
-              </label>
-          ))
+        {
+          score.Sprints.length !== 0 ? (
+            score.Sprints && score.Sprints.sort((a, b) => a.sprintNumber > b.sprintNumber).map((sprint, id) => (
+              sprint.sprintPoints === 0 ? (
+                <td key={`${id}${Math.random()}`}
+                    className="raceNo txt-big text">
+                </td>
+               ) : (
+                  <td key={`${id}${Math.random()}`}>
+                  {sprint.sprintPoints}
+                  </td>
+               )
+            ))
+          ): (
+            <td>
+            <a type="button" role="button" onClick={() => this.addSprintsToRace(score.id)} class="a-orange btn-small btn-group btn-group-xs btn-default" aria-label="Left Align">
+              <span class="span-algn glyphicon glyphicon-pencil" aria-hidden="true"></span>
+            </a>
+          </td>
+          )
         }
-        </td>
         {
           !isStartList && (
             <td>
@@ -392,12 +520,41 @@ class PointRaceEdit extends Component {
           </Droppable>
         </DragDropContext>
         </table>
-      )}
-       <div>
-        <a id="saveResults" role="button" type="button" className={(activeTab === 'men') ? "choice-btn-active btn btn-default" : "choice-btn btn btn-default"} onClick={() => this.saveFinishPlacesInside(activeTab)} name="men">Save Results</a>
+          )}
+      {
+        activeSprint !== 44 && (
+          <ul className="list-group list-group-flush ">
+          {
+            scoresList &&  scoresList.map((score, id) => (
+              <PointRaceSprintItem
+                activeSprint={this.state.activeSprint}
+                score={score}
+                isStartList={this.state.isStartList}
+                eventId={this.props.omniumId}
+                user={this.props.user}
+                rankId={id}
+                eliminateCyclist={this.eliminateCyclist}
+                sprintOrder={this.state.sprintOrder}
+                recalculateSprintsCounter={this.recalculateSprintsCounter}
+              />
+          )
+       )
+      }
+      {/* <div>
+        <a id="saveSprints" role="button" type="button" className={(activeTab === 'men') ? "choice-btn-active btn btn-default" : "choice-btn btn btn-default"} onClick={() => this.saveSprints(activeTab)}>Save Sprint</a>
+      </div> */}
+       </ul>
+      )
+      }
+        </div>
+        {
+           activeSprint === 44 && (
+            <div>
+              <a id="saveResults" role="button" type="button" className={(activeTab === 'men') ? "choice-btn-active btn btn-default" : "choice-btn btn btn-default"} onClick={() => this.saveFinishPlacesInside(activeTab)}>Save Results</a>
+            </div>
+           )
+        }
       </div>
-      </div>
-
     )
   }
 }

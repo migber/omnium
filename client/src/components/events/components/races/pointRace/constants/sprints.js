@@ -1,8 +1,8 @@
 const sprints = {
-  men: 36,
-  women: 26,
-  juniorsM: 26,
-  juniorsW: 16
+  men: 10,
+  women: 8,
+  juniorsM: 8,
+  juniorsW: 6
 }
 
 export default sprints

@@ -49,6 +49,12 @@ function orderByPointsBigger(scores) {
   })
 }
 
+function sortByRaceNumbers(scores) {
+  return scores.sort(function(a, b) {
+    return a.raceNumber - b.raceNumber
+  })
+}
+
 function omniumOrder(scores) {
   return scores.sort(function(a, b) {
     if (a.totalPoints === b.totalPoints) {
@@ -188,4 +194,5 @@ module.exports = {
   orderByPointsBigger,
   updatePosition,
   omniumOrder,
+  sortByRaceNumbers,
 }

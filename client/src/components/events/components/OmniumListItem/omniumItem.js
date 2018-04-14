@@ -89,11 +89,6 @@ class OmniumItem extends Component {
         }
         {
           !isStartList && raceScores && (
-                <td className="txt-big text">{raceScores.pointRace}</td>
-          )
-        }
-        {
-          !isStartList && raceScores && (
                 <td className="txt-big text">{raceScores.total}</td>
           )
         }

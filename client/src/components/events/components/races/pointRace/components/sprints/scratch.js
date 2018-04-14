@@ -1,15 +1,13 @@
 
 import React, { Component } from 'react'
 import { Route, Link } from 'react-router-dom'
-import './pointRace.css'
-import api from './api'
-import helper from './helper'
-import scratchIteamAPI from '../Scratch/components/scratchItem/api'
-import raceHelper from '../helper'
-import TempoItem from './components/pointraceItem'
-import sprintsNumbers from './constants/sprints'
+import './scratch.css'
+import raceApi from './api'
+import ScratchItem from './components/scratchItem/scratchItem'
+import helper from '../helper'
+import scratchItemApi from './components/scratchItem/api'
 
-class PointRace extends Component {
+class Scratch extends Component {
   constructor(props){
     super(props)
     this.state = {
@@ -17,80 +15,49 @@ class PointRace extends Component {
       raceId: null,
       eventName: null,
       cyclists: null,
-      raceOrder: 0,
-      omniumOverall: 0,
+      raceOrder: 1,
       category: null,
       scoresList: null,
-      womenStartList: null,
-      menScoresStartList: null,
-      sprints: null,
     }
     this.changeList = this.changeList.bind(this)
-    this.createSprints = this.createSprints.bind(this)
   }
 
   componentWillMount() {
     this.props.notShowEvents()
-    console.log(localStorage.getItem('activeTab'))
-    localStorage.setItem('activeTab', 4)
+    localStorage.setItem('activeTab', 1)
     this.setState({ eventName: localStorage.getItem('eventName')})
     this.setState({
       category: localStorage.getItem('category')
     })
-    scratchIteamAPI.getScoresOfSpecificRace(
+    scratchItemApi.getScoresOfSpecificRace(
       this.props.user,
       this.props.omniumId,
       this.state.raceOrder,
       localStorage.getItem('category'),
      ).then((scores) => {
-        const orderedScores = raceHelper.orderByPointsBigger(scores)
-        this.setState({ scores: orderedScores})
-        this.createSprints(localStorage.getItem('category'))
-    })
-    scratchIteamAPI.getScoresOfSpecificRace(
-      this.props.user,
-      this.props.omniumId,
-      this.state.omniumOverall,
-      localStorage.getItem('category'),
-     ).then( scores => {
-        const orderedScores = raceHelper.orderByPointsBigger(scores)
-        this.setState({ scoresList: orderedScores})
+        const startList = helper.scratchRaceStartList(scores)
+        const orderedScores = helper.orderByPlace(scores)
+        console.log(orderedScores)
+        this.setState({ scores: orderedScores, scoresList: startList})
     })
   }
 
   changeList(category){
-    scratchIteamAPI.getScoresOfSpecificRace(
+    console.log("inside")
+    scratchItemApi.getScoresOfSpecificRace(
       this.props.user,
       this.props.omniumId,
       this.state.raceOrder,
       category,
      ).then((scores) => {
-        const startList = raceHelper.scratchRaceStartList(scores)
-        const orderedScores = raceHelper.orderByPointsBigger(scores)
-        this.createSprints(localStorage.getItem('category'))
+       console.log(scores)
+        const startList = helper.scratchRaceStartList(scores)
+        const orderedScores = helper.orderByPlace(scores)
         this.setState({
            scores: orderedScores,
            scoresList: startList,
         })
     })
-  }
-
-  createSprints(category){
-    const sprintsNumber = sprintsNumbers[category]
-    console.log(`Sprints number ${sprintsNumber}`)
-    let sprints = []
-    if (sprintsNumber) {
-      for (let i = 0; i < sprintsNumber; i++){
-        const sprint = {
-          sprintNumber: i+1,
-          sprintPoints: 0,
-        }
-        sprints.push(sprint)
-      }
-      this.setState({
-        sprints
-      })
-    }
   }
 
   componentDidMount() {
@@ -107,12 +74,11 @@ class PointRace extends Component {
             scores,
             cyclists,
             scoresList,
-            sprints,
-            } = this.state
+          } = this.state
     const category = localStorage.getItem('category')
     return (
       <div className="space-from-top">
-       { localStorage.getItem('activeTab') === '4' && (
+       { localStorage.getItem('activeTab') === '1' && (
         <table className="table table-striped">
         <thead>
           {
@@ -138,15 +104,11 @@ class PointRace extends Component {
                 }
               <th scope="col">No</th>
               <th scope="col">Name</th>
+              <th scope="col">UCI code</th>
               <th scope="col">Nationality</th>
-              {
-                sprints && sprints.map((sprint, id) => (
-                  <th className="raceNo txt-big text">{sprint.sprintNumber}</th>
-                ))
-            }
+              <th scope="col">+20</th>
+              <th scope="col">-20</th>
               <th scope="col">Finish place</th>
-              <th scope="col">+</th>
-              <th scope="col">-</th>
               <th scope="col">Total points</th>
               </tr>
             )
@@ -155,8 +117,8 @@ class PointRace extends Component {
         <tbody>
         {
           isStartList ? (
-            scoresList && scoresList.map((score, id) => (
-              <TempoItem
+            scoresList &&  scoresList.map((score, id) => (
+              <ScratchItem
                 key={`${score.id}${Math.random()}`}
                 score={score}
                 eventId={this.state.eventId}
@@ -167,8 +129,8 @@ class PointRace extends Component {
               />
             ))
           ) : (
-            scores && scores.map((score, id) => (
-              <TempoItem
+            scores &&  scores.map((score, id) => (
+              <ScratchItem
                 key={`${score.id}${Math.random()}`}
                 score={score}
                 eventId={this.state.eventId}
@@ -188,5 +150,5 @@ class PointRace extends Component {
   }
 }
 
-export default PointRace
+export default Scratch
 

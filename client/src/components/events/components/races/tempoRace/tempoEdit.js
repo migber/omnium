@@ -85,7 +85,7 @@ class TempoEdit extends Component {
   saveFinishPlacesInside(){
     const active = localStorage.getItem('activeTab')
     const updatedScores = changeFinishOrder(this.state.scores)
-    this.props.saveFinishPlaces(updatedScores, this.state.raceOrder, 'men')
+    this.props.saveFinishPlaces(updatedScores, this.state.raceOrder, localStorage.getItem('category'))
   }
 
   onDragEnd(result) {
@@ -189,10 +189,12 @@ class TempoEdit extends Component {
   }
 
   handleCheckedDNF(score){
+    console.log(score.dnf)
     return score.dnf
   }
 
   handleCheckedDNS(score){
+    console.log(score.dns)
     return score.dns
   }
 
@@ -234,6 +236,7 @@ class TempoEdit extends Component {
       cyclists,
       scoresList,
       sprints  } = this.state
+    console.log(scores)
     const category = localStorage.getItem('category')
     return (
       <div className="space-from-top">

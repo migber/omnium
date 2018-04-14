@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import api from './api'
+import sprintsNumbers from '../constants/sprints'
 
 class PointRaceItem extends Component {
   constructor(props){
@@ -24,24 +25,45 @@ class PointRaceItem extends Component {
       lastName: props.score.Cyclist.lastName,
       uciCode: props.score.Cyclist.uciCode,
       nationality: props.score.Cyclist.nationality,
-      sprintsString: null,
+      sprints: props.score.Sprints,
+      sprintsFake: null
     }
     this.changeRaceNumber = this.changeRaceNumber.bind(this)
     this.deleteScore = this.deleteScore.bind(this)
+    this.createSprints = this.createSprints.bind(this)
   }
 
   componentDidMount(){
-    const sprints = this.props.score.Sprints
-    sprints.sort((a, b) => {
-      return a.sprintNumber - b.sprintNumber
-    })
-    var sprintsString = sprints.map((sprint) => {
-      return sprint.sprintNumber
-    }).join(",")
-    this.setState({
-      sprintsString
-    })
-    console.log(sprintsString)
+    // const sprints = this.props.score.Sprints
+    // sprints.sort((a, b) => {
+    //   return a.sprintNumber - b.sprintNumber
+    // })
+    // var sprintsString = sprints.map((sprint) => {
+    //   return sprint.sprintNumber
+    // }).join(",")
+
+    // this.setState({
+    //   sprintsString
+    // })
+    this.createSprints(localStorage.getItem('category'))
+  }
+
+  createSprints(category){
+    const sprintsNumber = sprintsNumbers[category]
+    console.log(`Sprints number ${sprintsNumber}`)
+    let sprints = []
+    if (sprintsNumber) {
+      for (let i = 0; i < sprintsNumber; i++){
+        const sprint = {
+          sprintNumber: i+1,
+          sprintPoints: 0,
+        }
+        sprints.push(sprint)
+      }
+      this.setState({
+        sprintsFake: sprints
+      })
+    }
   }
 
   updateRaceNumber() {
@@ -88,7 +110,8 @@ class PointRaceItem extends Component {
       lastName,
       uciCode,
       nationality,
-      sprintsString
+      sprints,
+      sprintsFake,
     } = this.state
     const { isStartList } = this.props
     return (
@@ -113,8 +136,20 @@ class PointRaceItem extends Component {
         }
         <td className="txt-big text">{nationality}</td>
         {
-          !isStartList && (
-              <td className="txt-big text">{sprintsString}</td>
+          sprints.length !== 0 ? (
+            sprints && sprints.sort((a, b) => a.sprintNumber > b.sprintNumber).map((sprint, id) => (
+              sprint.sprintPoints === 0 ? (
+                <td className="raceNo txt-big text"></td>
+               ) : (
+                  <td>
+                  {sprint.sprintPoints}
+                  </td>
+               )
+            ))
+          ) : (
+            sprintsFake && sprintsFake.map((sprints, id) => (
+              <td className="raceNo txt-big text">0</td>
+            ))
           )
         }
         {

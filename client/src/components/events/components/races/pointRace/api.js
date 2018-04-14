@@ -30,5 +30,27 @@ const api = {
     .then(response =>
       response.json())
   },
+
+  createSprints(user, id, raceOrder, scoreId, sprint) {
+    const url = new URL(`${baseUrl}/api/events/${id}/races/${raceOrder}/scores/${scoreId}/sprints`)
+    return fetch(url, {
+      method: 'POST',
+      body: JSON.stringify(sprint),
+      headers: getHeaders(user.accessToken, user)
+    })
+    .then(response =>
+      response.json())
+  },
+
+  updateFinishPlace(user, id, raceOrder, scoreId, score){
+    const url = new URL(`${baseUrl}/api/events/${id}/races/${raceOrder}/scores/${scoreId}/finishPlace`)
+    return fetch(url, {
+      method: 'PUT',
+      body: JSON.stringify(score),
+      headers: getHeaders(user.accessToken, user)
+    })
+    .then(response =>
+      response.json())
+  }
 }
 export default api
