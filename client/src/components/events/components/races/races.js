@@ -205,7 +205,9 @@ class Race extends Component {
     console.log(`From storage ${localStorage.getItem('category')}`)
     this.setState({ btnActive: category })
     localStorage.setItem('category', category)
-    if (localStorage.getItem('activeTab') !== 0){
+    console.log(localStorage.getItem('activeTab'))
+    console.log(localStorage.getItem('activeTab') !== '0')
+    if (localStorage.getItem('activeTab') !== '0'){
       this.child.changeList(category)
     }
     this.getOmniumData(category)

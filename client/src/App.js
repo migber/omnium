@@ -71,7 +71,8 @@ class App extends Component {
   }
 
   badgeSet(user){
-    api.getRequests(user).then( requests => {
+    console.log('badge')
+    api.getRequests(user).then((requests) => {
       this.setState({ badges: requests.length })
     })
   }
@@ -114,7 +115,12 @@ class App extends Component {
             render={( props ) => <Cyclists {...props} user={user} authenticated={authenticated} />}
         />
         <Route path='/register' render={( props ) =>
-         <Register {...props} authenticated={authenticated} user={user} />
+         <Register
+            {...props}
+            authenticated={authenticated}
+            user={user}
+            badgeSet={this.badgeSet}
+          />
         }
         />
         <Route path='/events' render={( props ) =>
@@ -127,14 +133,17 @@ class App extends Component {
          <Requests {...props}
            user={user}
            authenticated={authenticated}
-           badgeSet={this.badgeSet} />}
+           badgeSet={this.badgeSet}
+         />}
         />
         <Route
         path='/assignNumbers' render={( props ) =>
         <AssignNumbers {...props}
           user={user}
           authenticated={authenticated}
-          badgeSet={this.badgeSet} />}
+          badgeSet={this.badgeSet}
+          badgeSetAssign={this.badgeSetAssign}
+        />}
        />
        </div>
       )

@@ -45,8 +45,9 @@ class AssignNumberCyclistItem extends Component {
       eventId: this.state.eventId
     }
     api.updateCyclistRaceNumber(this.props.user, this.state.eventId, this.state.scoreId, score).then(() => {
+      this.props.renewScoresState()
     })
-    window.location.reload()
+
   }
 
   changeRaceNumber(event){
@@ -57,8 +58,8 @@ class AssignNumberCyclistItem extends Component {
 
   deleteScore(){
     api.deleteScore(this.props.user, this.state.scoreId).then(() => {
+      this.props.renewScoresState()
     })
-    window.location.reload()
   }
 
   render() {

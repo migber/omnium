@@ -47,7 +47,8 @@ class TempoRace extends Component {
       this.state.omniumOverall,
       localStorage.getItem('category'),
      ).then((scores) => {
-        const startList = helper.orderByPoints(scores)
+        const startList = helper.orderByTotalPoints(scores)
+        console.log(startList)
         this.setState({ startList})
     })
   }

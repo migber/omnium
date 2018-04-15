@@ -26,19 +26,25 @@ class AssignNumbers extends Component {
           eventId: 1,
         }
         this.counter = this.counter.bind(this)
+        this.renewScoresState = this.renewScoresState.bind(this)
       }
 
    componentWillMount() {
-     eventsApi.getEvents(this.props.user).then(events => {
-       if (events) {
-         this.setState({
-           eventId: events[events.length-1].id
-         })
-         api.getScores(this.props.user, events[events.length-1].id).then( scores => {
-          this.setState({ scores })
+     this.renewScoresState()
+   }
+
+   renewScoresState(){
+    eventsApi.getEvents(this.props.user).then((events) => {
+      if (events) {
+        this.setState({
+          eventId: events[events.length-1].id
         })
-       }
-     })
+        api.getScores(this.props.user, events[events.length-1].id).then((scores) => {
+         this.setState({ scores })
+         this.props.badgeSetAssign(this.props.user)
+       })
+      }
+    })
    }
 
    counter(){
@@ -81,6 +87,7 @@ class AssignNumbers extends Component {
                           score={score}
                           eventId={this.state.eventId}
                           user={this.props.user}
+                          renewScoresState={this.renewScoresState}
                           />
                     ))
                     }

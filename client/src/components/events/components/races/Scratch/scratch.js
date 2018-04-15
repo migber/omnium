@@ -36,6 +36,7 @@ class Scratch extends Component {
       localStorage.getItem('category'),
      ).then((scores) => {
         const startList = helper.scratchRaceStartList(scores)
+        console.log(startList)
         const orderedScores = helper.orderByPlace(scores)
         console.log(orderedScores)
         this.setState({ scores: orderedScores, scoresList: startList})
@@ -117,7 +118,7 @@ class Scratch extends Component {
         <tbody>
         {
           isStartList ? (
-            scoresList &&  scoresList.map((score, id) => (
+            scoresList &&  scoresList.sort((a, b) => a.raceNumber - b.raceNumber).map((score, id) => (
               <ScratchItem
                 key={`${score.id}${Math.random()}`}
                 score={score}

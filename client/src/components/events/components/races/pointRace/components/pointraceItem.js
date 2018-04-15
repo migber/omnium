@@ -136,20 +136,22 @@ class PointRaceItem extends Component {
         }
         <td className="txt-big text">{nationality}</td>
         {
-          sprints.length !== 0 ? (
-            sprints && sprints.sort((a, b) => a.sprintNumber > b.sprintNumber).map((sprint, id) => (
-              sprint.sprintPoints === 0 ? (
-                <td className="raceNo txt-big text"></td>
-               ) : (
-                  <td>
-                  {sprint.sprintPoints}
-                  </td>
-               )
-            ))
-          ) : (
-            sprintsFake && sprintsFake.map((sprints, id) => (
-              <td className="raceNo txt-big text">0</td>
-            ))
+          !isStartList && (
+            sprints.length !== 0 ? (
+              sprints && sprints.sort((a, b) => a.sprintNumber > b.sprintNumber).map((sprint, id) => (
+                sprint.sprintPoints === 0 ? (
+                  <td className="raceNo txt-big text"></td>
+                 ) : (
+                    <td>
+                    {sprint.sprintPoints}
+                    </td>
+                 )
+              ))
+            ) : (
+              sprintsFake && sprintsFake.map((sprints, id) => (
+                <td className="raceNo txt-big text">0</td>
+              ))
+            )
           )
         }
         {

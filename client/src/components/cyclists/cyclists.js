@@ -4,7 +4,7 @@ import CyclistModal from './cyclistModalScore'
 import { Modal, PageHeader } from "react-bootstrap"
 import { VIP_EMAIL } from '../../config/env'
 import { Switch, Route } from 'react-router-dom'
-
+import helper from './helper'
 import './cyclists.css'
 import api from './api'
 import eventApi from '../events/api'
@@ -13,8 +13,7 @@ class Cyclists extends Component {
   constructor(props){
     super(props)
     this.state = {
-      cyclistsWomen: null,
-      cyclistsMen: null,
+      cyclists: null,
       btnActive: 'men',
       activeList: null,
       edit: false,
@@ -46,14 +45,19 @@ class Cyclists extends Component {
     })
    }
 
-   changeList(cat){
-     this.setState( { btnActive: cat })
-     if (cat !== 'men') {
-      this.setState( { activeList: this.state.cyclistsWomen })
-     } else {
-      this.setState( { activeList: this.state.cyclistsMen })
-     }
-   }
+  changeList(category){
+    console.log("inside")
+    localStorage.setItem('category', category)
+    api.getScoresOverall(
+      this.props.user,
+      this.state.eventId,
+      this.state.raceOrder,
+      category,
+    ).then((scores) => {
+      console.log(scores)
+      this.setState({cyclists: helper.sortByRaceNumber(scores)})
+    })
+  }
 
    deleteCyclist(id) {
     api.deleteCyclist(this.props.user, id).then(() => {
@@ -86,17 +90,10 @@ class Cyclists extends Component {
       this.props.user,
       id,
       this.state.raceOrder,
-      'women'
-    ).then( scores => {
-      this.setState({ cyclistsWomen: scores })
-    })
-    api.getScoresOverall(
-      this.props.user,
-      id,
-      this.state.raceOrder,
-      'men'
-    ).then( scores => {
-      this.setState({ cyclistsMen: scores, activeList: scores })
+      localStorage.getItem('category')
+    ).then((scores) => {
+      console.log(scores)
+      this.setState({cyclists: helper.sortByRaceNumber(scores)})
     })
   }
 
@@ -109,7 +106,7 @@ class Cyclists extends Component {
   }
 
   render() {
-    const { activeList, btnActive, edit, events } = this.state
+    const { cyclists, btnActive, edit, events } = this.state
     const { user } = this.props
     return (
       <div className="container">
@@ -147,20 +144,20 @@ class Cyclists extends Component {
           <th>b/k</th>
       </tr>
       </thead>
-      { activeList && activeList.map((request, index) => {
+      { cyclists && cyclists.map((cyclist, index) => {
         return (
-          <tbody className="text" key={request.id}>
+          <tbody className="text" key={cyclist.id}>
            <tr>
-             <td className="raceNo">{request.raceNumber}</td>
-              <td>{request.Cyclist.firstName}</td>
-              <td>{request.Cyclist.lastName}</td>
-              <td> {request.Cyclist.uciCode}</td>
-              <td> {request.Cyclist.team}</td>
-              <td> {request.Cyclist.nationality}</td>
-              <td> {request.Cyclist.category}</td>
-              <span className={ request.bk === false ? " " : "glyphicon glyphicon-ok"} aria-hidden="true"></span>
-              <button onClick={() => this.deleteCyclist(request.id)} type="button" className="btn-delete btn-float btn">Delete</button>
-              <button key={request.id} type="button" onClick={() => this.editClick(request)} className="btn-edit btn-float btn btn">Edit</button>
+             <td className="raceNo">{cyclist.raceNumber}</td>
+              <td>{cyclist.Cyclist.firstName}</td>
+              <td>{cyclist.Cyclist.lastName}</td>
+              <td> {cyclist.Cyclist.uciCode}</td>
+              <td> {cyclist.Cyclist.team}</td>
+              <td> {cyclist.Cyclist.nationality}</td>
+              <td> {cyclist.Cyclist.category}</td>
+              <span className={ cyclist.bk === false ? " " : "glyphicon glyphicon-ok"} aria-hidden="true"></span>
+              <button onClick={() => this.deleteCyclist(cyclist.id)} type="button" className="btn-delete btn-float btn">Delete</button>
+              <button key={cyclist.id} type="button" onClick={() => this.editClick(cyclist)} className="btn-edit btn-float btn btn">Edit</button>
           </tr>
            </tbody>
         )

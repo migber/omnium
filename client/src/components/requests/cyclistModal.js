@@ -60,9 +60,8 @@ class CyclistModal extends Component {
       gender: this.state.gender,
     }
     api.updateCyclist(this.props.user, this.state.id, cyclist).then(() => {
-      console.log('Cyclist was updated')
+      this.props.action()
     })
-    this.props.action()
   }
 
   handleChangeFirstName(e) {

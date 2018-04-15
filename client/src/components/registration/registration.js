@@ -30,6 +30,7 @@ class Registration extends Component {
     this.fileUpload(this.state.file).then((response) =>{
       if (response.data == 'File was uploaded') {
         this.setState({ success: true, failed: false })
+        this.props.badgeSet(this.props.user)
       } else {
         this.setState({ failed: true, success: false})
       }
@@ -49,7 +50,6 @@ class Registration extends Component {
         }
     }
     return  post(url, formData , config)
-    window.location.reload()
   }
 
   render() {

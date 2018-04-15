@@ -28,13 +28,11 @@ class Requests extends Component {
         this.editClick = this.editClick.bind(this)
         this.onSaveButtonClick = this.onSaveButtonClick.bind(this)
         this.onCloseButtonClick = this.onCloseButtonClick.bind(this)
+        this.renewCyclistsState = this.renewCyclistsState.bind(this)
       }
 
    componentWillMount() {
-    api.getRequests(this.props.user).then( requests => {
-        this.setState({ requests })
-        this.counter()
-    })
+    this.renewCyclistsState()
     eventsApi.getEvents(this.props.user).then(omniums => {
         if (omniums.length != 0) {
             this.setState({
@@ -45,15 +43,19 @@ class Requests extends Component {
    }
 
    onSaveButtonClick(){
-        this.setState({
-            edit: false,
-        })
-        window.location.reload()
+    this.renewCyclistsState()
     }
 
   onCloseButtonClick(){
     this.setState({
         edit: false
+    })
+  }
+
+  renewCyclistsState(){
+    api.getRequests(this.props.user).then( requests => {
+        this.setState({ requests,  edit: false, })
+        this.counter()
     })
   }
 
@@ -70,7 +72,7 @@ class Requests extends Component {
    deleteCyclist(id) {
        api.deleteCyclist(this.props.user, id).then(() => {
            console.log('User was deleted')
-           window.location.reload()
+           this.renewCyclistsState()
        })
    }
 
@@ -78,7 +80,7 @@ class Requests extends Component {
        console.log('Approving cyclist')
        api.approveCyclist(this.props.user, id, this.state.lastEventId).then(() => {
            console.log('approved')
-           window.location.reload()
+           this.renewCyclistsState()
        })
    }
 

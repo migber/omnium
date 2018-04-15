@@ -16,9 +16,8 @@ class Elimination extends Component {
       cyclists: null,
       raceOrder: 3,
       category: null,
+      omniumOverall: 0,
       startList: null,
-      womenStartList: null,
-      menScoresStartList: null,
     }
     this.changeList = this.changeList.bind(this)
   }
@@ -35,22 +34,18 @@ class Elimination extends Component {
       this.props.omniumId,
       this.state.raceOrder,
       localStorage.getItem('category'),
-     ).then( scores => {
-        console.log(scores)
-        const startList = helper.scratchRaceStartList(scores)
+     ).then((scores) => {
         const orderedScores = helper.orderByPlace(scores)
-        console.log(orderedScores)
-        this.setState({ scores: orderedScores, startList: startList})
+        this.setState({ scores: orderedScores})
     })
     raceApi.getScoresOfSpecificRace(
       this.props.user,
       this.props.omniumId,
-      this.state.raceOrder,
-      'women'
-     ).then( scores => {
-        const startList = helper.scratchRaceStartList(scores)
-        const orderedScores = helper.orderByPlace(scores)
-        this.setState({ womenScores: orderedScores, womenStartList: startList })
+      this.state.omniumOverall,
+      localStorage.getItem('category'),
+     ).then((scores) => {
+        const startList = helper.orderByPointsBigger(scores)
+        this.setState({ startList })
     })
   }
 
