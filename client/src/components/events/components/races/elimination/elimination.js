@@ -35,7 +35,7 @@ class Elimination extends Component {
       this.state.raceOrder,
       localStorage.getItem('category'),
      ).then((scores) => {
-        const orderedScores = helper.orderByPlace(scores)
+        const orderedScores = helper.eliminationFinishOrder(scores)
         this.setState({ scores: orderedScores})
     })
     raceApi.getScoresOfSpecificRace(
@@ -45,6 +45,7 @@ class Elimination extends Component {
       localStorage.getItem('category'),
      ).then((scores) => {
         const startList = helper.orderByPointsBigger(scores)
+        console.log(startList)
         this.setState({ startList })
     })
   }
@@ -55,14 +56,21 @@ class Elimination extends Component {
       this.props.omniumId,
       this.state.raceOrder,
       category,
-     ).then( scores => {
-        const startList = helper.scratchRaceStartList(scores)
-        const orderedScores = helper.orderByPlace(scores)
+     ).then((scores) => {
+        const orderedScores = helper.eliminationFinishOrder(scores)
         this.setState({
            scores: orderedScores,
-           startList,
            eliminatedCounter: orderedScores.length,
         })
+    })
+    raceApi.getScoresOfSpecificRace(
+      this.props.user,
+      this.props.omniumId,
+      this.state.omniumOverall,
+      localStorage.getItem('category'),
+     ).then((scores) => {
+        const startList = helper.orderByPointsBigger(scores)
+        this.setState({ startList })
     })
   }
 
@@ -119,9 +127,9 @@ class Elimination extends Component {
           }
         </thead>
         <tbody>
-        { category === 'men' ? (
+        {
           isStartList ? (
-            startList &&  startList.map((score, id) => (
+            startList && startList.map((score, id) => (
               <EliminationItem
                 key={`${score.id}${Math.random()}`}
                 score={score}
@@ -145,33 +153,6 @@ class Elimination extends Component {
               />
             ))
           )
-        ) : (
-          isStartList ? (
-            womenStartList && womenStartList.map((score, id) => (
-              <EliminationItem
-                key={`${score.id}${Math.random()}`}
-                score={score}
-                eventId={this.state.eventId}
-                user={this.props.user}
-                rankId={id}
-                isStartList={this.props.isStartList}
-                category={this.state.category}
-              />
-            ))
-          ) : (
-            womenScores && womenScores.map((score, id) => (
-              <EliminationItem
-                key={`${score.id}${Math.random()}`}
-                score={score}
-                eventId={this.state.eventId}
-                user={this.props.user}
-                rankId={id}
-                isStartList={this.props.isStartList}
-                category={this.state.category}
-              />
-            ))
-          )
-        )
       }
           </tbody>
         </table>

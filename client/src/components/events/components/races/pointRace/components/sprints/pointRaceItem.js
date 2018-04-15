@@ -76,7 +76,21 @@ class PointRaceItemSprints extends Component {
     console.log("clicked")
     console.log(this.state.sprints)
     const order = this.props.sprintOrder
-    const points = sprintNr === 10 ? FINAL_FINISH[order] : PLACE_TO_POINTS[order]
+    let points
+    switch (localStorage.getItem('category')) {
+      case 'men':
+        points = sprintNr === 10 ? FINAL_FINISH[order] : PLACE_TO_POINTS[order]
+        break;
+      case 'women':
+      case 'juniorsM':
+        points = sprintNr === 8 ? FINAL_FINISH[order] : PLACE_TO_POINTS[order]
+        break;
+      case 'juniorsW':
+        points = sprintNr === 6 ? FINAL_FINISH[order] : PLACE_TO_POINTS[order]
+        break
+      default:
+        break;
+    }
     console.log(`Active sprint ${this.props.activeSprint}`)
     const sprint = {
       sprintNumber: this.props.activeSprint,

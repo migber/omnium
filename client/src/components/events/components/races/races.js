@@ -65,7 +65,7 @@ class Race extends Component {
     }
     this.setState({ eventName: localStorage.getItem('eventName')})
     this.setState({ omniumId: localStorage.getItem('omniumId')})
-    api.getRaces(this.props.user, this.props.location.pathname ).then( races => {
+    api.getRaces(this.props.user, this.props.location.pathname ).then((races) => {
       this.setState({ races })
     })
     api.getScoresOfSpecificRace(

@@ -17,7 +17,7 @@ function CreateStartList(scores) {
   return startList
 }
 
-function finishOrder(scores){
+function eliminationFinishOrder(scores){
   let ordered = []
   const disqualifiedScores = []
   scores.forEach(element => {
@@ -27,12 +27,39 @@ function finishOrder(scores){
     else ordered.push(element)
   })
   ordered.sort(function(a, b) {
-    if (a.totalPoints === b.totalPoints)
-      return a.raceNumber - b.raceNumber
+      return a.place - b.place
   })
+  console.log(ordered)
   disqualifiedScores.sort(function(a, b) {
     return a.raceNumber - b.raceNumber
   })
+  console.log(disqualifiedScores)
+  const finalScores = ordered.concat(disqualifiedScores)
+  return finalScores
+}
+
+function finishOrder(scores){
+  let ordered = []
+  const disqualifiedScores = []
+  scores.forEach((element) => {
+    if (element.dns) disqualifiedScores.push(element)
+    else if (element.dnf) disqualifiedScores.push(element)
+    else if (element.dnq) disqualifiedScores.push(element)
+    else ordered.push(element)
+  })
+  console.log(disqualifiedScores)
+  ordered.sort(function(a, b) {
+      return b.totalPoints - a.totalPoints
+  })
+  // ordered.sort(function(a, b) {
+  //   if (a.totalPoints === b.totalPoints)
+  //     return a.finishPlace - b.finishPlace
+  // })
+  console.log(ordered)
+  disqualifiedScores.sort(function(a, b) {
+    return a.raceNumber - b.raceNumber
+  })
+  console.log(disqualifiedScores)
   const finalScores = ordered.concat(disqualifiedScores)
   return finalScores
 }
@@ -41,6 +68,21 @@ function scratchRaceStartList(scores) {
   return scores.sort(function(a, b) {
     return a.raceNumber - b.raceNumber
   })
+}
+
+function eliminationEditSort(scores){
+  let ordered = []
+  const disqualifiedScores = []
+  scores.forEach(element => {
+    if (element.dns) disqualifiedScores.push(element)
+    else if (element.dnf) disqualifiedScores.push(element)
+    else if (element.dnq) disqualifiedScores.push(element)
+    else ordered.push(element)
+  })
+  ordered.sort(function(a, b) {
+      return a.raceNumber - b.raceNumber
+  })
+  return ordered
 }
 
 function orderByPointsBigger(scores) {
@@ -56,13 +98,27 @@ function sortByRaceNumbers(scores) {
 }
 
 function omniumOrder(scores) {
-  return scores.sort(function(a, b) {
+  let ordered = []
+  const disqualifiedScores = []
+  scores.forEach((score) => {
+    if (score.dns) disqualifiedScores.push(score)
+    else if (score.dnf) disqualifiedScores.push(score)
+    else if (score.dnq) disqualifiedScores.push(score)
+    else ordered.push(score)
+  })
+  disqualifiedScores.sort(function(a, b) {
+    return a.raceNumber - b.raceNumber
+  })
+  console.log(disqualifiedScores)
+  ordered.sort(function(a, b) {
     if (a.totalPoints === b.totalPoints) {
       return a.place - b.place
     } else {
       return b.totalPoints - a.totalPoints
     }
   })
+  const finalScores = ordered.concat(disqualifiedScores)
+  return finalScores
 }
 
 function finishOrderInOther(scores){
@@ -195,4 +251,6 @@ module.exports = {
   updatePosition,
   omniumOrder,
   sortByRaceNumbers,
+  eliminationEditSort,
+  eliminationFinishOrder,
 }

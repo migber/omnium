@@ -65,9 +65,9 @@ class TempoEdit extends Component {
       this.props.omniumId,
       this.state.raceOrder,
       localStorage.getItem('category'),
-     ).then( scores => {
+     ).then((scores) => {
       const startList = helper.scratchRaceStartList(scores)
-      this.setState({ scores, scoresList: startList})
+      this.setState({ scores: helper.sortByRaceNumbers(scores), scoresList: startList})
     })
     this.createSprints(localStorage.getItem('category'))
   }
@@ -212,7 +212,7 @@ class TempoEdit extends Component {
      ).then((scores) => {
        console.log(scores)
         const startList = helper.scratchRaceStartList(scores)
-        const orderedScores = helper.orderByPlace(scores)
+        const orderedScores = helper.sortByRaceNumbers(scores)
         this.createSprints(localStorage.getItem('category'))
         this.setState({
            scores: orderedScores,

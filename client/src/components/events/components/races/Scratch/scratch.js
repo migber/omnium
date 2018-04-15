@@ -37,7 +37,7 @@ class Scratch extends Component {
      ).then((scores) => {
         const startList = helper.scratchRaceStartList(scores)
         console.log(startList)
-        const orderedScores = helper.orderByPlace(scores)
+        const orderedScores = helper.finishOrder(scores)
         console.log(orderedScores)
         this.setState({ scores: orderedScores, scoresList: startList})
     })
@@ -53,7 +53,7 @@ class Scratch extends Component {
      ).then((scores) => {
        console.log(scores)
         const startList = helper.scratchRaceStartList(scores)
-        const orderedScores = helper.orderByPlace(scores)
+        const orderedScores = helper.finishOrder(scores)
         this.setState({
            scores: orderedScores,
            scoresList: startList,

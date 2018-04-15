@@ -112,8 +112,8 @@ class EliminationEdit extends Component {
         this.state.raceOrder,
         localStorage.getItem('category'),
        ).then((scores) => {
-          const startList = helper.scratchRaceStartList(scores)
-          const orderedScores = helper.orderByPlace(scores)
+          const startList = helper.eliminationEditSort(scores)
+          const orderedScores = helper.eliminationEditSort(scores)
           const eliminatedCounter = this.calculateEliminatedCounter(orderedScores).length
           this.setState({
              scores: orderedScores,
@@ -131,8 +131,8 @@ class EliminationEdit extends Component {
       this.state.raceOrder,
       localStorage.getItem('category'),
      ).then((scores) => {
-        const startList = helper.scratchRaceStartList(scores)
-        const orderedScores = helper.orderByPlace(scores)
+        const startList = helper.eliminationEditSort(scores)
+        const orderedScores = helper.eliminationEditSort(scores)
         console.log(orderedScores)
         const eliminatedCounter = this.calculateEliminatedCounter(orderedScores).length
         console.log(eliminatedCounter)
@@ -184,8 +184,8 @@ class EliminationEdit extends Component {
       this.state.raceOrder,
       category,
      ).then( scores => {
-        const startList = helper.scratchRaceStartList(scores)
-        const orderedScores = helper.orderByPlace(scores)
+        const startList = helper.eliminationEditSort(scores)
+        const orderedScores = helper.eliminationEditSort(scores)
         this.setState({
            scores: orderedScores,
            scoresList: startList,

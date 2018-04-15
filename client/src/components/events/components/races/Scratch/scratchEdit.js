@@ -71,7 +71,11 @@ class ScratchEdit extends Component {
     console.log('Best I can do ')
     const active = localStorage.getItem('activeTab')
     const updatedScores = changeFinishOrder(this.state.scores)
-    this.props.saveFinishPlaces(updatedScores, 1, 'men')
+    this.props.saveFinishPlaces(
+      updatedScores,
+      this.state.raceOrder,
+      localStorage.getItem('category'),
+    )
   }
 
   onDragEnd(result) {

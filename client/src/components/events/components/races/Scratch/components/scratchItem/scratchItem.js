@@ -110,7 +110,11 @@ class ScratchItem extends Component {
           ) : dnq ? (
             <td className="txt-big text">DNQ</td>
           ) : (
-            <td className="txt-big text">{place}</td>
+            !isStartList ? (
+              <td className="txt-big text">{place}</td>
+            ) : (
+              <td className="txt-big text">{rankId + 1}</td>
+            )
           )
         }
         <td className="raceNo txt-big text">{raceNumber}</td>

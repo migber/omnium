@@ -76,7 +76,7 @@ class PointRaceEdit extends Component {
       this.state.raceOrder,
       localStorage.getItem('category'),
      ).then((scores) => {
-      const startList = helper.sortByRaceNumbers(scores)
+      const startList = helper.eliminationEditSort(scores)
       const sorted = helper.orderByPointsBigger(scores)
       this.setState({ scores: sorted, scoresList: startList})
       this.createSprints(localStorage.getItem('category'))
@@ -199,7 +199,7 @@ class PointRaceEdit extends Component {
       this.state.raceOrder,
       category,
      ).then( scores => {
-      const startList = helper.scratchRaceStartList(scores)
+      const startList = helper.eliminationEditSort(scores)
       const sorted = helper.orderByPointsBigger(scores)
       this.setState({ scores: sorted, scoresList: startList})
     })
@@ -281,8 +281,10 @@ class PointRaceEdit extends Component {
       category,
      ).then((scores) => {
        console.log(scores)
-        const startList = helper.scratchRaceStartList(scores)
-        const orderedScores = helper.orderByPlace(scores)
+        const startList = helper.eliminationEditSort(scores)
+        console.log(startList)
+        const orderedScores = helper.orderByPointsBigger(scores)
+        console.log(orderedScores)
         this.createSprints(localStorage.getItem('category'))
         this.setState({
            scores: orderedScores,

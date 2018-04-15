@@ -45,7 +45,7 @@ class EliminationItem extends Component {
     return (
       <tr>
         {
-          !isStartList && dns ? (
+          dns ? (
             <td className="txt-big text">DNS</td>
           ) : dnf ? (
             <td className="txt-big text">DNF</td>
