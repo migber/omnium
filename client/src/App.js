@@ -8,7 +8,6 @@ import Share from './components/share/share'
 import Requests from './components/requests/requests'
 import Cyclists from './components/cyclists/cyclists'
 import Event from './components/events'
-import Home from './components/home/home'
 import Register from './components/registration/registration'
 import { VIP_EMAIL } from './config/env'
 import { request } from 'https'
@@ -28,6 +27,7 @@ class App extends Component {
       authenticated: false,
       badges: 0,
       assignBadges: 0,
+      show: true,
     }
     this.onLogin = this.onLogin.bind(this)
     this.onLogout = this.onLogout.bind(this)
@@ -105,10 +105,12 @@ class App extends Component {
        />
        <div>
        <Switch>
-        <Route
-            exact path='/'
-            render={( props ) => <Home {...props} user={user} authenticated={authenticated} />}
-         />
+        <Route path='/events' render={( props ) =>
+          <Event {...props}
+            user={user}
+            show={this.state.show}
+          />}
+          />
        </Switch>
         <Route
             exact path='/cyclists'
@@ -123,18 +125,16 @@ class App extends Component {
           />
         }
         />
-        <Route path='/events' render={( props ) =>
-        <Event {...props} user={user}/>}
-        />
+
         { user.email == VIP_EMAIL && (
           <div>
          <Route
-         path='/requests' render={( props ) =>
-         <Requests {...props}
-           user={user}
-           authenticated={authenticated}
-           badgeSet={this.badgeSet}
-         />}
+            path='/requests' render={( props ) =>
+            <Requests {...props}
+              user={user}
+              authenticated={authenticated}
+              badgeSet={this.badgeSet}
+            />}
         />
         <Route
         path='/assignNumbers' render={( props ) =>
@@ -149,8 +149,6 @@ class App extends Component {
       )
     }
           </div>
-       <div id="root"></div>
-       {/* <Home/> */}
        <Share/>
       <Footer />
       </div>

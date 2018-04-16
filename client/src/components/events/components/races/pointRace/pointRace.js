@@ -43,7 +43,7 @@ class PointRace extends Component {
       this.state.raceOrder,
       localStorage.getItem('category'),
      ).then((scores) => {
-        const orderedScores = raceHelper.orderByPointsBigger(scores)
+        const orderedScores = raceHelper.omniumOrder(scores)
         this.setState({ scores: orderedScores})
         this.createSprints(localStorage.getItem('category'))
     })
@@ -53,7 +53,7 @@ class PointRace extends Component {
       this.state.omniumOverall,
       localStorage.getItem('category'),
      ).then( scores => {
-        const orderedScores = raceHelper.orderByPointsBigger(scores)
+        const orderedScores = raceHelper.omniumOrder(scores)
         this.setState({ scoresList: orderedScores})
     })
   }
@@ -66,7 +66,7 @@ class PointRace extends Component {
       category,
      ).then((scores) => {
         const startList = raceHelper.scratchRaceStartList(scores)
-        const orderedScores = raceHelper.orderByPointsBigger(scores)
+        const orderedScores = raceHelper.omniumOrder(scores)
         this.createSprints(localStorage.getItem('category'))
         this.setState({
            scores: orderedScores,

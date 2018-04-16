@@ -17,7 +17,7 @@ class Event extends Component {
       omniums: null,
       eventName: null,
       date: null,
-      show: true,
+      show: props.show,
       addEvent: false,
       lastEventId: null,
       omniumsLength: null,
@@ -31,8 +31,10 @@ class Event extends Component {
   }
 
   componentWillMount() {
+    console.log("omniums")
+    console.log(this.state.show)
     const countEvents = []
-    api.getEvents(this.props.user).then( omniums => {
+    api.getEvents(this.props.user).then((omniums) => {
       this.setState({ omniums })
       if (omniums) {
         this.setState({
@@ -43,6 +45,9 @@ class Event extends Component {
     }
   )
 }
+  componentDidMount() {
+    console.log("Did mount")
+  }
 
   setEventData(name, date, id) {
     this.setState({eventName: name, date, omniumId: id,  show: false})
@@ -122,13 +127,13 @@ class Event extends Component {
           <Route
             path={`${this.props.match.path}/:id/races`}
             render={( props ) =>
-              <Races
-                {...props}
-                user={this.props.user}
-                omniumId={this.state.omniumId}
-                eventName={this.state.eventName}
-                date={this.state.date}
-                notShowEvents={this.notShowEvents}
+             <Races
+                  {...props}
+                  user={this.props.user}
+                  omniumId={this.state.omniumId}
+                  eventName={this.state.eventName}
+                  date={this.state.date}
+                  notShowEvents={this.notShowEvents}
               />
             }
           />
