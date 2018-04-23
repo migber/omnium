@@ -33,6 +33,7 @@ class MenuBar extends Component {
       <Navbar.Collapse>
         <Nav className="img-div">
           <NavItem eventKey={1} href="/about">About</NavItem>
+          <NavItem eventKey={7} href="/userRegistration">Registration</NavItem>
           <NavItem eventKey={2} href="/home">Contacts</NavItem>
           { authenticated && user.email == VIP_EMAIL && (
             <NavItem eventKey={1} href="/assignNumbers"> Assign Numbers

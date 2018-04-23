@@ -31,6 +31,9 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING(15),
       allowNull: false,
     },
+    userId: {
+      type: DataTypes.INTEGER,
+    },
     category: {
       type: DataTypes.STRING(40),
       allowNull: false,
@@ -44,6 +47,10 @@ module.exports = (sequelize, DataTypes) => {
     // associations can be defined here
     Cyclist.hasMany(models.Score, {
       foreignKey: 'CyclistId',
+      onDelete: 'CASCADE',
+    })
+    Cyclist.belongsTo(models.User, {
+      foreignKey: 'userId',
       onDelete: 'CASCADE',
     })
   }

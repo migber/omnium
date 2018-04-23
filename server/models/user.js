@@ -18,7 +18,10 @@ module.exports = (sequelize, DataTypes) => {
     img: DataTypes.STRING(160),
   }, {})
   User.associate = function associations(models) {
-    // associations can be defined here
+    User.hasMany(models.Cyclist, {
+      foreignKey: 'id',
+      onDelete: 'CASCADE',
+    })
   }
   return User
 }

@@ -9,6 +9,7 @@ const {
   Cyclist,
   Score,
   Sprint,
+  User,
 } = require('../models/index')
 const responseBadRequest = require('../helpers/responseHelper')
 
@@ -83,6 +84,7 @@ async function putScoresInSpecificRace(req, res) {
 async function getListOfAssigningNumbers(req, res) {
   console.log('Getting list of scores for assigning numbers')
   const eventId = Number(req.params.eventId)
+  console.log(eventId)
   Score.findAll({
     where: {
       raceNumber: {

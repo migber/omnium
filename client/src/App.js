@@ -14,6 +14,7 @@ import { request } from 'https'
 import api from './components/requests/api'
 import AssignNumbers from './components/assignNumbers/assignNumbers'
 import apiAssignment from './components/assignNumbers/api'
+import Users from './components/users/user'
 
 const AUTHORISE_URL = 'https://omnium.herokuapp.com/api/users/createLogged'
 const EXISTS_URL = 'https://omnium.herokuapp.com/api/users/exists'
@@ -145,6 +146,13 @@ class App extends Component {
           authenticated={authenticated}
           badgeSet={this.badgeSet}
           badgeSetAssign={this.badgeSetAssign}
+        />}
+       />
+        <Route
+        path='/userRegistration' render={( props ) =>
+        <Users {...props}
+          user={user}
+          authenticated={authenticated}
         />}
        />
        </div>

@@ -59,6 +59,7 @@ class AssignNumbers extends Component {
 
     render() {
         const { scores, deleteBtn, edit } = this.state
+        console.log(scores)
         return (
             <div className="container">
             {
@@ -81,7 +82,7 @@ class AssignNumbers extends Component {
                     </tr>
                     </thead>
                     <tbody>
-                    { scores.map(score => (
+                    { scores && scores.map(score => (
                        <AssignNumbersItem
                           key={`${score.id}${Math.random()}`}
                           score={score}

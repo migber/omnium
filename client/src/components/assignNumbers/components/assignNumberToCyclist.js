@@ -78,8 +78,8 @@ class AssignNumberCyclistItem extends Component {
     return (
       <tr className="inp-size">
           <td>
-          <div class="inp-size input-group">
-             <input type="number" value={raceNumber} class="txt-inside bord inp-size" onChange={this.changeRaceNumber}/>
+          <div className="inp-size input-group">
+             <input type="number" value={raceNumber} className="txt-inside bord inp-size" onChange={this.changeRaceNumber}/>
           </div>
           </td>
           <td className="txt-big text">{firstName}</td>
