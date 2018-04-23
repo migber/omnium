@@ -73,8 +73,6 @@ class PointRaceItemSprints extends Component {
   }
 
   saveSprint(sprintNr, scoreId){
-    console.log("clicked")
-    console.log(this.state.sprints)
     const order = this.props.sprintOrder
     let points
     switch (localStorage.getItem('category')) {
@@ -91,7 +89,6 @@ class PointRaceItemSprints extends Component {
       default:
         break;
     }
-    console.log(`Active sprint ${this.props.activeSprint}`)
     const sprint = {
       sprintNumber: this.props.activeSprint,
       sprintPoints: points,
@@ -103,7 +100,6 @@ class PointRaceItemSprints extends Component {
           sprintId =  sprint.id
       }
     })
-    console.log(sprintId)
     api.updateSprint(
       this.props.user,
       this.props.eventId,
@@ -112,18 +108,12 @@ class PointRaceItemSprints extends Component {
       sprint,
       sprintId,
     ).then((sprint) => {
-      console.log(sprint)
     })
-
-    // const eliminated = this.state.points !== 0 ? true : false
     this.setState({
       eliminated: !this.state.eliminated,
       sprintPoints: points,
     })
-    console.log(order)
-
     this.props.recalculateSprintsCounter()
-    // this.props.eliminateCyclist(scoreId)
   }
 
   render() {

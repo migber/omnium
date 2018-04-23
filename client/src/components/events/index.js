@@ -31,8 +31,6 @@ class Event extends Component {
   }
 
   componentWillMount() {
-    console.log("omniums")
-    console.log(this.state.show)
     const countEvents = []
     api.getEvents(this.props.user).then((omniums) => {
       this.setState({ omniums })
@@ -43,10 +41,7 @@ class Event extends Component {
         })
       }
     }
-  )
-}
-  componentDidMount() {
-    console.log("Did mount")
+    )
   }
 
   setEventData(name, date, id) {

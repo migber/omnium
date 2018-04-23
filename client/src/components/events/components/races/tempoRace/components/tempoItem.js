@@ -41,7 +41,6 @@ class TempoItem extends Component {
     this.setState({
       sprintsString
     })
-    console.log(sprintsString)
   }
 
   updateRaceNumber() {
@@ -49,10 +48,12 @@ class TempoItem extends Component {
       raceNumber: this.state.raceNumber,
       eventId: this.state.eventId
     }
-    api.updateCyclistRaceNumber(this.props.user, this.state.eventId, this.state.scoreId, score).then(() => {
-      console.log('Cyclist number was updated')
-    })
-    window.location.reload()
+    api.updateCyclistRaceNumber(
+      this.props.user,
+      this.state.eventId,
+      this.state.scoreId,
+      score,
+    ).then(() => {})
   }
 
   changeRaceNumber(event){
@@ -62,10 +63,10 @@ class TempoItem extends Component {
   }
 
   deleteScore(){
-    api.deleteScore(this.props.user, this.state.scoreId).then(() => {
-      console.log(`Score id:${this.state.scoreId} was deleted`)
-    })
-    window.location.reload()
+    api.deleteScore(
+      this.props.user,
+      this.state.scoreId,
+    ).then(() => {})
   }
 
   render() {

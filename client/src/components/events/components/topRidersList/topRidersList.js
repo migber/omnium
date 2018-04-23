@@ -20,8 +20,7 @@ class FirstRidersList extends Component {
       localStorage.getItem('omniumId'),
       this.state.raceOrder,
       'men',
-    ).then(scores => {
-     console.log('Inside OverallOmniu MAn')
+    ).then((scores) => {
      this.setState({ scoresM: helper.omniumOrder(scores)})
     })
     api.getScoresOverall(
@@ -29,9 +28,7 @@ class FirstRidersList extends Component {
       localStorage.getItem('omniumId'),
       this.state.raceOrder,
       'women',
-    ).then(scores => {
-      console.log('Inside OverallOmniu WOmen')
-
+    ).then((scores) => {
       this.setState({ scoresW: helper.omniumOrder(scores)})
      })
   }

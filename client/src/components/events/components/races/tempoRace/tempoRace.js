@@ -37,7 +37,6 @@ class TempoRace extends Component {
       this.state.raceOrder,
       localStorage.getItem('category'),
      ).then((scores) => {
-        console.log(scores)
         const orderedScores = raceHelper.finishOrder(scores)
         this.setState({ scores: orderedScores})
     })
@@ -48,20 +47,17 @@ class TempoRace extends Component {
       localStorage.getItem('category'),
      ).then((scores) => {
         const startList = helper.orderByTotalPoints(scores)
-        console.log(startList)
         this.setState({ startList})
     })
   }
 
   changeList(category){
-    console.log("inside")
     ScratchItemAPI.getScoresOfSpecificRace(
       this.props.user,
       this.props.omniumId,
       this.state.raceOrder,
       category,
      ).then((scores) => {
-       console.log(scores)
         const startList = raceHelper.scratchRaceStartList(scores)
         const orderedScores = raceHelper.finishOrder(scores)
         this.setState({

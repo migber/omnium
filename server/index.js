@@ -2,12 +2,11 @@
 require('dotenv').config()
 const express = require('express')
 const cors = require('cors')
-const request = require('request')
+// const request = require('request')
 
 const app = express()
 const db = require('../config/connectDB')
 // const usersController = require('./controllers/user')
-const rr = require('./helpers/excelParsing')
 // const server = require('http').Server(app)
 // const io = require('socket.io')(server)
 
@@ -34,7 +33,6 @@ io.on('connection', (client) => {
     }, interval)
   })
   client.on('SEND_MESSAGE', async (data) => {
-    console.log(data)
     io.emit('RECEIVE_MESSAGE', data.totalPoints)
   })
 })

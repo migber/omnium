@@ -46,7 +46,6 @@ class Cyclists extends Component {
    }
 
   changeList(category){
-    console.log("inside")
     localStorage.setItem('category', category)
     api.getScoresOverall(
       this.props.user,
@@ -54,14 +53,12 @@ class Cyclists extends Component {
       this.state.raceOrder,
       category,
     ).then((scores) => {
-      console.log(scores)
       this.setState({cyclists: helper.sortByRaceNumber(scores)})
     })
   }
 
    deleteCyclist(id) {
     api.deleteCyclist(this.props.user, id).then(() => {
-        console.log('User was deleted')
         window.location.reload()
     })
   }
@@ -85,14 +82,12 @@ class Cyclists extends Component {
   }
 
   findParticipants(id){
-    console.log(`Event id in find participants ${this.state.eventId}`)
     api.getScoresOverall(
       this.props.user,
       id,
       this.state.raceOrder,
       localStorage.getItem('category')
     ).then((scores) => {
-      console.log(scores)
       this.setState({cyclists: helper.sortByRaceNumber(scores)})
     })
   }

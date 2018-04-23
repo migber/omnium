@@ -6,7 +6,7 @@ import api from './api'
 import helper from './helper'
 import scratchIteamAPI from '../Scratch/components/scratchItem/api'
 import raceHelper from '../helper'
-import TempoItem from './components/pointraceItem'
+import PointRaceItem from './components/pointraceItem'
 import sprintsNumbers from './constants/sprints'
 
 class PointRace extends Component {
@@ -31,7 +31,6 @@ class PointRace extends Component {
 
   componentWillMount() {
     this.props.notShowEvents()
-    console.log(localStorage.getItem('activeTab'))
     localStorage.setItem('activeTab', 4)
     this.setState({ eventName: localStorage.getItem('eventName')})
     this.setState({
@@ -77,7 +76,6 @@ class PointRace extends Component {
 
   createSprints(category){
     const sprintsNumber = sprintsNumbers[category]
-    console.log(`Sprints number ${sprintsNumber}`)
     let sprints = []
     if (sprintsNumber) {
       for (let i = 0; i < sprintsNumber; i++){
@@ -141,7 +139,7 @@ class PointRace extends Component {
               <th scope="col">Nationality</th>
               {
                 sprints && sprints.map((sprint, id) => (
-                  <th className="raceNo txt-big text">{sprint.sprintNumber}</th>
+                  <th key={`${sprint.id}${Math.random()}`} className="raceNo txt-big text">{sprint.sprintNumber}</th>
                 ))
             }
               <th scope="col">Finish place</th>
@@ -156,7 +154,7 @@ class PointRace extends Component {
         {
           isStartList ? (
             scoresList && scoresList.map((score, id) => (
-              <TempoItem
+              <PointRaceItem
                 key={`${score.id}${Math.random()}`}
                 score={score}
                 eventId={this.state.eventId}
@@ -168,7 +166,7 @@ class PointRace extends Component {
             ))
           ) : (
             scores && scores.map((score, id) => (
-              <TempoItem
+              <PointRaceItem
                 key={`${score.id}${Math.random()}`}
                 score={score}
                 eventId={this.state.eventId}

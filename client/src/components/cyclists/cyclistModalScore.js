@@ -76,12 +76,8 @@ class CyclistScoreModal extends Component {
       birthdate: Moment(this.state.birthdate).format('YYYY-MM-YY'),
       gender: this.state.gender,
     }
-    api.updateCyclist(this.props.user, this.state.id, cyclist).then(() => {
-      console.log('Cyclist was updated')
-    })
-    api.updateScore(this.props.user, this.state.eventId, this.state.scoreId, score).then(() => {
-      console.log('Score was updated')
-    })
+    api.updateCyclist(this.props.user, this.state.id, cyclist).then(() => {})
+    api.updateScore(this.props.user, this.state.eventId, this.state.scoreId, score).then(() => {})
     localStorage.setItem('category', JSON.stringify(this.state.category))
     this.props.action(this.state.category)
   }

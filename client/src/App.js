@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
+import { BrowserRouter as Router, Route, Switch, Redirect } from 'react-router-dom'
 import logo from './ltu-timing.png'
 import './App.css'
 import MenuBar             from './components/menuBar/menuBar'
@@ -71,7 +71,6 @@ class App extends Component {
   }
 
   badgeSet(user){
-    console.log('badge')
     api.getRequests(user).then((requests) => {
       this.setState({ badges: requests.length })
     })
@@ -105,6 +104,9 @@ class App extends Component {
        />
        <div>
        <Switch>
+       <Route exact path="/" render={()=>(
+         <Redirect to="/events" />
+        )} />
         <Route path='/events' render={( props ) =>
           <Event {...props}
             user={user}

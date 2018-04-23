@@ -65,7 +65,6 @@ async function createSprint(req, res) {
       },
     },
   }).then((sprints) => {
-    console.log(sprints)
     if (sprints.length !== 0) {
       const sprintDelete = sprints[0]
       Score.findById(scoreId).then((score) => {
@@ -109,14 +108,9 @@ async function editSprint(req, res) {
     if (sprint) {
       Score.findById(scoreId).then((score) => {
         const total = score.totalPoints
-        console.log(total)
         const { sprintPoints } = sprint
-        console.log(sprintPoints)
         const minus = total - sprintPoints
-        console.log(minus)
         const plus = total + req.body.sprintPoints
-        console.log(plus)
-        console.log(sprintPoints)
         if (sprintPoints !== 0) {
           sprint.updateAttributes({
             sprintNumber: req.body.sprintNumber,

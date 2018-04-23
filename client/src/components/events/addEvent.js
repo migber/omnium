@@ -31,9 +31,7 @@ class AddEventItem extends Component {
      endDate: this.state.endDate,
      description: this.state.description,
     }
-    api.createEvent(this.props.user, event, this.state.description).then(() => {
-      console.log('event was created')
-    })
+    api.createEvent(this.props.user, event, this.state.description).then(() => {})
     this.props.action()
   }
 

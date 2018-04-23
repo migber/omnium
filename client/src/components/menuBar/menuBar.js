@@ -71,7 +71,6 @@ class MenuBar extends Component {
           <NavItem onClick={this.props.onLogout}>Log out</NavItem>
           )}
           <NavItem eventKey={1}> API explorer</NavItem>
-         {/* )} */}
         </Nav>
       </Navbar.Collapse>
     </Navbar>

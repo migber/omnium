@@ -45,7 +45,6 @@ class Elimination extends Component {
       localStorage.getItem('category'),
      ).then((scores) => {
         const startList = helper.orderByPointsBigger(scores)
-        console.log(startList)
         this.setState({ startList })
     })
   }

@@ -47,7 +47,6 @@ class CyclistModal extends Component {
   }
 
   updateCyclist() {
-    console.log('here update cyclist')
     const cyclist = {
       firstName: this.state.firstName,
       lastName: this.state.lastName,

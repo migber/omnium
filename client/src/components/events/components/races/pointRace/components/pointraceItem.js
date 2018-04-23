@@ -34,23 +34,11 @@ class PointRaceItem extends Component {
   }
 
   componentDidMount(){
-    // const sprints = this.props.score.Sprints
-    // sprints.sort((a, b) => {
-    //   return a.sprintNumber - b.sprintNumber
-    // })
-    // var sprintsString = sprints.map((sprint) => {
-    //   return sprint.sprintNumber
-    // }).join(",")
-
-    // this.setState({
-    //   sprintsString
-    // })
     this.createSprints(localStorage.getItem('category'))
   }
 
   createSprints(category){
     const sprintsNumber = sprintsNumbers[category]
-    console.log(`Sprints number ${sprintsNumber}`)
     let sprints = []
     if (sprintsNumber) {
       for (let i = 0; i < sprintsNumber; i++){
@@ -71,9 +59,7 @@ class PointRaceItem extends Component {
       raceNumber: this.state.raceNumber,
       eventId: this.state.eventId
     }
-    api.updateCyclistRaceNumber(this.props.user, this.state.eventId, this.state.scoreId, score).then(() => {
-      console.log('Cyclist number was updated')
-    })
+    api.updateCyclistRaceNumber(this.props.user, this.state.eventId, this.state.scoreId, score).then(() => {})
     window.location.reload()
   }
 
@@ -85,7 +71,6 @@ class PointRaceItem extends Component {
 
   deleteScore(){
     api.deleteScore(this.props.user, this.state.scoreId).then(() => {
-      console.log(`Score id:${this.state.scoreId} was deleted`)
     })
     window.location.reload()
   }
@@ -140,9 +125,10 @@ class PointRaceItem extends Component {
             sprints.length !== 0 ? (
               sprints && sprints.sort((a, b) => a.sprintNumber > b.sprintNumber).map((sprint, id) => (
                 sprint.sprintPoints === 0 ? (
-                  <td className="raceNo txt-big text"></td>
+                  <td key={`${sprint.id}${Math.random()}`}
+                    className="raceNo txt-big text"></td>
                  ) : (
-                    <td>
+                    <td key={`${sprint.id}${Math.random()}`}>
                     {sprint.sprintPoints}
                     </td>
                  )

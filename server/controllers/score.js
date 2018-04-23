@@ -44,11 +44,8 @@ async function putScoresInSpecificRace(req, res) {
   console.log('Getting score of specific race')
   const raceId = Number(req.params.raceId)
   const eventId = Number(req.params.eventId)
-  console.log(req.body)
   const { category } = req.body
   const { score } = req.body
-  console.log(`Score ${score}`)
-  console.log(category)
   Score.findAll({
     where: {
       CyclistId: score.CyclistId,
@@ -65,11 +62,8 @@ async function putScoresInSpecificRace(req, res) {
       model: Sprint, as: 'Sprints',
     }],
   }).then((foundScore) => {
-    console.log(foundScore.length)
     if (foundScore) {
-      console.log(`Found total scores : ${foundScore[0].totalPoints}`)
       const total = foundScore[0].totalPoints ? (foundScore[0].totalPoints + score.points) : score.points
-      console.log(`Total ${total}`)
       foundScore[0].updateAttributes({
         totalPoints: total,
         finishPlace: score.finishPlace,
@@ -533,8 +527,6 @@ async function updatePlace(req, res) {
   const id = Number(req.params.scoreId)
   Score.findById(id).then((score) => {
     if (score) {
-      console.log(isDNX(score))
-      console.log(req.body)
       if (score.points === 0 && !isDNX(score)) {
         score.updateAttributes({
           points: req.body.points,

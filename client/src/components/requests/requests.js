@@ -71,15 +71,12 @@ class Requests extends Component {
 
    deleteCyclist(id) {
        api.deleteCyclist(this.props.user, id).then(() => {
-           console.log('User was deleted')
            this.renewCyclistsState()
        })
    }
 
    approve(id){
-       console.log('Approving cyclist')
        api.approveCyclist(this.props.user, id, this.state.lastEventId).then(() => {
-           console.log('approved')
            this.renewCyclistsState()
        })
    }

@@ -58,7 +58,6 @@ class EliminationItemEdit extends Component {
   }
 
   eliminateCyclistChild(scoreId){
-    console.log("clicked")
     const eliminated = this.state.points !== 0 ? true : false
     this.setState({
       eliminated

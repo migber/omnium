@@ -59,7 +59,6 @@ async function getCyclist(req, res) {
 
 async function createCyclist(req, res) {
   console.log('Create cyclist')
-  console.log(req.body)
   Cyclist.create({
     firstName: req.body.firstName,
     lastName: req.body.lastName,
@@ -80,7 +79,6 @@ async function createCyclist(req, res) {
 
 async function editCyclist(req, res) {
   console.log('Updating Cyclist')
-  console.log(req.body)
   const id = Number(req.params.cyclistId)
   Cyclist.findById(id).then((cyclist) => {
     if (cyclist) {
@@ -235,7 +233,6 @@ async function fileUpload(req, res) {
         const worksheet = workbook.getWorksheet('registration')
         worksheet.eachRow({ includeEmpty: false }, (row, rowNumber) => {
           if (rowNumber !== 1) {
-            console.log(row.values)
             const cyclist = {
               firstName: row.values[2],
               lastName: row.values[3].toUpperCase(),

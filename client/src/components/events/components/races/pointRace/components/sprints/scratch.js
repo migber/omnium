@@ -37,20 +37,17 @@ class Scratch extends Component {
      ).then((scores) => {
         const startList = helper.scratchRaceStartList(scores)
         const orderedScores = helper.orderByPlace(scores)
-        console.log(orderedScores)
         this.setState({ scores: orderedScores, scoresList: startList})
     })
   }
 
   changeList(category){
-    console.log("inside")
     scratchItemApi.getScoresOfSpecificRace(
       this.props.user,
       this.props.omniumId,
       this.state.raceOrder,
       category,
      ).then((scores) => {
-       console.log(scores)
         const startList = helper.scratchRaceStartList(scores)
         const orderedScores = helper.orderByPlace(scores)
         this.setState({

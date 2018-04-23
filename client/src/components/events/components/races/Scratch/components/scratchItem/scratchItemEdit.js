@@ -3,7 +3,6 @@ import api from './api'
 import './item.css'
 import openSocket from 'socket.io-client'
 import { Droppable, Draggable } from 'react-beautiful-dnd'
-// const  socket = openSocket('http://localhost:8080')
 
 const getItemStyle = (isDragging, draggableStyle) => ({
   // some basic styles to make the items look a bit nicer
@@ -23,6 +22,7 @@ class ScratchItemEdit extends Component {
     super(props)
     const { score, eventId, rankId } = props
     this.state = {
+      raceOrder: 1,
       rankId: rankId,
       raceNumber: score.raceNumber,
       eventId: eventId,
@@ -54,7 +54,6 @@ class ScratchItemEdit extends Component {
   }
 
   addMessage(data){
-    console.log(data);
     this.setState({totalPoints: data.totalPoints})
   }
 
@@ -63,9 +62,12 @@ class ScratchItemEdit extends Component {
       raceNumber: this.state.raceNumber,
       eventId: this.state.eventId
     }
-    api.updateCyclistRaceNumber(this.props.user, this.state.eventId, this.state.scoreId, score).then(() => {
-      console.log('Cyclist number was updated')
-    })
+    api.updateCyclistRaceNumber(
+      this.props.user,
+      this.state.eventId,
+      this.state.scoreId,
+      score,
+    ).then(() => {})
   }
 
   changeFinishOrder(e){
@@ -76,17 +78,22 @@ class ScratchItemEdit extends Component {
       finishPlace: e.target.value
     }
     if (e.target.value) {
-      api.updateCyclistFinisPlace(this.props.user, this.state.eventId, 1, this.state.scoreId, score).then(() => {})
+      api.updateCyclistFinisPlace(
+        this.props.user,
+        this.state.eventId,
+        this.state.raceOrder,
+        this.state.scoreId,
+        score).then(() => {})
     }
-    console.log(e.target.value)
   }
 
   addTwenty() {
-    console.log('add 20')
-    console.log(this.state.eventId)
-    api.addTwenty(this.props.user, this.state.eventId, 1, this.state.scoreId).then((score) => {
-      console.log(score.totalPoints)
-      console.log(`Score id:${this.state.scoreId} was updated Got + 20 `)
+    api.addTwenty(
+      this.props.user,
+      this.state.eventId,
+      this.state.raceOrder,
+      this.state.scoreId,
+    ).then((score) => {
       this.setState({
         totalPoints: score.totalPoints
       })
@@ -94,9 +101,12 @@ class ScratchItemEdit extends Component {
   }
 
   subtractTwenty() {
-    api.subtractTwenty(this.props.user, this.state.eventId, 1, this.state.scoreId).then((score) => {
-      console.log(`Score id:${this.state.scoreId} was updated Got - 20 `)
-      console.log(score.totalPoints)
+    api.subtractTwenty(
+      this.props.user,
+      this.state.eventId,
+      this.state.raceOrder,
+      this.state.scoreId,
+    ).then((score) => {
       this.setState({
         totalPoints: score.totalPoints
       })

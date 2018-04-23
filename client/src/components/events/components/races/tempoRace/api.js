@@ -17,7 +17,7 @@ const api = {
       method: 'GET',
       headers: getHeaders(user.accessToken, user)
     })
-    .then(response =>
+    .then((response) =>
       response.json())
   },
   getScores(user, id) {
@@ -26,29 +26,27 @@ const api = {
       method: 'GET',
       headers: getHeaders(user.accessToken, user)
     })
-    .then(response =>
+    .then((response) =>
       response.json())
   },
   getScoresOfSpecificRaceWIthoutDNX(user, id, raceOrder, cat) {
     const url = new URL(`${baseUrl}/api/events/${id}/races/${raceOrder}/scores/category/${cat}/dnx`)
-    console.log(url)
     return fetch(url, {
       method: 'GET',
       headers: getHeaders(user.accessToken, user)
     })
-    .then(response =>
+    .then((response) =>
       response.json())
   },
 
   addSprint(user, id, raceOrder, scoreId, sprint){
     const url = new URL(`${baseUrl}/api/events/${id}/races/${raceOrder}/scores/${scoreId}/sprints`)
-    console.log(url)
     return fetch(url, {
       method: 'POST',
       body: JSON.stringify(sprint),
       headers: getHeaders(user.accessToken, user)
     })
-    .then(response =>
+    .then((response) =>
       response.json())
   }
 }

@@ -1,7 +1,9 @@
 .left {
   text-align: left;
 }
-
+.table {
+  width: 100%;
+}
 .com-edit {
   background-color: #F2F1EF;
   border-color: #F2F1EF;

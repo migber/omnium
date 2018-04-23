@@ -77,7 +77,7 @@ class PointRaceEdit extends Component {
       localStorage.getItem('category'),
      ).then((scores) => {
       const startList = helper.eliminationEditSort(scores)
-      const sorted = helper.orderByPointsBigger(scores)
+      const sorted = helper.omniumOrder(scores)
       this.setState({ scores: sorted, scoresList: startList})
       this.createSprints(localStorage.getItem('category'))
     })
@@ -200,7 +200,7 @@ class PointRaceEdit extends Component {
       category,
      ).then( scores => {
       const startList = helper.eliminationEditSort(scores)
-      const sorted = helper.orderByPointsBigger(scores)
+      const sorted = helper.omniumOrder(scores)
       this.setState({ scores: sorted, scoresList: startList})
     })
   }
@@ -283,7 +283,7 @@ class PointRaceEdit extends Component {
        console.log(scores)
         const startList = helper.eliminationEditSort(scores)
         console.log(startList)
-        const orderedScores = helper.orderByPointsBigger(scores)
+        const orderedScores = helper.omniumOrder(scores)
         console.log(orderedScores)
         this.createSprints(localStorage.getItem('category'))
         this.setState({
@@ -431,6 +431,7 @@ class PointRaceEdit extends Component {
         <td className="txt-big text">{score.Cyclist.lastName} {score.Cyclist.firstName}</td>
         <td className="txt-big text">{score.Cyclist.nationality}</td>
         {
+          !isStartList &&
           score.Sprints.length !== 0 ? (
             score.Sprints && score.Sprints.sort((a, b) => a.sprintNumber > b.sprintNumber).map((sprint, id) => (
               sprint.sprintPoints === 0 ? (
@@ -444,11 +445,13 @@ class PointRaceEdit extends Component {
                )
             ))
           ): (
-            <td>
-            <a type="button" role="button" onClick={() => this.addSprintsToRace(score.id)} class="a-orange btn-small btn-group btn-group-xs btn-default" aria-label="Left Align">
-              <span class="span-algn glyphicon glyphicon-pencil" aria-hidden="true"></span>
-            </a>
-          </td>
+            !isStartList && (
+              <td>
+              <a type="button" role="button" onClick={() => this.addSprintsToRace(score.id)} class="a-orange btn-small btn-group btn-group-xs btn-default" aria-label="Left Align">
+                <span class="span-algn glyphicon glyphicon-pencil" aria-hidden="true"></span>
+              </a>
+            </td>
+            )
           )
         }
         {
@@ -542,9 +545,6 @@ class PointRaceEdit extends Component {
           )
        )
       }
-      {/* <div>
-        <a id="saveSprints" role="button" type="button" className={(activeTab === 'men') ? "choice-btn-active btn btn-default" : "choice-btn btn btn-default"} onClick={() => this.saveSprints(activeTab)}>Save Sprint</a>
-      </div> */}
        </ul>
       )
       }

@@ -49,12 +49,12 @@ function finishOrder(scores){
   })
   console.log(disqualifiedScores)
   ordered.sort(function(a, b) {
+    if (a.totalPoints === b.totalPoints) {
+      return a.finishPlace - b.finishPlace
+    } else {
       return b.totalPoints - a.totalPoints
+    }
   })
-  // ordered.sort(function(a, b) {
-  //   if (a.totalPoints === b.totalPoints)
-  //     return a.finishPlace - b.finishPlace
-  // })
   console.log(ordered)
   disqualifiedScores.sort(function(a, b) {
     return a.raceNumber - b.raceNumber
@@ -109,10 +109,9 @@ function omniumOrder(scores) {
   disqualifiedScores.sort(function(a, b) {
     return a.raceNumber - b.raceNumber
   })
-  console.log(disqualifiedScores)
   ordered.sort(function(a, b) {
     if (a.totalPoints === b.totalPoints) {
-      return a.place - b.place
+      return a.finishPlace - b.finishPlace
     } else {
       return b.totalPoints - a.totalPoints
     }

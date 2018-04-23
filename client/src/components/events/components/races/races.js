@@ -290,7 +290,7 @@ class Race extends Component {
       </div>
       { localStorage.getItem('activeTab') === '0' && (
         <div className="space-from-top">
-         <table className="table table-striped">
+         <table className="table-responsive table table-striped">
          <thead>
         {
           !isStartList ? (

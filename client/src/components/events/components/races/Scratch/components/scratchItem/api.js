@@ -11,12 +11,6 @@ function getHeaders(authToken, user) {
 }
 
 const api = {
-
-  // subscribeToTimer() {
-  //   socket.on('timer', totalPoints => { return totalPoints })
-  //   socket.emit('subscribeToTimer', 1000)
-  // },
-
   updateCyclistFinisPlace(user, id, raceOrder, scoreId, score){
     const url = new URL(`${baseUrl}/api/events/${id}/races/${raceOrder}/scores/${scoreId}/finishPlace`)
     return fetch(url, {
@@ -24,29 +18,27 @@ const api = {
       body: JSON.stringify(score),
       headers: getHeaders(user.accessToken, user)
     })
-    .then(response =>
+    .then((response) =>
       response.json())
   },
 
   getScoresOfSpecificRace(user, id, raceOrder, cat) {
     const url = new URL(`${baseUrl}/api/events/${id}/races/${raceOrder}/scores/category/${cat}`)
-    console.log(url)
     return fetch(url, {
       method: 'GET',
       headers: getHeaders(user.accessToken, user)
     })
-    .then(response =>
+    .then((response) =>
       response.json())
   },
 
   addTwenty(user, id, raceOrder, scoreId) {
     const url = new URL(`${baseUrl}/api/events/${id}/races/${raceOrder}/scores/${scoreId}/lapPliusPoints`)
-    console.log(url)
     return fetch(url, {
       method: 'PUT',
       headers: getHeaders(user.accessToken, user)
     })
-    .then(response =>
+    .then((response) =>
       response.json())
   },
 
@@ -56,7 +48,7 @@ const api = {
       method: 'PUT',
       headers: getHeaders(user.accessToken, user)
     })
-    .then(response =>
+    .then((response) =>
       response.json())
   },
 
@@ -66,7 +58,7 @@ const api = {
       method: 'PUT',
       headers: getHeaders(user.accessToken, user)
     })
-    .then(response =>
+    .then((response) =>
       response.json())
   },
 
@@ -76,7 +68,7 @@ const api = {
       method: 'PUT',
       headers: getHeaders(user.accessToken, user)
     })
-    .then(response =>
+    .then((response) =>
       response.json())
   },
 
@@ -86,7 +78,7 @@ const api = {
       method: 'PUT',
       headers: getHeaders(user.accessToken, user)
     })
-    .then(response =>
+    .then((response) =>
       response.json())
   },
 

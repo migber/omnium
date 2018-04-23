@@ -54,7 +54,6 @@ class ScratchEdit extends Component {
   }
 
   onDragEnd(result) {
-    // dropped outside the list
     if (!result.destination) {
       return;
     }
@@ -71,7 +70,6 @@ class ScratchEdit extends Component {
   }
 
   componentWillMount() {
-    console.log('ScratchInsideEDIt')
     localStorage.setItem('activeTab', 11)
     this.setState({ eventName: localStorage.getItem('eventName')})
     this.setState({
@@ -89,14 +87,12 @@ class ScratchEdit extends Component {
   }
 
   changeList(category){
-    console.log("inside")
     scratchItemApi.getScoresOfSpecificRace(
       this.props.user,
       this.props.omniumId,
       this.state.raceOrder,
       category,
      ).then((scores) => {
-       console.log(scores)
         const startList = raceHelper.scratchRaceStartList(scores)
         const orderedScores = raceHelper.orderByPlace(scores)
         this.setState({
@@ -122,7 +118,6 @@ class ScratchEdit extends Component {
       menScores,
       scoresList,
     } = this.state
-    console.log(Number(localStorage.getItem('activeTab')))
     const category = localStorage.getItem('category')
     return (
       <DragDropContext onDragEnd={this.onDragEnd}>
