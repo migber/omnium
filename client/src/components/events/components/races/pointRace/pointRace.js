@@ -123,8 +123,8 @@ class PointRace extends Component {
            race && (
              <article>
              <h4>{race.description}</h4>
-             <p>Elapsed time: {race.elapsedTime}</p>
-             <p>Average speed: {race.elapsedTime} km/h</p>
+             <p>Elapsed time: {race.elapseTime}</p>
+             <p>Average speed: {race.avgSpeed} km/h</p>
            </article>
            )
          }

@@ -81,6 +81,41 @@ const api = {
     })
     .then(response =>
       response.json())
+  },
+
+  updateElapsedTime(user, id, raceId, data) {
+    const url = new URL(`${baseUrl}/api/events/${id}/races/${raceId}/elapsedTime`)
+    console.log(data)
+    return fetch(url, {
+      method: 'PUT',
+      body: JSON.stringify(data),
+      headers: getHeaders(user.accessToken, user)
+    })
+    .then(response =>
+      response.json())
+  },
+
+  updateAvgSpeed(user, id, raceId, data) {
+    const url = new URL(`${baseUrl}/api/events/${id}/races/${raceId}/avgSpeed`)
+    return fetch(url, {
+      method: 'PUT',
+      body: JSON.stringify(data),
+      headers: getHeaders(user.accessToken, user)
+    })
+    .then(response =>
+      response.json())
+  },
+
+  updateCommunique(user, id, raceId, data) {
+    const url = new URL(`${baseUrl}/api/events/${id}/races/${raceId}/communique`)
+    console.log(url)
+    return fetch(url, {
+      method: 'PUT',
+      body: JSON.stringify(data),
+      headers: getHeaders(user.accessToken, user)
+    })
+    .then(response =>
+      response.json())
   }
 }
 export default api

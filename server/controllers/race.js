@@ -112,11 +112,13 @@ async function updateMetrics(req, res) {
 async function editElapsedTime(req, res) {
   console.log('Updating race metrics - elapsed time')
   const id = Number(req.params.raceId)
+  console.log(req.body.elapseTime)
   Race.findById(id).then((race) => {
     if (race) {
       race.updateAttributes({
         elapseTime: req.body.elapseTime,
       }).then((updatedRace) => {
+        console.log(updatedRace)
         res.json(updatedRace)
         res.status(200)
       }).catch((err) => {

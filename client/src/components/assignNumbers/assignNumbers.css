@@ -16,6 +16,9 @@
 .txt-inside {
   text-align: center;
 }
+.txt-inside:focus, .txt-inside:hover {
+  outline:0;
+}
 
 .txt-big {
   font-size: 12px;

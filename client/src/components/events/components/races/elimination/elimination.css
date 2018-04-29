@@ -2,3 +2,15 @@
   background-color: #1BA39C;
   text-align: left;
 }
+.center {
+  margin-left: 35%;
+}
+
+.comm {
+  width: 100%;
+  height: 100px;
+}
+
+.comm:focus ,.comm:hover {
+  outline:0;
+}
