@@ -12,9 +12,13 @@ import Register from './components/registration/registration'
 import { VIP_EMAIL } from './config/env'
 import { request } from 'https'
 import api from './components/requests/api'
+import apiUsers from './api'
 import AssignNumbers from './components/assignNumbers/assignNumbers'
 import apiAssignment from './components/assignNumbers/api'
 import Users from './components/users/user'
+import UserRequests from './components/userRequests/userRequests'
+import apiUserRequests from './components/userRequests/api'
+import MyTeam from './components/myTeam/myTeam'
 
 const AUTHORISE_URL = 'https://omnium.herokuapp.com/api/users/createLogged'
 const EXISTS_URL = 'https://omnium.herokuapp.com/api/users/exists'
@@ -28,10 +32,13 @@ class App extends Component {
       authenticated: false,
       badges: 0,
       assignBadges: 0,
+      userRequests: 0,
       show: true,
+      showLoginMessage: false,
     }
     this.onLogin = this.onLogin.bind(this)
     this.onLogout = this.onLogout.bind(this)
+    this.newUserRequests = this.newUserRequests.bind(this)
     this.badgeSet = this.badgeSet.bind(this)
     this.badgeSetAssign = this.badgeSetAssign.bind(this)
   }
@@ -41,6 +48,7 @@ class App extends Component {
     if (localStorage.getItem('authenticated')) {
       this.badgeSet(user)
       this.badgeSetAssign(user)
+      this.newUserRequests(user)
       this.setState({ authenticated: true, user })
     } else {
       this.setState({ authenticated: false, user: {} })
@@ -56,19 +64,32 @@ class App extends Component {
       img: profileObj.imageUrl,
       counter: 0,
     }
-    localStorage.setItem('user', JSON.stringify(user))
-    localStorage.setItem('authenticated', true)
-    this.setState({ authenticated: true, user })
+    const data = {
+      email: profileObj.email,
+      accessToken: response.accessToken,
+      googleId: profileObj.googleId,
+      img: profileObj.imageUrl,
+    }
+    apiUsers.getUser(user, data).then((approvedUser) => {
+      console.log(approvedUser)
+      if (approvedUser) {
+        localStorage.setItem('user', JSON.stringify(approvedUser))
+        localStorage.setItem('authenticated', true)
+        this.setState({ authenticated: true, user: approvedUser })
+      } else {
+        this.setState({
+          showLoginMessage: true
+        })
+      }
+    })
     this.badgeSet(user)
     this.badgeSetAssign(user)
-    window.location.reload()
   }
 
   onLogout() {
     localStorage.removeItem('user')
     localStorage.removeItem('authenticated')
     this.setState({ authenticated: false, user: null })
-    window.location.reload()
   }
 
   badgeSet(user){
@@ -83,8 +104,22 @@ class App extends Component {
     })
   }
 
+  newUserRequests(user){
+    apiUserRequests.getUserRequests(user).then((users) => {
+      this.setState({ userRequests: users.length })
+    })
+  }
+
   render() {
-    const { authenticated, user, counter, badges, assignBadges } = this.state
+    const {
+      authenticated,
+      user,
+      counter,
+      badges,
+      assignBadges,
+      userRequests,
+      showLoginMessage,
+     } = this.state
     return (
       <Router>
       <div className="App">
@@ -102,6 +137,7 @@ class App extends Component {
        counter={counter}
        badges={badges}
        assignBadges={assignBadges}
+       newUserRequests={userRequests}
        />
        <div>
        <Switch>
@@ -119,6 +155,17 @@ class App extends Component {
             exact path='/cyclists'
             render={( props ) => <Cyclists {...props} user={user} authenticated={authenticated} />}
         />
+         <Route
+            exact path='/myTeam'
+            render={( props ) => <MyTeam {...props} user={user} authenticated={authenticated} />}
+        />
+        <Route
+          path='/userRegistration' render={( props ) =>
+          <Users {...props}
+            user={user}
+            authenticated={authenticated}
+          />}
+        />
         <Route path='/register' render={( props ) =>
          <Register
             {...props}
@@ -129,7 +176,7 @@ class App extends Component {
         }
         />
 
-        { user.email == VIP_EMAIL && (
+        { user && user.email == VIP_EMAIL && (
           <div>
          <Route
             path='/requests' render={( props ) =>
@@ -137,6 +184,13 @@ class App extends Component {
               user={user}
               authenticated={authenticated}
               badgeSet={this.badgeSet}
+            />}
+        />
+        <Route
+            path='/UserRequests' render={( props ) =>
+            <UserRequests {...props}
+              user={user}
+              newUserRequests={this.newUserRequests}
             />}
         />
         <Route
@@ -148,17 +202,17 @@ class App extends Component {
           badgeSetAssign={this.badgeSetAssign}
         />}
        />
-        <Route
-        path='/userRegistration' render={( props ) =>
-        <Users {...props}
-          user={user}
-          authenticated={authenticated}
-        />}
-       />
        </div>
       )
     }
           </div>
+      {
+        showLoginMessage && (
+          <div className="errorMsg">
+            <h5>Your account was not approved yet by admin.</h5>
+          </div>
+        )
+      }
        <Share/>
       <Footer />
       </div>

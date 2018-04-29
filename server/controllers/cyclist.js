@@ -57,6 +57,69 @@ async function getCyclist(req, res) {
   })
 }
 
+async function createCyclistsFromMyTeam(req, res) {
+  console.log('Create cyclist from team')
+  const { cyclist } = req.body
+  console.log(req.body)
+  Cyclist.findAll({
+    where: {
+      firstName: cyclist.firstName,
+      lastName: cyclist.lastName,
+      uciCode: cyclist.uciCode.toString(),
+    },
+  }).then((cyclists) => {
+    if (cyclists.length === 0) {
+      Cyclist.create({
+        firstName: cyclist.firstName,
+        lastName: cyclist.lastName,
+        uciCode: cyclist.uciCode,
+        team: cyclist.team,
+        nationality: cyclist.nationality,
+        birthdate: cyclist.birthdate,
+        gender: cyclist.gender,
+        category: cyclist.category,
+        userId: cyclist.userId,
+        approved: false,
+      }).then((createdCyclist) => {
+        res.json(createdCyclist)
+      })
+    } else {
+      const foundCyclist = cyclists[0]
+      Race.findOne({
+        where: {
+          order: {
+            [Op.eq]: 0,
+          },
+          EventId: req.body.eventId,
+        },
+      }).then((race) => {
+        Score.create({
+          raceNumber: 0,
+          lapPlusPoints: 0,
+          lapMinusPoints: 0,
+          points: 0,
+          finishPlace: 0,
+          raceDate: '2018-09-03',
+          place: 0,
+          totalPoints: 0,
+          dns: false,
+          dnq: false,
+          dnf: false,
+          bk: false,
+          RaceId: race.id,
+          CyclistId: foundCyclist.id,
+        }).then((score) => {
+          res.status(201)
+          res.json(score)
+        })
+      })
+    }
+  }).catch((error) => {
+    res.status(400)
+    res.send(responseBadRequest(error))
+  })
+}
+
 async function createCyclist(req, res) {
   console.log('Create cyclist')
   Cyclist.create({
@@ -259,6 +322,7 @@ router.get('/api/cyclists/approved', getCyclistsListApproved)
 router.get('/api/cyclists/notApproved', getCyclistsListNotApproved)
 router.get('/api/cyclists/:cyclistId', getCyclist)
 router.post('/api/cyclists', createCyclist)
+router.post('/api/cyclists/myTeam', createCyclistsFromMyTeam)
 router.put('/api/cyclists/:cyclistId', editCyclist)
 router.get('/api/events/:eventId/races/:raceId/cyclists', getScoreCyclists)
 router.get('/api/cyclists/approve', listOfCyclisttoApprove)
@@ -279,4 +343,5 @@ module.exports = {
   fileUpload,
   getCyclistsListNotApproved,
   getCyclistsListApproved,
+  createCyclistsFromMyTeam,
 }

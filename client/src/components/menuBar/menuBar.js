@@ -32,7 +32,9 @@ class MenuBar extends Component {
       </Navbar.Header>
       <Navbar.Collapse>
         <Nav className="img-div">
-          <NavItem eventKey={1} href="/about">About</NavItem>
+        { authenticated && (
+          <NavItem eventKey={1} href="/myTeam">My Team</NavItem>
+        )}
           <NavItem eventKey={7} href="/userRegistration">Registration</NavItem>
           <NavItem eventKey={2} href="/home">Contacts</NavItem>
           { authenticated && user.email == VIP_EMAIL && (
@@ -45,8 +47,13 @@ class MenuBar extends Component {
                 <span className="badge-right badge">{this.props.badges}</span>
               </NavItem>
             )}
-          <NavItem eventKey={5} href="/register">Register for race</NavItem>
-          <NavItem eventKey={6} href="/cyclists" user={user}>Cyclists</NavItem>
+             { authenticated && user.email == VIP_EMAIL && (
+              <NavItem eventKey={5} href="/UserRequests"> New User Requests
+                <span className={(this.props.newUserRequests === 0) ? "badge-right bd-success glyphicon glyphicon-user" : "badge-right bd-warning glyphicon glyphicon-user" }></span>
+              </NavItem>
+            )}
+          <NavItem eventKey={6} href="/register">Register for race</NavItem>
+          <NavItem eventKey={7} href="/cyclists" user={user}>Cyclists</NavItem>
         </Nav>
         <Nav pullRight >
         {
@@ -62,16 +69,16 @@ class MenuBar extends Component {
         {
           authenticated && (
             <NavItem >
-            <div className="img-div">
-           <img className="img-circle" alt="meaninful string" src={user.img}/>
-           </div>
+              <div className="img-div">
+                <img className="img-circle" alt="meaninful string" src={user.img}/>
+              </div>
            </NavItem>
           )}
           {
           authenticated && (
           <NavItem onClick={this.props.onLogout}>Log out</NavItem>
           )}
-          <NavItem eventKey={1}> API explorer</NavItem>
+          <NavItem eventKey={44}> API explorer</NavItem>
         </Nav>
       </Navbar.Collapse>
     </Navbar>

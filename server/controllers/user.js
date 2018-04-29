@@ -4,10 +4,55 @@ const router = require('express').Router()
 const { User } = require('../models/index')
 const moment = require('moment')
 const responseBadRequest = require('../helpers/responseHelper')
+const { Op } = require('sequelize').Sequelize
+
 
 async function getUsersList(req, res) {
   console.log('Getting list of users')
   User.findAll({}).then((users) => {
+    res.status(200)
+    res.json(users)
+  }).catch((error) => {
+    res.status(400)
+    res.send(responseBadRequest(error))
+  })
+}
+
+async function getUserLogin(req, res) {
+  console.log('Get user login')
+  User.findAll({
+    where: {
+      approved: true,
+      email: req.body.email,
+    },
+  }).then((users) => {
+    if (users.length !== 0) {
+      const user = users[0]
+      user.updateAttributes({
+        accessToken: req.body.accessToken,
+        lastlogedIn: moment().utc(),
+        img: req.body.img,
+        googleId: req.body.googleId,
+      })
+      res.status(200)
+      res.json(user)
+    } else {
+      res.status(200)
+      res.json(null)
+    }
+  }).catch((error) => {
+    res.status(400)
+    res.send(responseBadRequest(error))
+  })
+}
+
+async function getUsersListNotApproved(req, res) {
+  console.log('Getting list of users not approved')
+  User.findAll({
+    where: {
+      approved: false,
+    },
+  }).then((users) => {
     res.status(200)
     res.json(users)
   }).catch((error) => {
@@ -24,6 +69,40 @@ async function getUser(req, res) {
   }).catch((error) => {
     res.status(400)
     res.send(responseBadRequest(error))
+  })
+}
+
+async function createUserRequest(req, res) {
+  console.log('Create user request')
+  console.log(req.body)
+  User.findAll({
+    where: {
+      email: {
+        [Op.eq]: req.body.email,
+      },
+    },
+  }).then((users) => {
+    if (users.length === 0) {
+      User.create({
+        email: req.body.email,
+        approved: false,
+        accessToken: null,
+        lastlogedIn: null,
+        firstlogedIn: moment().utc(),
+        submitted: null,
+        phone: req.body.phone,
+        name: req.body.name,
+        surname: req.body.surname,
+      }).then((user) => {
+        res.json(user)
+      }).catch((error) => {
+        res.status(400)
+        res.send(responseBadRequest(error))
+      })
+    } else {
+      res.status(400)
+      res.send(responseBadRequest('User exists'))
+    }
   })
 }
 
@@ -142,8 +221,11 @@ async function createLoggedUser(req, resp) {
 }
 
 router.get('/api/users', getUsersList)
+router.post('/api/users/login', getUserLogin)
+router.get('/api/users/notApproved', getUsersListNotApproved)
 router.get('/api/users/:userId', getUser)
 router.post('/api/users', createUser)
+router.post('/api/newUser', createUserRequest)
 router.post('/api/users/exists', findUser)
 router.post('/api/users/createLogged', createLoggedUser)
 router.put('/api/users/:userId', editUser)
