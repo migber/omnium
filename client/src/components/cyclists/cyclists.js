@@ -59,7 +59,6 @@ class Cyclists extends Component {
 
    deleteCyclist(id) {
     api.deleteCyclist(this.props.user, id).then(() => {
-        window.location.reload()
     })
   }
 
@@ -68,7 +67,6 @@ class Cyclists extends Component {
         edit: false,
         btnActive: category,
     })
-    window.location.reload()
   }
 
   onCloseButtonClick(){

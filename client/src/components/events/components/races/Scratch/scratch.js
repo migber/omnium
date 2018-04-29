@@ -3,6 +3,7 @@ import React, { Component } from 'react'
 import { Route, Link } from 'react-router-dom'
 import './scratch.css'
 import raceApi from './api'
+import api from '../api'
 import ScratchItem from './components/scratchItem/scratchItem'
 import helper from '../helper'
 import scratchItemApi from './components/scratchItem/api'
@@ -11,6 +12,7 @@ class Scratch extends Component {
   constructor(props){
     super(props)
     this.state = {
+      race: null,
       scores: null,
       raceId: null,
       eventName: null,
@@ -25,6 +27,10 @@ class Scratch extends Component {
   componentWillMount() {
     this.props.notShowEvents()
     localStorage.setItem('activeTab', 1)
+    console.log(this.props.location.pathname)
+    api.getRaces(this.props.user, this.props.location.pathname ).then((race) => {
+      this.setState({ race })
+    })
     this.setState({ eventName: localStorage.getItem('eventName')})
     this.setState({
       category: localStorage.getItem('category')
@@ -71,11 +77,18 @@ class Scratch extends Component {
             scores,
             cyclists,
             scoresList,
+            race,
           } = this.state
     const category = localStorage.getItem('category')
+    console.log(race)
     return (
       <div className="space-from-top">
        { localStorage.getItem('activeTab') === '1' && (
+        <div>
+          <article>
+            <h3></h3>
+            <p></p>
+          </article>
         <table className="table table-striped">
         <thead>
           {
@@ -123,6 +136,7 @@ class Scratch extends Component {
                 rankId={id}
                 isStartList={this.props.isStartList}
                 category={this.state.category}
+                race={this.state.race}
               />
             ))
           ) : (
@@ -135,12 +149,14 @@ class Scratch extends Component {
                 rankId={id}
                 isStartList={this.props.isStartList}
                 category={this.state.category}
+                race={this.state.race}
               />
             ))
           )
       }
           </tbody>
         </table>
+        </div>
       )}
       </div>
     )

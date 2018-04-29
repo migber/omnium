@@ -78,6 +78,7 @@ async function editRace(req, res) {
         avgSpeed: req.body.avgSpeed,
         order: req.body.order,
         description: req.body.description,
+        communique: req.body.communique,
       }).then((updatedRace) => {
         res.json(updatedRace)
         res.status(200)
@@ -108,6 +109,60 @@ async function updateMetrics(req, res) {
   })
 }
 
+async function editElapsedTime(req, res) {
+  console.log('Updating race metrics - elapsed time')
+  const id = Number(req.params.raceId)
+  Race.findById(id).then((race) => {
+    if (race) {
+      race.updateAttributes({
+        elapseTime: req.body.elapseTime,
+      }).then((updatedRace) => {
+        res.json(updatedRace)
+        res.status(200)
+      }).catch((err) => {
+        res.status(400)
+        res.send(responseBadRequest(err))
+      })
+    }
+  })
+}
+
+async function editAvgSpeed(req, res) {
+  console.log('Updating race metrics - avg speed')
+  const id = Number(req.params.raceId)
+  Race.findById(id).then((race) => {
+    if (race) {
+      race.updateAttributes({
+        avgSpeed: req.body.avgSpeed,
+      }).then((updatedRace) => {
+        res.json(updatedRace)
+        res.status(200)
+      }).catch((err) => {
+        res.status(400)
+        res.send(responseBadRequest(err))
+      })
+    }
+  })
+}
+
+async function editCommunique(req, res) {
+  console.log('Updating race metrics - commuqiue')
+  const id = Number(req.params.raceId)
+  Race.findById(id).then((race) => {
+    if (race) {
+      race.updateAttributes({
+        communique: req.body.communique,
+      }).then((updatedRace) => {
+        res.json(updatedRace)
+        res.status(200)
+      }).catch((err) => {
+        res.status(400)
+        res.send(responseBadRequest(err))
+      })
+    }
+  })
+}
+
 async function deleteRace(req, res) {
   console.log('Delete race')
   const id = Number(req.params.raceId)
@@ -121,6 +176,9 @@ router.get('/api/events/:eventId/races', getRacesList)
 router.get('/api/events/:eventId/races/:raceId', getRace)
 router.post('/api/events/:eventId/races', createRace)
 router.put('/api/events/:eventId/races/:raceId', editRace)
+router.put('/api/events/:eventId/races/:raceId/avgSpeed', editAvgSpeed)
+router.put('/api/events/:eventId/races/:raceId/elapsedTime', editElapsedTime)
+router.put('/api/events/:eventId/races/:raceId/communique', editCommunique)
 router.put('/api/events/:eventId/races/:raceId/metrics', updateMetrics)
 router.delete('/api/events/:eventId/races/:raceId', deleteRace)
 
@@ -131,5 +189,8 @@ module.exports = {
   createRace,
   editRace,
   updateMetrics,
+  editAvgSpeed,
+  editElapsedTime,
+  editCommunique,
   deleteRace,
 }

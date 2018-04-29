@@ -9,6 +9,7 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       allowNull: false,
     },
+    communique: DataTypes.STRING(800),
     avgSpeed: DataTypes.DECIMAL(5.3),
     order: DataTypes.INTEGER(4),
     description: {

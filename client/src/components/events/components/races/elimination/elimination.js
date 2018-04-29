@@ -5,12 +5,14 @@ import './elimination.css'
 import raceApi from '../api'
 import EliminationItem from './components/elimnationItem'
 import helper from '../helper'
+import api from '../api'
 
 class Elimination extends Component {
   constructor(props){
     super(props)
     this.state = {
       scores: null,
+      race: null,
       raceId: null,
       eventName: null,
       cyclists: null,
@@ -25,6 +27,9 @@ class Elimination extends Component {
   componentWillMount() {
     this.props.notShowEvents()
     localStorage.setItem('activeTab', 3)
+    api.getRaces(this.props.user, this.props.location.pathname ).then((race) => {
+      this.setState({ race })
+    })
     this.setState({ eventName: localStorage.getItem('eventName')})
     this.setState({
       category: localStorage.getItem('category')
@@ -89,8 +94,10 @@ class Elimination extends Component {
             menScores,
             womenScores,
             startList,
+            race,
             womenStartList  } = this.state
     const category = localStorage.getItem('category')
+    console.log(race)
     return (
       <div className="space-from-top">
        { localStorage.getItem('activeTab') === '3' && (
@@ -137,6 +144,7 @@ class Elimination extends Component {
                 rankId={id}
                 isStartList={this.props.isStartList}
                 category={this.state.category}
+                race={this.state.race}
               />
             ))
           ) : (
@@ -149,6 +157,7 @@ class Elimination extends Component {
                 rankId={id}
                 isStartList={this.props.isStartList}
                 category={this.state.category}
+                race={this.state.race}
               />
             ))
           )

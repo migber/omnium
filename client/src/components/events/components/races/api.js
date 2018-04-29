@@ -13,6 +13,7 @@ function getHeaders(authToken, user) {
 const api = {
   getRaces(user, id) {
     const url = new URL(`${baseUrl}/api${id}`)
+    console.log(id)
     return fetch(url, {
       method: 'GET',
       headers: getHeaders(user.accessToken, user)

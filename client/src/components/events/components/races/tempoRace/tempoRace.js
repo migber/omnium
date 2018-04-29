@@ -5,6 +5,7 @@ import './tempoRace.css'
 import api from './api'
 import raceApi from '../Scratch/api'
 import raceHelper from '../helper'
+import mainRaceApi from '../api'
 import helper from './helper'
 import TempoItem from './components/tempoItem'
 import ScratchItemAPI from '../Scratch/components/scratchItem/api'
@@ -14,6 +15,7 @@ class TempoRace extends Component {
     super(props)
     this.state = {
       scores: null,
+      race: null,
       raceId: null,
       eventName: null,
       cyclists: null,
@@ -28,6 +30,9 @@ class TempoRace extends Component {
     this.props.notShowEvents()
     localStorage.setItem('activeTab', 2)
     this.setState({ eventName: localStorage.getItem('eventName')})
+    mainRaceApi.getRaces(this.props.user, this.props.location.pathname ).then((race) => {
+      this.setState({ race })
+    })
     this.setState({
       category: localStorage.getItem('category')
     })
@@ -83,8 +88,10 @@ class TempoRace extends Component {
             cyclists,
             menScores,
             startList,
+            race,
           } = this.state
     const category = localStorage.getItem('category')
+    console.log(race)
     return (
       <div className="space-from-top">
        { localStorage.getItem('activeTab') === '2' && (
@@ -135,6 +142,7 @@ class TempoRace extends Component {
                 rankId={id}
                 isStartList={this.props.isStartList}
                 category={this.state.category}
+                race={this.state.race}
               />
             ))
           ) : (
@@ -147,6 +155,7 @@ class TempoRace extends Component {
                 rankId={id}
                 isStartList={this.props.isStartList}
                 category={this.state.category}
+                race={this.state.race}
               />
             ))
           )

@@ -3,6 +3,7 @@ import React, { Component } from 'react'
 import { Route, Link } from 'react-router-dom'
 import './pointRace.css'
 import api from './api'
+import raceApi from '../api'
 import helper from './helper'
 import scratchIteamAPI from '../Scratch/components/scratchItem/api'
 import raceHelper from '../helper'
@@ -14,6 +15,7 @@ class PointRace extends Component {
     super(props)
     this.state = {
       scores: null,
+      race: null,
       raceId: null,
       eventName: null,
       cyclists: null,
@@ -33,6 +35,9 @@ class PointRace extends Component {
     this.props.notShowEvents()
     localStorage.setItem('activeTab', 4)
     this.setState({ eventName: localStorage.getItem('eventName')})
+    raceApi.getRaces(this.props.user, this.props.location.pathname ).then((race) => {
+      this.setState({ race })
+    })
     this.setState({
       category: localStorage.getItem('category')
     })
@@ -105,9 +110,11 @@ class PointRace extends Component {
             scores,
             cyclists,
             scoresList,
+            race,
             sprints,
             } = this.state
     const category = localStorage.getItem('category')
+    console.log(race)
     return (
       <div className="space-from-top">
        { localStorage.getItem('activeTab') === '4' && (
@@ -162,6 +169,7 @@ class PointRace extends Component {
                 rankId={id}
                 isStartList={this.props.isStartList}
                 category={this.state.category}
+                race={this.state.race}
               />
             ))
           ) : (
@@ -174,6 +182,7 @@ class PointRace extends Component {
                 rankId={id}
                 isStartList={this.props.isStartList}
                 category={this.state.category}
+                race={this.state.race}
               />
             ))
           )

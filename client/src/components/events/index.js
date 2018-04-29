@@ -32,6 +32,7 @@ class Event extends Component {
 
   componentWillMount() {
     const countEvents = []
+    localStorage.setItem('activeTab', 0)
     api.getEvents(this.props.user).then((omniums) => {
       this.setState({ omniums })
       if (omniums) {

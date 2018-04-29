@@ -231,8 +231,8 @@ class Race extends Component {
 
   render() {
     const { races, activeTab, omniumId, scores, btnActive} = this.state
+    console.log(races)
     const active = localStorage.getItem('activeTab') ? Number(localStorage.getItem('activeTab')) : activeTab
-    console.log(scores)
     const isStartList = localStorage.getItem('isStartList') == 'true' ? true : false
     return (
       <div className="main-container container">
@@ -242,36 +242,36 @@ class Race extends Component {
       <li className={(active === 0) ? "active" : ""} role="presentation"><a onClick={() => this.setActiveClass(0)}>Overall</a></li>
       <li className={(active === 1) ? "active" : ""} role="presentation"> <a onClick={() => this.setActiveClass(1)}> Scratch </a></li>
       {
-        this.props.user.email === VIP_EMAIL && (
+        this.props.user && this.props.user.email === VIP_EMAIL && (
           <li className={(active === 11) ? "com-edit active" : "com-edit"} role="presentation">
-             <a onClick={() => this.setActiveClass(11)}> Scratch <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>
+             <a onClick={() => this.setActiveClass(11)}> Scratch <span className="glyphicon glyphicon-pencil" aria-hidden="true"></span>
              </a>
           </li>
         )
       }
       <li className={(active === 2) ? "active" : ""} role="presentation"> <a onClick={() => this.setActiveClass(2)}> Tempo race </a></li>
       {
-        this.props.user.email === VIP_EMAIL && (
+        this.props.user && this.props.user.email === VIP_EMAIL && (
           <li className={(active === 22) ? "com-edit active" : "com-edit"} role="presentation">
-            <a onClick={() => this.setActiveClass(22)}> Tempo race <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>
+            <a onClick={() => this.setActiveClass(22)}> Tempo race <span className="glyphicon glyphicon-pencil" aria-hidden="true"></span>
             </a>
          </li>
         )
       }
       <li className={(active === 3) ? "active" : ""} role="presentation"> <a onClick={() => this.setActiveClass(3)}> Elimination </a></li>
      {
-        this.props.user.email === VIP_EMAIL && (
+        this.props.user && this.props.user.email === VIP_EMAIL && (
           <li className={(active === 33) ? "com-edit active" : "com-edit"} role="presentation">
-            <a onClick={() => this.setActiveClass(33)}> Elimination <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>
+            <a onClick={() => this.setActiveClass(33)}> Elimination <span className="glyphicon glyphicon-pencil" aria-hidden="true"></span>
             </a>
           </li>
         )
      }
       <li className={(active === 4) ? "active" : ""} role="presentation"> <a onClick={() => this.setActiveClass(4)}> Point race </a></li>
       {
-        this.props.user.email === VIP_EMAIL && (
+        this.props.user && this.props.user.email === VIP_EMAIL && (
           <li className={(active === 44) ? "com-edit active" : "com-edit"} role="presentation">
-            <a onClick={() => this.setActiveClass(44)}> Point race <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>
+            <a onClick={() => this.setActiveClass(44)}> Point race <span className="glyphicon glyphicon-pencil" aria-hidden="true"></span>
             </a>
           </li>
         )

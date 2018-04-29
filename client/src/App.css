@@ -22,6 +22,7 @@
   font-size: 1.5em;
   margin-bottom: 4px;
 }
+button:focus {outline:0;}
 
 .App-intro {
   font-size: large;

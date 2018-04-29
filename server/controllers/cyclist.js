@@ -64,7 +64,7 @@ async function createCyclistsFromMyTeam(req, res) {
   Cyclist.findAll({
     where: {
       firstName: cyclist.firstName,
-      lastName: cyclist.lastName,
+      lastName: cyclist.lastName.toUpperCase(),
       uciCode: cyclist.uciCode.toString(),
     },
   }).then((cyclists) => {
@@ -172,39 +172,47 @@ async function approveCyclist(req, res) {
   const id = Number(req.params.cyclistId)
   Cyclist.findById(id).then((cyclist) => {
     if (cyclist) {
-      cyclist.updateAttributes({
-        approved: req.body.approved,
-      }).then((updatedCyclist) => {
-        Race.findOne({
-          where: {
-            order: {
-              [Op.eq]: 0,
-            },
-            EventId: req.body.eventId,
-          },
-        }).then((race) => {
-          Score.create({
-            raceNumber: 0,
-            lapPlusPoints: 0,
-            lapMinusPoints: 0,
-            points: 0,
-            finishPlace: 0,
-            raceDate: '2018-09-03',
-            place: 0,
-            totalPoints: 0,
-            dns: false,
-            dnq: false,
-            dnf: false,
-            bk: false,
-            RaceId: race.id,
-            CyclistId: updatedCyclist.id,
+      Score.findAll({
+        where: {
+          'CyclistId': id,
+        },
+      }).then((foundScores) => {
+        if (foundScores.length === 0) {
+          cyclist.updateAttributes({
+            approved: req.body.approved,
+          }).then((updatedCyclist) => {
+            Race.findOne({
+              where: {
+                order: {
+                  [Op.eq]: 0,
+                },
+                EventId: req.body.eventId,
+              },
+            }).then((race) => {
+              Score.create({
+                raceNumber: 0,
+                lapPlusPoints: 0,
+                lapMinusPoints: 0,
+                points: 0,
+                finishPlace: 0,
+                raceDate: '2018-09-03',
+                place: 0,
+                totalPoints: 0,
+                dns: false,
+                dnq: false,
+                dnf: false,
+                bk: false,
+                RaceId: race.id,
+                CyclistId: updatedCyclist.id,
+              })
+            })
+            res.json(updatedCyclist)
+            res.status(200)
+          }).catch((err) => {
+            res.status(400)
+            res.send(responseBadRequest(err))
           })
-        })
-        res.json(updatedCyclist)
-        res.status(200)
-      }).catch((err) => {
-        res.status(400)
-        res.send(responseBadRequest(err))
+        }
       })
     }
   })

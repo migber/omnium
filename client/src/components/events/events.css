@@ -6,3 +6,5 @@
 .bg-left {
   margin-left: 4px;
 }
+
+.button:focus {outline:0;}

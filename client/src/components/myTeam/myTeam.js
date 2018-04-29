@@ -9,7 +9,6 @@ import {
   ControlLabel,
   Button
 } from "react-bootstrap"
-import logo from '../../LDSTS_logo-02.svg'
 import SearchInput, {createFilter} from 'react-search-input'
 
 const KEYS_TO_FILTERS = ['user.firstName', 'user.lastName', 'user.uciId']
@@ -33,6 +32,7 @@ class MyTeam extends Component {
           gender: '',
           birthday: null,
           searchTerm: '',
+          eventId: 10,
         }
 
         this.deleteUser = this.deleteUser.bind(this)
@@ -138,14 +138,14 @@ class MyTeam extends Component {
   onSaveButtonClick(){
     const data = {
       cyclist: {
-        firstName: this.state.firstName,
-        lastName: this.state.lastName,
+        firstName: `${this.state.firstName[0].toUpperCase()}${this.state.firstName.substr(1)}`,
+        lastName: this.state.lastName.toUpperCase(),
         uciCode: this.state.uciCode,
         team: this.state.team,
-        gender: this.state.gender,
-        category: this.state.category,
+        gender: this.state.gender.toLowerCase(),
+        category: this.state.category.toLowerCase(),
         birthdate: this.state.birthday,
-        nationality: this.state.nationality,
+        nationality: this.state.nationality.toUpperCase(),
         userId: this.state.user.id,
       },
       eventId: this.state.eventId,
@@ -296,8 +296,6 @@ class MyTeam extends Component {
           </div>
           </div>
       <div className="right-half">
-      {
-        !saveClicked ? (
          <div>
             <article>
             <div className="border-bottom">
@@ -416,17 +414,6 @@ class MyTeam extends Component {
           <Button onClick={() => this.onSaveButtonClick()} bsStyle="primary">Add cyclist</Button>
           </form>
       </div>
-        ) : (
-          <article>
-            <div className="border-bottom">
-              <h1>Registration</h1>
-            </div>
-            <div className="from-top">
-              <h4>Thank you! Soon your request will be approved. </h4>
-              <img src={logo} className="App-logo" alt="logo" />
-          </div>
-        </article>
-        )
       }
          </div>
          </div>
