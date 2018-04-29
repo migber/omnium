@@ -28,7 +28,7 @@ async function getRace(req, res) {
   console.log('Get race')
   const id = Number(req.params.eventId)
   const raceId = Number(req.params.raceId)
-  Race.findAll({
+  Race.findOne({
     where: {
       order: raceId,
     },

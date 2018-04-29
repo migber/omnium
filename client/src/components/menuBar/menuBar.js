@@ -33,27 +33,41 @@ class MenuBar extends Component {
       <Navbar.Collapse>
         <Nav className="img-div">
         { authenticated && (
-          <NavItem eventKey={1} href="/myTeam">My Team</NavItem>
+
+          <NavItem eventKey={1}>
+            <Link className="link" to="/myTeam">My Team</Link>
+          </NavItem>
         )}
-          <NavItem eventKey={7} href="/userRegistration">Registration</NavItem>
-          <NavItem eventKey={2} href="/home">Contacts</NavItem>
+          <NavItem eventKey={7}>
+            <Link className="link" to="/userRegistration">Registration</Link>
+          </NavItem>
+          <NavItem eventKey={2}>
+            <Link className="link" to="/home">Contacts</Link>
+          </NavItem>
           { authenticated && user.email == VIP_EMAIL && (
-            <NavItem eventKey={1} href="/assignNumbers"> Assign Numbers
+            <NavItem eventKey={1}>
+              <Link className="link" to="/assignNumbers"> Assign Numbers </Link>
                 <span className={(this.props.assignBadges === 0) ? "badge-right bd-success glyphicon glyphicon-user" : "badge-right bd-warning glyphicon glyphicon-user" }></span>
             </NavItem>
           )}
            { authenticated && user.email == VIP_EMAIL && (
-              <NavItem eventKey={4} href="/requests"> New Requests
+              <NavItem eventKey={4}>
+                <Link className="link" to="/requests"> New Requests </Link>
                 <span className="badge-right badge">{this.props.badges}</span>
               </NavItem>
             )}
              { authenticated && user.email == VIP_EMAIL && (
-              <NavItem eventKey={5} href="/UserRequests"> New User Requests
+              <NavItem eventKey={5}>
+                <Link className="link" to="/UserRequests"> New User Requests</Link>
                 <span className={(this.props.newUserRequests === 0) ? "badge-right bd-success glyphicon glyphicon-user" : "badge-right bd-warning glyphicon glyphicon-user" }></span>
               </NavItem>
             )}
-          <NavItem eventKey={6} href="/register">Register for race</NavItem>
-          <NavItem eventKey={7} href="/cyclists" user={user}>Cyclists</NavItem>
+          <NavItem eventKey={6}>
+            <Link className="link" to="/register">Register for race</Link>
+          </NavItem>
+          <NavItem eventKey={7}>
+            <Link className="link" to="/cyclists" user={user}>Cyclists</Link>
+          </NavItem>
         </Nav>
         <Nav pullRight >
         {

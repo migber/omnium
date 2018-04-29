@@ -29,8 +29,8 @@ class Event extends Component {
     this.onSaveButtonClick = this.onSaveButtonClick.bind(this)
     this.isEventFinished = this.isEventFinished.bind(this)
   }
-
   componentWillMount() {
+    console.log('omniummmmm')
     const countEvents = []
     localStorage.setItem('activeTab', 0)
     api.getEvents(this.props.user).then((omniums) => {

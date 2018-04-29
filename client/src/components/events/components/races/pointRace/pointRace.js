@@ -118,6 +118,16 @@ class PointRace extends Component {
     return (
       <div className="space-from-top">
        { localStorage.getItem('activeTab') === '4' && (
+         <div>
+         {
+           race && (
+             <article>
+             <h4>{race.description}</h4>
+             <p>Elapsed time: {race.elapsedTime}</p>
+             <p>Average speed: {race.elapsedTime} km/h</p>
+           </article>
+           )
+         }
         <table className="table table-striped">
         <thead>
           {
@@ -189,6 +199,15 @@ class PointRace extends Component {
       }
           </tbody>
         </table>
+        {
+           race && race.communique && (
+             <article>
+             <h4>Communique of commissaires:</h4>
+             <p>{race.communique}</p>
+           </article>
+           )
+         }
+        </div>
       )}
       </div>
     )
