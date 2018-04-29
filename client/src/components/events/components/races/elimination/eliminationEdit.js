@@ -219,7 +219,7 @@ class EliminationEdit extends Component {
     return (
       <div className="space-from-top">
        { localStorage.getItem('activeTab') === '33' && (
-        <ul className="list-group list-group-flush ">
+        <ul className="hov list-group list-group-flush ">
           {
             isStartList ? (
             scoresList &&  scoresList.map((score, id) => (

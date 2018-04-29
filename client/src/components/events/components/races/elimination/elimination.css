@@ -1,7 +1,12 @@
 .elmn {
-  background-color: #1BA39C;
+  background-color: #BDC3C7;
   text-align: left;
 }
+
+.hov {
+  background-color: #DADFE1;
+}
+
 .center {
   margin-left: 35%;
 }
@@ -13,4 +18,23 @@
 
 .comm:focus ,.comm:hover {
   outline:0;
+}
+
+.elim {
+  margin-left: 90%;
+  width: 10%;
+  float: right;
+  margin-left: 0px;
+  position: static;
+}
+
+.dns{
+  margin-right: 10%;
+  width: 90%;
+  overflow: hidden;
+}
+
+.inline-block{
+  display: inline-block;
+  width: 100%;
 }

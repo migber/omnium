@@ -414,7 +414,6 @@ class MyTeam extends Component {
           <Button onClick={() => this.onSaveButtonClick()} bsStyle="primary">Add cyclist</Button>
           </form>
       </div>
-      }
          </div>
          </div>
             )

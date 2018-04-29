@@ -14,10 +14,10 @@ class Users extends Component {
   constructor(props){
     super(props)
     this.state = {
-      email: 'example@gmail.com',
-      phone: 'phone',
-      firstName: 'firstName',
-      lastName: 'lastName',
+      email: '',
+      phone: '',
+      firstName: '',
+      lastName: '',
       saveClicked: false,
       showErrors: false,
     }
@@ -30,12 +30,6 @@ class Users extends Component {
     }
 
   componentWillMount() {
-    this.setState({
-      phone: null,
-      firstName: null,
-      lastName: null,
-      email: null,
-    })
    }
 
    handleChangeEmail(e) {

@@ -154,7 +154,6 @@ class Scratch extends Component {
             avgSpeed,
           } = this.state
     const category = localStorage.getItem('category')
-    console.log(race)
     return (
       <div className="space-from-top">
        { localStorage.getItem('activeTab') === '1' && (

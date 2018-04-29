@@ -70,6 +70,23 @@ async function createEvent(req, res) {
   })
 }
 
+async function closeEvent(req, res) {
+  console.log('Close event')
+  const id = Number(req.params.id)
+  Event.findById(id).then((event) => {
+    if (event) {
+      event.updateAttributes({
+        done: true,
+      }).then((updatedEvent) => {
+        res.json(updatedEvent)
+        res.status(200)
+      }).catch((err) => {
+        res.status(400)
+        res.send(responseBadRequest(err))
+      })
+    }
+  })
+}
 async function editEvent(req, res) {
   console.log('Updating event')
   const id = Number(req.params.id)
@@ -124,6 +141,7 @@ router.get('/api/events', getEventsList)
 router.get('/api/events/:id', getEvent)
 router.post('/api/events', createEvent)
 router.put('/api/events/:id', editEvent)
+router.put('/api/events/:id/close', closeEvent)
 router.put('/api/events/ratings/:id', rankingsUpdate)
 router.delete('/api/events/:id', deleteEvent)
 
@@ -134,5 +152,6 @@ module.exports = {
   createEvent,
   editEvent,
   rankingsUpdate,
+  closeEvent,
   deleteEvent,
 }

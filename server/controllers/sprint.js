@@ -38,14 +38,15 @@ async function createSprintOnly(req, res) {
     sprintPoints: req.body.sprintPoints,
     ScoreId: scoreId,
   }).then((sprint) => {
-    Score.findById(scoreId).then((score) => {
-      const total = score.totalPoints + 1
-      score.updateAttributes({
-        totalPoints: total,
-      }).then(() => {
-        res.json(sprint)
-      })
-    })
+    // Score.findById(scoreId).then((score) => {
+    //   const total = score.totalPoints + 1
+    //   score.updateAttributes({
+    //     totalPoints: total,
+    //   }).then(() => {
+
+    //   })
+    res.json(sprint)
+    // })
   }).catch((error) => {
     res.status(400)
     res.send(responseBadRequest(error))

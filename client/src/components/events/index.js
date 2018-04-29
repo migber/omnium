@@ -28,6 +28,7 @@ class Event extends Component {
     this.onCloseButtonClick = this.onCloseButtonClick.bind(this)
     this.onSaveButtonClick = this.onSaveButtonClick.bind(this)
     this.isEventFinished = this.isEventFinished.bind(this)
+    this.closeEvent = this.closeEvent.bind(this)
   }
   componentWillMount() {
     console.log('omniummmmm')
@@ -41,8 +42,7 @@ class Event extends Component {
           omniumsLength: omniums.length -1,
         })
       }
-    }
-    )
+    })
   }
 
   setEventData(name, date, id) {
@@ -84,6 +84,24 @@ class Event extends Component {
     }
   }
 
+  closeEvent() {
+    const { lastEventId } = this.state
+    api.closeEvent(
+      this.props.user,
+      lastEventId
+    ).then(() => {
+      api.getEvents(this.props.user).then((omniums) => {
+        this.setState({ omniums })
+        if (omniums) {
+          this.setState({
+            lastEventId: omniums[omniums.length -1].id,
+            omniumsLength: omniums.length -1,
+          })
+        }
+      })
+    })
+  }
+
   render() {
     const { omniums, show, addEvent } = this.state
     const { user } = this.props
@@ -97,11 +115,15 @@ class Event extends Component {
         this.isEventFinished() ? (
             user.email == VIP_EMAIL && (
               <button className="btn-left upl-btn btn" type="submit" onClick={this.addNewEvent}>
-              <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Create Event
+              <span className="glyphicon glyphicon-plus" aria-hidden="true"></span> Create Event
               </button>
             )
         ) : (
-          <div></div>
+          user.email == VIP_EMAIL && (
+            <button className="btn-left upl-btn btn" type="submit" onClick={this.closeEvent}>
+            <span aria-hidden="true"></span> Close the last event
+            </button>
+         )
         )
       }
       { omniums ? (

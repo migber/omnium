@@ -31,6 +31,16 @@ const api = {
     .then(resp => resp.json())
   },
 
+  closeEvent(user, eventId) {
+    const url = new URL(`${baseUrl}/api/events/${eventId}/close`)
+    return fetch(url, {
+      method: 'PUT',
+      headers: getHeaders(user.accessToken, user)
+    })
+    .then(response =>
+      response.json())
+  },
+
 }
 
 export default api

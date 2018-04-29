@@ -112,13 +112,14 @@ class Race extends Component {
       this.setState({ scores: helper.omniumOrder(this.state.listScores) })
       console.log('Changed to false')
       localStorage.setItem('isStartList', false)
-      this.setState({isStartList: false}) }
-    else {
+      this.setState({isStartList: false})
+    } else {
       const startListScores = helper.CreateStartList(this.state.scores)
       this.setState({ scores: helper.omniumOrder(startListScores), startListScores })
       localStorage.setItem('isStartList', true)
       this.setState({isStartList: true})
     }
+
   }
 
   updateOverallOmnium(scores, category){

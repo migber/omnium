@@ -32,7 +32,7 @@ const api = {
   },
 
   createSprints(user, id, raceOrder, scoreId, sprint) {
-    const url = new URL(`${baseUrl}/api/events/${id}/races/${raceOrder}/scores/${scoreId}/sprints`)
+    const url = new URL(`${baseUrl}/api/events/${id}/races/${raceOrder}/scores/${scoreId}/sprints/only`)
     return fetch(url, {
       method: 'POST',
       body: JSON.stringify(sprint),

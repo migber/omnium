@@ -77,7 +77,13 @@ class TempoEdit extends Component {
       sprintNumber: sprintId,
       sprintPoints: 1,
     }
-    api.addSprint(this.props.user, this.state.eventId, this.state.raceOrder, scoreId, sprint).then(() => {
+    api.addSprint(
+      this.props.user,
+      this.state.eventId,
+      this.state.raceOrder,
+      scoreId,
+      sprint,
+    ).then(() => {
       this.apiListRequest(localStorage.getItem('category'))
     })
   }

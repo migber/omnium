@@ -85,8 +85,8 @@ class EliminationItemEdit extends Component {
     } = this.state
     const { isStartList } = this.props
     return (
-    <div>
-      <a role="button" className={eliminated ? "elmn list-group-item list-group-item-action list-group-item-primary" : "list-group-item list-group-item-action list-group-item-primary"}
+    <div className="inline-block">
+      <a role="button" className={eliminated ? "elmn dns hov list-group-item list-group-item-action list-group-item-primary" : "dns hov list-group-item list-group-item-action list-group-item-primary"}
         onClick={() => this.eliminateCyclistChild(scoreId)}
       >
         {
@@ -104,7 +104,7 @@ class EliminationItemEdit extends Component {
         }
         <strong> {raceNumber} </strong> {lastName}   {firstName} {uciCode}  {nationality}
     </a>
-    <div>
+    <div className="elim">
           <label key={`${scoreId}${Math.random()}`} className="lbl-text"> DNS
           <br></br>
           <input key={`${scoreId}${Math.random()}`}
