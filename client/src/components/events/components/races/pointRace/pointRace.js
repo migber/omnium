@@ -9,6 +9,7 @@ import scratchIteamAPI from '../Scratch/components/scratchItem/api'
 import raceHelper from '../helper'
 import PointRaceItem from './components/pointraceItem'
 import sprintsNumbers from './constants/sprints'
+import { VIP_EMAIL } from '../../../../../config/env'
 
 class PointRace extends Component {
   constructor(props){
@@ -26,9 +27,16 @@ class PointRace extends Component {
       womenStartList: null,
       menScoresStartList: null,
       sprints: null,
+      elapsedTime: '',
+      avgSpeed: 0,
+      omniumId: this.props.omniumId,
+      communique: '',
     }
     this.changeList = this.changeList.bind(this)
     this.createSprints = this.createSprints.bind(this)
+    this.changeCommunique = this.changeCommunique.bind(this)
+    this.changeAvgSpeed = this.changeAvgSpeed.bind(this)
+    this.changeElapsedTime = this.changeElapsedTime.bind(this)
   }
 
   componentWillMount() {
@@ -36,7 +44,15 @@ class PointRace extends Component {
     localStorage.setItem('activeTab', 4)
     this.setState({ eventName: localStorage.getItem('eventName')})
     raceApi.getRaces(this.props.user, this.props.location.pathname ).then((race) => {
-      this.setState({ race })
+      const elapsedTime =  race.elapseTime ? race.elapseTime : ''
+      const avgSpeed =  race.avgSpeed ? race.avgSpeed : 0
+      const communique =  race.communique ? race.communique : ''
+      this.setState({
+        race,
+        elapsedTime,
+        avgSpeed,
+        communique,
+       })
     })
     this.setState({
       category: localStorage.getItem('category')
@@ -104,14 +120,72 @@ class PointRace extends Component {
     this.props.onRef(null)
   }
 
+  changeCommunique(e) {
+    this.setState({
+      communique: e.target.value
+    })
+    const data = {
+      communique: e.target.value
+    }
+    if (e.target.value) {
+      raceApi.updateCommunique(
+        this.props.user,
+        this.state.omniumId,
+        this.state.race.id,
+        data
+      ).then(() => {})
+    }
+  }
+
+  changeElapsedTime(e) {
+    console.log("ehehe")
+    console.log(e.target.value)
+    this.setState({
+      elapsedTime: e.target.value
+    })
+    const data = {
+      elapseTime: e.target.value
+    }
+    if (e.target.value) {
+      raceApi.updateElapsedTime(
+        this.props.user,
+        this.state.omniumId,
+        this.state.race.id,
+        data
+      ).then(() => {
+        console.log('ciaa')
+      })
+    }
+  }
+
+  changeAvgSpeed(e) {
+    this.setState({
+      avgSpeed: e.target.value
+    })
+    const data = {
+      avgSpeed: e.target.value
+    }
+    if (e.target.value) {
+      raceApi.updateAvgSpeed(
+        this.props.user,
+        this.state.omniumId,
+        this.state.race.id,
+        data
+      ).then(() => {})
+    }
+  }
+
   render() {
-    const { omniumId, activeTab, isStartList } = this.props
+    const { omniumId, activeTab, isStartList, user } = this.props
     const { races,
             scores,
             cyclists,
             scoresList,
             race,
             sprints,
+            elapsedTime,
+            communique,
+            avgSpeed,
             } = this.state
     const category = localStorage.getItem('category')
     console.log(race)
@@ -121,11 +195,23 @@ class PointRace extends Component {
          <div>
          {
            race && (
-             <article>
-             <h4>{race.description}</h4>
-             <p>Elapsed time: {race.elapseTime}</p>
-             <p>Average speed: {race.avgSpeed} km/h</p>
-           </article>
+               (user && user.email === VIP_EMAIL) ? (
+                <article>
+                <h4>{race.description}</h4>
+                  <div className="center inp-size input-group">
+                    <label>Elapsed time: </label>
+                    <input type="text" value={elapsedTime} className="txt-inside bord" onChange={this.changeElapsedTime}/>
+                    <label>Average Speed: </label>
+                    <input type="number" value={avgSpeed} className="txt-inside bord" onChange={this.changeAvgSpeed}/>
+                  </div>
+                </article>
+               ) : (
+                <article>
+                <h4>{race.description}</h4>
+                <p>Elapsed time: {race.elapseTime}</p>
+                <p>Average speed: {race.avgSpeed} km/h</p>
+                </article>
+               )
            )
          }
         <table className="table table-striped">
@@ -200,11 +286,19 @@ class PointRace extends Component {
           </tbody>
         </table>
         {
-           race && race.communique && (
-             <article>
-             <h4>Communique of commissaires:</h4>
-             <p>{race.communique}</p>
-           </article>
+           race && (
+            (user && user.email === VIP_EMAIL) ? (
+              <article>
+               <p>Communique of commissaires:</p>
+               <input type="text" value={communique} className="comm" onChange={this.changeCommunique}/>
+            </article>
+            ) : (
+              <article>
+                <h4>Communique of commissaires:</h4>
+                <p>{race.communique}</p>
+              </article>
+            )
+
            )
          }
         </div>
