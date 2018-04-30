@@ -103,26 +103,29 @@ class Event extends Component {
   }
 
   render() {
-    const { omniums, show, addEvent } = this.state
+    const { omniums, addEvent } = this.state
     const { user } = this.props
+    console.log(this.props.location)
     const activeTab = localStorage.getItem('activeTab') ? localStorage.getItem('activeTab') : 0
     return (
       <div className="container">
-      { show && (
+      { this.props.location.pathname === '/events' && (
           <h2> Events </h2>
       )}
       {
-        this.isEventFinished() ? (
+        this.isEventFinished() && user ? (
             user.email == VIP_EMAIL && (
               <button className="btn-left upl-btn btn" type="submit" onClick={this.addNewEvent}>
               <span className="glyphicon glyphicon-plus" aria-hidden="true"></span> Create Event
               </button>
             )
         ) : (
-          user.email == VIP_EMAIL && (
+          user && (
+            user.email == VIP_EMAIL && (
             <button className="btn-left upl-btn btn" type="submit" onClick={this.closeEvent}>
             <span aria-hidden="true"></span> Close the last event
             </button>
+            )
          )
         )
       }
@@ -130,7 +133,7 @@ class Event extends Component {
           <ul className="list-group list-group-flush ">
           { omniums.map((omnium) => {
               return (
-                show &&
+                this.props.location.pathname === '/events' &&
                 <a key={omnium.id} onClick={() => this.setEventData(omnium.name, omnium.date, omnium.id)} className="list-group-item list-group-item-action list-group-item-primary">
                  { omnium.name } ({Moment(omnium.startDate).format('YYYY-MM-YY')} - {Moment(omnium.endDate).format('YYYY-MM-YY')})</a>
               )

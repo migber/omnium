@@ -147,7 +147,7 @@ class App extends Component {
         <Route path='/events' render={( props ) =>
           <Event {...props}
             user={user}
-            show={this.state.show}
+            show={true}
           />}
           />
        </Switch>
