@@ -232,7 +232,7 @@ class Race extends Component {
 
   render() {
     const { races, activeTab, omniumId, scores, btnActive} = this.state
-    console.log(races)
+    console.log(localStorage.getItem('activeTab'))
     const active = localStorage.getItem('activeTab') ? Number(localStorage.getItem('activeTab')) : activeTab
     const isStartList = localStorage.getItem('isStartList') == 'true' ? true : false
     return (

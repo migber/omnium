@@ -30,6 +30,7 @@ class Event extends Component {
     this.isEventFinished = this.isEventFinished.bind(this)
     this.closeEvent = this.closeEvent.bind(this)
   }
+
   componentWillMount() {
     console.log('omniummmmm')
     const countEvents = []
@@ -105,7 +106,6 @@ class Event extends Component {
   render() {
     const { omniums, addEvent } = this.state
     const { user } = this.props
-    console.log(this.props.location)
     const activeTab = localStorage.getItem('activeTab') ? localStorage.getItem('activeTab') : 0
     return (
       <div className="container">

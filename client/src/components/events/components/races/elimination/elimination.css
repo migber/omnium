@@ -21,17 +21,16 @@
 }
 
 .elim {
-  margin-left: 90%;
+  margin-top: 10px;
   width: 10%;
-  float: right;
   margin-left: 0px;
-  position: static;
+  display: inline-block
 }
 
 .dns{
-  margin-right: 10%;
   width: 90%;
   overflow: hidden;
+  display: inline-block
 }
 
 .inline-block{
