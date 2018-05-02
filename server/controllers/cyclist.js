@@ -290,6 +290,31 @@ async function createCyclistsFromRegistration(cyclists) {
     })
   }
 }
+function validateRow(row) {
+  const validRegEx = /^[^\\\/&.*#%]*$/
+  if (!row.values[2].match(validRegEx)) {
+    return false
+  }
+  if (row.values[4].toString().length !== 11) {
+    return false
+  }
+  if (!row.values[3].match(validRegEx)) {
+    return false
+  }
+  if (!row.values[5].match(validRegEx)) {
+    return false
+  }
+  if (!row.values[6].match(validRegEx)) {
+    return false
+  }
+  if (!row.values[8].match(validRegEx)) {
+    return false
+  }
+  if (!row.values[9].match(validRegEx)) {
+    return false
+  }
+  return true
+}
 
 async function fileUpload(req, res) {
   console.log('File upload')
@@ -302,26 +327,29 @@ async function fileUpload(req, res) {
     workbook.xlsx.readFile(req.files.file.path.toString('utf8'))
       .then(() => {
         const worksheet = workbook.getWorksheet('registration')
-        worksheet.eachRow({ includeEmpty: false }, (row, rowNumber) => {
-          if (rowNumber !== 1) {
-            const cyclist = {
-              firstName: row.values[2],
-              lastName: row.values[3].toUpperCase(),
-              uciCode: row.values[4],
-              team: row.values[5],
-              nationality: row.values[6].toUpperCase(),
-              birthdate: Date(row.values[7]),
-              gender: row.values[8],
-              category: row.values[9].toLowerCase(),
-              approved: false,
+        if (worksheet) {
+          worksheet.eachRow({ includeEmpty: false }, (row, rowNumber) => {
+            if (rowNumber !== 1 && validateRow(row) && row.values.length === 10) {
+              const cyclist = {
+                firstName: row.values[2],
+                lastName: row.values[3].toUpperCase(),
+                uciCode: row.values[4],
+                team: row.values[5],
+                nationality: row.values[6].toUpperCase(),
+                birthdate: Date(row.values[7]),
+                gender: row.values[8],
+                category: row.values[9].toLowerCase(),
+                approved: false,
+              }
+              cyclists.push(cyclist)
             }
-            cyclists.push(cyclist)
-          }
-        })
+          })
+        }
         createCyclistsFromRegistration(cyclists)
       })
   } else {
     res.send(responseBadRequest('file was not uploaded'))
+    res.status(400)
   }
 }
 
