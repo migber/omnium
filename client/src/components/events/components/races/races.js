@@ -74,7 +74,7 @@ class Race extends Component {
       this.state.activeTab,
       this.state.btnActive,
     )
-    .then(scores => {
+    .then((scores) => {
       this.setStartListValueInStorage()
       this.createListOfData(scores)
       console.log(scores)

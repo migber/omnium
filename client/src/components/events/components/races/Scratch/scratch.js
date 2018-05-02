@@ -92,37 +92,35 @@ class Scratch extends Component {
       communique: e.target.value
     })
     const data = {
-      communique: e.target.value
+      communique: ''
     }
     if (e.target.value) {
-      api.updateCommunique(
-        this.props.user,
-        this.state.omniumId,
-        this.state.race.id,
-        data
-      ).then(() => {})
+      data.communique = e.target.value
     }
+    api.updateCommunique(
+      this.props.user,
+      this.state.omniumId,
+      this.state.race.id,
+      data
+    ).then(() => {})
   }
 
   changeElapsedTime(e) {
-    console.log("ehehe")
-    console.log(e.target.value)
     this.setState({
       elapsedTime: e.target.value
     })
-    const data = {
-      elapseTime: e.target.value
+    let data = {
+      elapseTime: ''
     }
     if (e.target.value) {
-      api.updateElapsedTime(
-        this.props.user,
-        this.state.omniumId,
-        this.state.race.id,
-        data
-      ).then(() => {
-        console.log('ciaa')
-      })
+      data.elapseTime = e.target.value
     }
+    api.updateElapsedTime(
+      this.props.user,
+      this.state.omniumId,
+      this.state.race.id,
+      data
+    ).then(() => {})
   }
 
   changeAvgSpeed(e) {
@@ -130,16 +128,17 @@ class Scratch extends Component {
       avgSpeed: e.target.value
     })
     const data = {
-      avgSpeed: e.target.value
+      avgSpeed: ''
     }
     if (e.target.value) {
-      api.updateAvgSpeed(
-        this.props.user,
-        this.state.omniumId,
-        this.state.race.id,
-        data
-      ).then(() => {})
+      data.avgSpeed = e.target.value
     }
+    api.updateAvgSpeed(
+      this.props.user,
+      this.state.omniumId,
+      this.state.race.id,
+      data
+    ).then(() => {})
   }
 
   render() {

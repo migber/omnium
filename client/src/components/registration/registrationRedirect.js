@@ -59,29 +59,29 @@ class Registration extends Component {
     return (
       <div className="txt container">
       <article>
-        <div className="border-bottom">
-          <h1>Register cyclists</h1>
-        </div>
-        <div className="from-top">
-        <p>
-          <h4>Here you can upload .xlsx (excel) file with all your riders information.</h4>
-        </p>
-        <p>
-          <h4>
-          <strong>
-          Please follow steps bellow.
-          </strong>
-         </h4>
-            <ol>
-              <li className="list-items">Create excel file with same column names. Fill in with your cyclists data</li>
-              <img src={structure} alt="data structure" height="400" width="1000"/>
-              <li className="list-items">Once you fill in your team data make sure you changed sheet name to<strong> registration </strong></li>
-              <img src={sheetName} alt="data structure" height="200" width="500"/>
-              <li className="list-items">Choose your file and click "Upload" button. If file was successfully uploaded you will see the message</li>
-            </ol>
-        </p>
-        </div>
-      </article>
+          <div className="border-bottom">
+            <h1>Register cyclists</h1>
+          </div>
+          <div className="from-top">
+          <p>
+            <h4>Here you can upload .xlsx (excel) file with all your riders information.</h4>
+          </p>
+          <p>
+            <h4>
+            <strong>
+            Please follow steps bellow.
+            </strong>
+           </h4>
+              <ol>
+                <li className="list-items">Create excel file with same column names. Fill in with your cyclists data</li>
+                <img src={structure} alt="data structure" height="400" width="1000"/>
+                <li className="list-items">Once you fill in your team data make sure you changed sheet name to<strong> registration </strong></li>
+                <img src={sheetName} alt="data structure" height="200" width="500"/>
+                <li className="list-items">Choose your file and click "Upload" button. If file was successfully uploaded you will see the message</li>
+              </ol>
+          </p>
+          </div>
+        </article>
       {
         authenticated ? (
           <form onSubmit={this.onFormSubmit}>

@@ -110,10 +110,11 @@ class Users extends Component {
             saveClicked,
             showErrors,
           } = this.state
+    const { authenticated } = this.props
     return (
       <div className="container">
       {
-        !saveClicked ? (
+        !authenticated && !saveClicked ? (
          <div>
             <article>
             <div className="border-bottom">
@@ -178,19 +179,21 @@ class Users extends Component {
           <FormControl.Feedback />
           </FormGroup>
 
-          <Button onClick={() => this.onSaveButtonClick()} bsStyle="primary">Save changes</Button>
+          <Button onClick={() => this.onSaveButtonClick()} bsStyle="primary">Send request</Button>
           </form>
       </div>
         ) : (
-          <article>
-            <div className="border-bottom">
-              <h1>Registration</h1>
-            </div>
-            <div className="from-top">
-              <h4>Thank you! Soon your request will be approved. </h4>
-              <img src={logo} className="App-logo" alt="logo" />
-          </div>
-        </article>
+            !authenticated && (
+              <article>
+                <div className="border-bottom">
+                  <h1>Registration</h1>
+                </div>
+                <div className="from-top">
+                  <h4>Thank you! Soon your request will be approved. </h4>
+                  <img src={logo} className="App-logo" alt="logo" />
+                </div>
+              </article>
+            )
         )
       }
       </div>

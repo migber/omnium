@@ -19,6 +19,7 @@ import Users from './components/users/user'
 import UserRequests from './components/userRequests/userRequests'
 import apiUserRequests from './components/userRequests/api'
 import MyTeam from './components/myTeam/myTeam'
+import RegistrationRedirect from './components/registration/registrationRedirect'
 
 const AUTHORISE_URL = 'https://omnium.herokuapp.com/api/users/createLogged'
 const EXISTS_URL = 'https://omnium.herokuapp.com/api/users/exists'
@@ -73,23 +74,27 @@ class App extends Component {
     apiUsers.getUser(user, data).then((approvedUser) => {
       console.log(approvedUser)
       if (approvedUser) {
+        this.badgeSet(approvedUser)
+        this.badgeSetAssign(approvedUser)
         localStorage.setItem('user', JSON.stringify(approvedUser))
         localStorage.setItem('authenticated', true)
-        this.setState({ authenticated: true, user: approvedUser })
+        this.setState({
+          authenticated: true,
+          user: approvedUser,
+          showLoginMessage: false,
+         })
       } else {
         this.setState({
           showLoginMessage: true
         })
       }
     })
-    this.badgeSet(user)
-    this.badgeSetAssign(user)
   }
 
   onLogout() {
     localStorage.removeItem('user')
     localStorage.removeItem('authenticated')
-    this.setState({ authenticated: false, user: null })
+    this.setState({ authenticated: false, user: {} })
   }
 
   badgeSet(user){
@@ -167,13 +172,21 @@ class App extends Component {
           />}
         />
         <Route path='/register' render={( props ) =>
-         <Register
-            {...props}
-            authenticated={authenticated}
-            user={user}
-            badgeSet={this.badgeSet}
-          />
-        }
+        authenticated ? (
+            <Register
+              {...props}
+              authenticated={authenticated}
+              user={user}
+              badgeSet={this.badgeSet}
+             />
+        ) : (
+            <RegistrationRedirect
+              {...props}
+              authenticated={authenticated}
+              user={user}
+              badgeSet={this.badgeSet}
+             />
+        )}
         />
 
         { user && user.email == VIP_EMAIL && (

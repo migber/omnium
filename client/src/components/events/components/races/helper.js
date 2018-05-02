@@ -14,6 +14,7 @@ function CreateStartList(scores) {
       return a.raceNumber - b.raceNumber
     })
   }
+  console.log(startList)
   return startList
 }
 

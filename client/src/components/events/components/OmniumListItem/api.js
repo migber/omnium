@@ -13,6 +13,9 @@ function getHeaders(authToken, user) {
 const api = {
 
   getScoresFromRaces(user, id, raceNumber) {
+    console.log('+++++++++++++')
+    console.log(user)
+    console.log('+++++++++++++')
     const url = new URL(`${baseUrl}/api/events/${id}/races/scores/${raceNumber}/allRaces`)
     return fetch(url, {
       method: 'GET',

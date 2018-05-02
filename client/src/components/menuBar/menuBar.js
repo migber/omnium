@@ -38,9 +38,13 @@ class MenuBar extends Component {
             <Link className="link" to="/myTeam">My Team</Link>
           </NavItem>
         )}
-          <NavItem eventKey={7}>
-            <Link className="link" to="/userRegistration">Registration</Link>
-          </NavItem>
+        {
+          !authenticated && (
+            <NavItem eventKey={7}>
+              <Link className="link" to="/userRegistration">Registration</Link>
+            </NavItem>
+          )
+        }
           <NavItem eventKey={2}>
             <Link className="link" to="/home">Contacts</Link>
           </NavItem>
