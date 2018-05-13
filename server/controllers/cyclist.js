@@ -1,7 +1,7 @@
 
 
 const router = require('express').Router()
-const { Cyclist, Race, Score } = require('../models/index')
+const { Cyclist, Race, Score, User } = require('../models/index')
 const responseBadRequest = require('../helpers/responseHelper')
 const Excel = require('exceljs')
 const { Op } = require('sequelize').Sequelize

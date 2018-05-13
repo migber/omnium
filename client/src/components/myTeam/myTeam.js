@@ -50,6 +50,7 @@ class MyTeam extends Component {
         this.handleChangeCategory = this.handleChangeCategory.bind(this)
         this.validation = this.validation.bind(this)
         this.setCyclistData = this.setCyclistData.bind(this)
+        this.validateData = this.validateData.bind(this)
       }
 
    componentWillMount() {
@@ -190,7 +191,7 @@ class MyTeam extends Component {
       if(data.uciCode.length !== 11) {
         console.log('here')
         return false
-      } else {
+      } else if (this.validateData(data)){
         console.log('here true')
         return true
       }
@@ -198,6 +199,29 @@ class MyTeam extends Component {
       console.log('here false')
       return false
     }
+  }
+
+  validateData(data) {
+    const validRegEx = /^[^\\\/&.*#%]*$/
+    if (!data.firstName.match(validRegEx)) {
+      return false
+    }
+    if (!data.lastName.match(validRegEx)) {
+      return false
+    }
+    if (!data.nationality.match(validRegEx)) {
+      return false
+    }
+    if (!data.team.match(validRegEx)) {
+      return false
+    }
+    if (!data.gender.match(validRegEx)) {
+      return false
+    }
+    if (!data.category.match(validRegEx)) {
+      return false
+    }
+    return true
   }
 
   searchUpdated (term) {
