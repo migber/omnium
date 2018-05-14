@@ -72,7 +72,7 @@ class UserRequests extends Component {
                     <td> {request.phone}</td>
                     <td> {request.email}</td>
                     <button onClick={() => this.deleteUser(request.id)} type="button" className="btn-delete btn-float btn">Delete</button>
-                    <button type="button" onClick={() => this.approve(request.id)} className="btn-approve btn-float btn btn-success">Approve</button>
+                    <button id="users-approve" type="button" onClick={() => this.approve(request.id)} className="btn-approve btn-float btn btn-success">Approve</button>
                  </tbody>
               )
             })

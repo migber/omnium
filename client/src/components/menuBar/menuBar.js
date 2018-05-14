@@ -23,10 +23,10 @@ class MenuBar extends Component {
     const { authenticated, user } = this.props
     return (
       <div>
-        <Navbar className="extra-features">
+        <Navbar id="extra-features" className="extra-features">
       <Navbar.Header>
         <Navbar.Brand>
-          <Link to="/events">Omnium</Link>
+          <Link id="events" to="/events">Omnium</Link>
         </Navbar.Brand>
         <Navbar.Toggle />
       </Navbar.Header>
@@ -35,48 +35,45 @@ class MenuBar extends Component {
         { authenticated && (
 
           <NavItem eventKey={1}>
-            <Link className="link" to="/myTeam">My Team</Link>
+            <Link id="myTeam" className="link" to="/myTeam">My Team</Link>
           </NavItem>
         )}
         {
           !authenticated && (
             <NavItem eventKey={7}>
-              <Link className="link" to="/userRegistration">Registration</Link>
+              <Link id="registration" className="link" to="/userRegistration">Registration</Link>
             </NavItem>
           )
         }
-          <NavItem eventKey={2}>
-            <Link className="link" to="/home">Contacts</Link>
-          </NavItem>
           { authenticated && user.email == VIP_EMAIL && (
             <NavItem eventKey={1}>
-              <Link className="link" to="/assignNumbers"> Assign Numbers </Link>
+              <Link id="assignNumbers" className="link" to="/assignNumbers"> Assign Numbers </Link>
                 <span className={(this.props.assignBadges === 0) ? "badge-right bd-success glyphicon glyphicon-user" : "badge-right bd-warning glyphicon glyphicon-user" }></span>
             </NavItem>
           )}
            { authenticated && user.email == VIP_EMAIL && (
               <NavItem eventKey={4}>
-                <Link className="link" to="/requests"> New Requests </Link>
+                <Link id="requests" className="link" to="/requests"> New Requests </Link>
                 <span className="badge-right badge">{this.props.badges}</span>
               </NavItem>
             )}
              { authenticated && user.email == VIP_EMAIL && (
               <NavItem eventKey={5}>
-                <Link className="link" to="/UserRequests"> New User Requests</Link>
+                <Link id='UserRequests' className="link" to="/UserRequests"> New User Requests</Link>
                 <span className={(this.props.newUserRequests === 0) ? "badge-right bd-success glyphicon glyphicon-user" : "badge-right bd-warning glyphicon glyphicon-user" }></span>
               </NavItem>
             )}
           <NavItem eventKey={6}>
-            <Link className="link" to="/register">Register for race</Link>
+            <Link id="register" className="link" to="/register">Register for race</Link>
           </NavItem>
           <NavItem eventKey={7}>
-            <Link className="link" to="/cyclists" user={user}>Cyclists</Link>
+            <Link id='cyclists' className="link" to="/cyclists" user={user}>Cyclists</Link>
           </NavItem>
         </Nav>
         <Nav pullRight >
         {
           !authenticated && (
-          <NavItem>
+          <NavItem id="googleLogin">
            <GoogleLogin className="google-login-btn"
            clientId="308977226751-dqstcngaqgj8vk5i50fj2mgedcoau9eh.apps.googleusercontent.com"
            buttonText="Login"

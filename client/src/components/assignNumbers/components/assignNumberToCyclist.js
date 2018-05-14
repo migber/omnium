@@ -90,7 +90,7 @@ class AssignNumberCyclistItem extends Component {
           <td className="txt-big text"> {category}</td>
           <td>
             <button type="button" onClick={() => this.deleteScore()} className="btn-float btn btn-danger">Delete</button>
-            <button type="button" onClick={() => this.updateRaceNumber()} className="btn-approve btn-float btn btn-success">Assign</button>
+            <button type="button" onClick={() => this.updateRaceNumber()} id="btn-Approve" className="btn-approve btn-float btn btn-success">Assign</button>
           </td>
       </tr>
     )

@@ -134,7 +134,7 @@ class Event extends Component {
           { omniums.map((omnium) => {
               return (
                 this.props.location.pathname === '/events' &&
-                <a key={omnium.id} onClick={() => this.setEventData(omnium.name, omnium.date, omnium.id)} className="list-group-item list-group-item-action list-group-item-primary">
+                <a name="eventsItem" id={omnium.id} key={omnium.id} onClick={() => this.setEventData(omnium.name, omnium.date, omnium.id)} className="list-group-item list-group-item-action list-group-item-primary">
                  { omnium.name } ({Moment(omnium.startDate).format('YYYY-MM-YY')} - {Moment(omnium.endDate).format('YYYY-MM-YY')})</a>
               )
             })
