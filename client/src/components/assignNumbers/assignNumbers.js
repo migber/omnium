@@ -75,7 +75,7 @@ class AssignNumbers extends Component {
                         <th scope="col">Race number</th>
                         <th scope="col">First name</th>
                         <th scope="col">Last name</th>
-                        <th scope="col">UCI Code</th>
+                        <th scope="col">UCI ID</th>
                         <th scope="col">Team</th>
                         <th scope="col">Nationality</th>
                         <th scope="col">Category</th>

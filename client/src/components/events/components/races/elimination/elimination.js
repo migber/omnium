@@ -206,7 +206,7 @@ class Elimination extends Component {
               <th scope="col">Order</th>
               <th scope="col">No</th>
               <th scope="col">Name</th>
-              <th scope="col">UCI code</th>
+              <th scope="col">UCI ID</th>
               <th scope="col">Nationality</th>
               </tr>
             ) : (
@@ -223,7 +223,7 @@ class Elimination extends Component {
                 }
               <th scope="col">No</th>
               <th scope="col">Name</th>
-              <th scope="col">UCI code</th>
+              <th scope="col">UCI ID</th>
               <th scope="col">Nationality</th>
               </tr>
             )

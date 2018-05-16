@@ -1,0 +1,107 @@
+[
+    {
+        "id": 16,
+        "elapseTime": null,
+        "name": "Overall",
+        "communique": null,
+        "avgSpeed": null,
+        "order": 0,
+        "description": "Lithuanian federation & Cido arena",
+        "createdAt": "2018-04-02T12:49:39.389Z",
+        "updatedAt": "2018-04-02T12:49:39.389Z",
+        "EventId": 10,
+        "Event": {
+            "id": 10,
+            "name": "Panevėžys 2017",
+            "startDate": "2017-09-02T00:00:00.000Z",
+            "endDate": "2017-09-03",
+            "done": false,
+            "createdAt": "2018-04-02T12:49:38.174Z",
+            "updatedAt": "2018-04-29T21:38:55.613Z"
+        }
+    },
+    {
+        "id": 12,
+        "elapseTime": "23'23",
+        "name": "Scratch",
+        "communique": "",
+        "avgSpeed": "34",
+        "order": 1,
+        "description": "Lithuanian federation & Cido arena",
+        "createdAt": "2018-04-02T12:49:39.388Z",
+        "updatedAt": "2018-05-01T19:09:16.044Z",
+        "EventId": 10,
+        "Event": {
+            "id": 10,
+            "name": "Panevėžys 2017",
+            "startDate": "2017-09-02T00:00:00.000Z",
+            "endDate": "2017-09-03",
+            "done": false,
+            "createdAt": "2018-04-02T12:49:38.174Z",
+            "updatedAt": "2018-04-29T21:38:55.613Z"
+        }
+    },
+    {
+        "id": 13,
+        "elapseTime": "23''23'",
+        "name": "Tempo race",
+        "communique": null,
+        "avgSpeed": "23",
+        "order": 2,
+        "description": "Lithuanian federation & Cido arena",
+        "createdAt": "2018-04-02T12:49:39.388Z",
+        "updatedAt": "2018-04-29T21:15:40.725Z",
+        "EventId": 10,
+        "Event": {
+            "id": 10,
+            "name": "Panevėžys 2017",
+            "startDate": "2017-09-02T00:00:00.000Z",
+            "endDate": "2017-09-03",
+            "done": false,
+            "createdAt": "2018-04-02T12:49:38.174Z",
+            "updatedAt": "2018-04-29T21:38:55.613Z"
+        }
+    },
+    {
+        "id": 14,
+        "elapseTime": "23'",
+        "name": "Elimination",
+        "communique": "UCI 129.01.2 uz 3 pazeidima.",
+        "avgSpeed": "3",
+        "order": 3,
+        "description": "Lithuanian federation & Cido arena",
+        "createdAt": "2018-04-02T12:49:39.388Z",
+        "updatedAt": "2018-04-29T20:27:26.019Z",
+        "EventId": 10,
+        "Event": {
+            "id": 10,
+            "name": "Panevėžys 2017",
+            "startDate": "2017-09-02T00:00:00.000Z",
+            "endDate": "2017-09-03",
+            "done": false,
+            "createdAt": "2018-04-02T12:49:38.174Z",
+            "updatedAt": "2018-04-29T21:38:55.613Z"
+        }
+    },
+    {
+        "id": 15,
+        "elapseTime": "52'23''",
+        "name": "Point race",
+        "communique": "UCI.12.1.040& 45 NR.56",
+        "avgSpeed": "52",
+        "order": 4,
+        "description": "Lithuanian federation & Cido arena",
+        "createdAt": "2018-04-02T12:49:39.389Z",
+        "updatedAt": "2018-04-29T21:16:14.774Z",
+        "EventId": 10,
+        "Event": {
+            "id": 10,
+            "name": "Panevėžys 2017",
+            "startDate": "2017-09-02T00:00:00.000Z",
+            "endDate": "2017-09-03",
+            "done": false,
+            "createdAt": "2018-04-02T12:49:38.174Z",
+            "updatedAt": "2018-04-29T21:38:55.613Z"
+        }
+    }
+]

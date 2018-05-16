@@ -130,7 +130,7 @@ class Cyclists extends Component {
           <th>Race No</th>
           <th>First name</th>
           <th>Last name</th>
-          <th>UCI Code</th>
+          <th>UCI ID</th>
           <th>Team</th>
           <th>Nationality</th>
           <th>Category</th>

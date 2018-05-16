@@ -375,11 +375,11 @@ class MyTeam extends Component {
           </FormGroup>
 
           <FormGroup controlId="uciCode" >
-          <ControlLabel>UCI code</ControlLabel>
+          <ControlLabel>UCI ID</ControlLabel>
           <FormControl
             type="number"
             value={uciCode}
-            placeholder="Enter UCI code"
+            placeholder="Enter UCI ID"
             onChange={this.handleChangeUCICode}
           />
           <FormControl.Feedback />

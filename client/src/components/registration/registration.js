@@ -3,7 +3,7 @@ import React, { Component } from 'react'
 // import { Navbar, Button } from 'react-bootstrap'
 import './registration.css'
 import axios, { post } from 'axios'
-import structure from '../../images/REGISTRATION/structure.png'
+import structure from '../../images/REGISTRATION/registration.png'
 import sheetName from '../../images/REGISTRATION/sheetName.png'
 
 class Registration extends Component {

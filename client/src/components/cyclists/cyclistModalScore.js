@@ -184,7 +184,7 @@ class CyclistScoreModal extends Component {
         </FormGroup>
 
         <FormGroup controlId="uciCode" >
-        <ControlLabel>UCI code</ControlLabel>
+        <ControlLabel>UCI ID</ControlLabel>
         <FormControl
           type="text"
           value={uciCode}
