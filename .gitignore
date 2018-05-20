@@ -20,6 +20,9 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 bin/
+/server/config
+/client/src/config
+/config/cinfig.json
 chromedriver
 reports/
 selenium-debug.log
