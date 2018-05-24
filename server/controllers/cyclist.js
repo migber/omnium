@@ -5,7 +5,8 @@ const { Cyclist, Race, Score, User } = require('../models/index')
 const responseBadRequest = require('../helpers/responseHelper')
 const Excel = require('exceljs')
 const { Op } = require('sequelize').Sequelize
-
+const PATH = '/Users/migleberesineviciute/Documents/GitHub/omnium/server/helpers/UCI_EVENT.xlsx'
+const tempfile = require('tempfile')
 
 async function getCyclistsList(req, res) {
   console.log('Getting list of cyclists')
@@ -353,6 +354,76 @@ async function fileUpload(req, res) {
   }
 }
 
+async function uciFile(req, resp) {
+  console.log("++++++++++++++++++++++++++++++++++++++++++ hererrere")
+  const { raceOrder, eventId, category } = req.params
+  const workbook = new Excel.Workbook()
+  const sheet = workbook.addWorksheet('Results')
+  const worksheet = workbook.getWorksheet(sheet.id)
+  worksheet.columns = [
+    { header: 'Rank', key: 'rank' },
+    { header: 'BIB', key: 'BIB' },
+    { header: 'UCI ID', key: 'uciId', width: 15 },
+    { header: 'Last name', key: 'lastName', width: 15 },
+    { header: 'First name', key: 'firstName', width: 15 },
+    { header: 'Country', key: 'country' },
+    { header: 'Team', key: 'team', width: 15 },
+    { header: 'Gender', key: 'gender' },
+    { header: 'Phase', key: 'phase' },
+    { header: 'Heat', key: 'heat' },
+    { header: 'Result', key: 'result' },
+    { header: 'IRM', key: 'IRM' },
+    { header: 'Sort order', key: 'sort' },
+  ]
+  Score.findAll({
+    include: [{
+      model: Race,
+      where: { order: raceOrder, 'EventId': eventId},
+    }, {
+      model: Cyclist,
+      as: 'Cyclist',
+      where: { category, approved: 'true' },
+    },
+    ],
+  }).then((all) => {
+    console.log(all.length)
+
+    if (all.length !== 0) {
+      all.sort((a, b) => b.totalPoints - a.totalPoints).forEach((score, id) => {
+        let irm = ''
+        if (score.dns) {
+          irm = 'DNS'
+        } else if (score.DNF) {
+          irm = 'DNF'
+        } else if (score.DNQ) {
+          irm = 'DNQ'
+        }
+        worksheet.addRow({
+          rank: id + 1,
+          BIB: score.raceNumber,
+          uciId: score.Cyclist.uciCode,
+          lastName: score.Cyclist.lastName,
+          firstName: score.Cyclist.firstName,
+          country: score.Cyclist.nationality,
+          team: score.Cyclist.team,
+          gender: score.Cyclist.gender,
+          result: score.totalPoints,
+          IRM: irm,
+          sort: id + 1,
+        })
+      })
+    }
+    const tempFilePath = tempfile('.xlsx')
+    workbook.xlsx.writeFile(tempFilePath).then(() => {
+      resp.sendFile(tempFilePath, (err) => {
+        if (err) {
+          console.log(`---------- error downloading file:  ${err}`)
+        }
+      })
+    })
+  })
+}
+
 router.get('/api/cyclists', getCyclistsList)
 router.get('/api/cyclists/approved', getCyclistsListApproved)
 router.get('/api/cyclists/notApproved', getCyclistsListNotApproved)
@@ -365,6 +436,7 @@ router.get('/api/cyclists/approve', listOfCyclisttoApprove)
 router.put('/api/cyclists/approve/:cyclistId', approveCyclist)
 router.delete('/api/cyclists/:cyclistId', deleteCyclist)
 router.post('/api/uploadFile', fileUpload)
+router.get('/api/events/:eventId/races/:raceOrder/:category/uciFile', uciFile)
 
 module.exports = {
   router,
@@ -380,4 +452,5 @@ module.exports = {
   getCyclistsListNotApproved,
   getCyclistsListApproved,
   createCyclistsFromMyTeam,
+  uciFile,
 }

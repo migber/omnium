@@ -54,6 +54,7 @@ class Race extends Component {
     this.saveFinishPlaces = this.saveFinishPlaces.bind(this)
     this.updateOverallOmnium = this.updateOverallOmnium.bind(this)
     this.saveFinishPlacesElimination = this.saveFinishPlacesElimination.bind(this)
+    this.downloadFile = this.downloadFile.bind(this)
   }
 
   componentWillMount() {
@@ -230,6 +231,10 @@ class Race extends Component {
     this.updateOverallOmnium(scores, category)
   }
 
+  downloadFile(activeTab){
+    api.download(this.props.user)
+  }
+
   render() {
     const { races, activeTab, omniumId, scores, btnActive} = this.state
     console.log(localStorage.getItem('activeTab'))
@@ -333,7 +338,14 @@ class Race extends Component {
           )})}
          </tbody>
          </table>
-         </div>
+         {
+            this.props.user && this.props.user.email === VIP_EMAIL && (
+              <div>
+                <a href={`http://localhost:8080/api/events/${this.state.omniumId}/races/0/${this.state.btnActive}/uciFile`} id="exportResults" role="button" type="button" className={(btnActive === 'men') ? "choice-btn-active btn btn-default" : "choice-btn btn btn-default"} name="men">Download</a>
+              </div>
+            )
+         }
+       </div>
       )}
       <div>
         <Route
@@ -466,7 +478,6 @@ class Race extends Component {
           <TopRiders  user={this.props.user}/>
         ) : (
           <div>
-            {/* <a id="saveResults" role="button" type="button" className={(btnActive === 'men') ? "choice-btn-active btn btn-default" : "choice-btn btn btn-default"} onClick={() => this.saveFinishPlaces(active)} name="men">Save Results</a> */}
           </div>
         )
       }

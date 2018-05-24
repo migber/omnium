@@ -279,6 +279,13 @@ class Elimination extends Component {
          }
         </div>
       )}
+      {
+            this.props.user && this.props.user.email === VIP_EMAIL && (
+              <div>
+                <a href={`http://localhost:8080/api/events/${this.state.omniumId}/races/${this.state.raceOrder}/${this.state.category}/uciFile`} id="exportResults" role="button" type="button" className={(category === 'men') ? "choice-btn-active btn btn-default" : "choice-btn btn btn-default"} name="men">Download</a>
+              </div>
+            )
+      }
       </div>
     )
   }

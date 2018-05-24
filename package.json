@@ -21,6 +21,7 @@
     "body-parser": "^1.18.2",
     "chai": "^4.1.2",
     "chai-http": "^4.0.0",
+    "cloc": "^2.3.3",
     "concurrently": "^3.5.1",
     "connect-multiparty": "^2.1.0",
     "cors": "^2.8.4",
@@ -42,7 +43,8 @@
     "selenium-webdriver": "^4.0.0-alpha.1",
     "sequelize": "^4.35.0",
     "socket.io": "^2.1.0",
-    "socket.io-client": "^2.1.0"
+    "socket.io-client": "^2.1.0",
+    "tempfile": "^2.0.0"
   },
   "devDependencies": {
     "sequelize-cli": "^4.0.0"
