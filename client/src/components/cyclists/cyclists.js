@@ -38,9 +38,9 @@ class Cyclists extends Component {
       this.setState({ events })
       if (events) {
         this.setState({
-          eventId: events[events.length -1].id
+          eventId: events[0].id
         })
-        this.findParticipants(events[events.length -1].id)
+        this.findParticipants(events[0].id)
       }
     })
    }
@@ -67,6 +67,7 @@ class Cyclists extends Component {
         edit: false,
         btnActive: category,
     })
+    this.findParticipants(this.state.eventId)
   }
 
   onCloseButtonClick(){
@@ -84,7 +85,7 @@ class Cyclists extends Component {
       this.props.user,
       id,
       this.state.raceOrder,
-      localStorage.getItem('category')
+      this.state.btnActive,
     ).then((scores) => {
       this.setState({cyclists: helper.sortByRaceNumber(scores)})
     })

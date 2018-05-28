@@ -77,9 +77,10 @@ class CyclistScoreModal extends Component {
       gender: this.state.gender,
     }
     api.updateCyclist(this.props.user, this.state.id, cyclist).then(() => {})
-    api.updateScore(this.props.user, this.state.eventId, this.state.scoreId, score).then(() => {})
-    localStorage.setItem('category', JSON.stringify(this.state.category))
-    this.props.action(this.state.category)
+    api.updateScore(this.props.user, this.state.eventId, this.state.scoreId, score).then(() => {
+      localStorage.setItem('category', JSON.stringify(this.state.category))
+      this.props.action(this.state.category)
+    })
   }
 
   handleChangeFirstName(e) {
