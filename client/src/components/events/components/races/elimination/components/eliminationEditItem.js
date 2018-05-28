@@ -86,7 +86,7 @@ class EliminationItemEdit extends Component {
     const { isStartList } = this.props
     return (
     <div className="inline-block">
-      <a role="button" className={eliminated ? "elmn dns hov list-group-item list-group-item-action list-group-item-primary" : "dns hov list-group-item list-group-item-action list-group-item-primary"}
+      <a role="button" className={eliminated ? "elmn dns list-group-item list-group-item-action list-group-item-primary" : "dns hov list-group-item list-group-item-action list-group-item-primary"}
         onClick={() => this.eliminateCyclistChild(scoreId)}
       >
         {

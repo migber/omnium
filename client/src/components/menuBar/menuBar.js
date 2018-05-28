@@ -93,7 +93,7 @@ class MenuBar extends Component {
           authenticated && (
           <NavItem onClick={this.props.onLogout}>Log out</NavItem>
           )}
-          <NavItem eventKey={44}> API explorer</NavItem>
+          {/* <NavItem eventKey={44}> API explorer</NavItem> */}
         </Nav>
       </Navbar.Collapse>
     </Navbar>

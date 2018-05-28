@@ -110,7 +110,7 @@ class TempoRace extends Component {
     if (e.target.value) {
       data.communique = e.target.value
     }
-    api.updateCommunique(
+    mainRaceApi.updateCommunique(
       this.props.user,
       this.state.omniumId,
       this.state.race.id,
@@ -128,7 +128,7 @@ class TempoRace extends Component {
     if (e.target.value) {
       data.elapseTime = e.target.value
     }
-    api.updateElapsedTime(
+    mainRaceApi.updateElapsedTime(
       this.props.user,
       this.state.omniumId,
       this.state.race.id,
@@ -146,7 +146,7 @@ class TempoRace extends Component {
     if (e.target.value) {
       data.avgSpeed = e.target.value
     }
-    api.updateAvgSpeed(
+    mainRaceApi.updateAvgSpeed(
       this.props.user,
       this.state.omniumId,
       this.state.race.id,

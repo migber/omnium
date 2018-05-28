@@ -53,6 +53,8 @@ class EliminationItem extends Component {
             <td className="txt-big text">DNQ</td>
           ) : bk ? (
             <td className="txt-big text">BK</td>
+          ) : isStartList ? (
+            <td className="txt-big text">{rankId +1}</td>
           ) : (
             <td className="txt-big text">{place}</td>
           )

@@ -130,7 +130,7 @@ class PointRace extends Component {
     if (e.target.value) {
       data.communique = e.target.value
     }
-    api.updateCommunique(
+    raceApi.updateCommunique(
       this.props.user,
       this.state.omniumId,
       this.state.race.id,
@@ -148,7 +148,7 @@ class PointRace extends Component {
     if (e.target.value) {
       data.elapseTime = e.target.value
     }
-    api.updateElapsedTime(
+    raceApi.updateElapsedTime(
       this.props.user,
       this.state.omniumId,
       this.state.race.id,
@@ -166,7 +166,7 @@ class PointRace extends Component {
     if (e.target.value) {
       data.avgSpeed = e.target.value
     }
-    api.updateAvgSpeed(
+    raceApi.updateAvgSpeed(
       this.props.user,
       this.state.omniumId,
       this.state.race.id,

@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { Route } from 'react-router-dom'
 import { Modal } from "react-bootstrap"
 import api from './api'
+import eventsApi from '../events/api'
 import Moment from 'moment'
 import {
   FormGroup,
@@ -32,7 +33,7 @@ class MyTeam extends Component {
           gender: '',
           birthday: null,
           searchTerm: '',
-          eventId: 10,
+          eventId: null,
         }
 
         this.deleteUser = this.deleteUser.bind(this)
@@ -59,6 +60,14 @@ class MyTeam extends Component {
       firstName: null,
       lastName: null,
       email: null,
+    })
+    eventsApi.getEvents(this.props.user).then((events) => {
+      if (events) {
+        this.setState({
+          eventId: events[events.length-1].id
+        })
+        console.log(this.state.eventId)
+      }
     })
     this.getRequests()
 

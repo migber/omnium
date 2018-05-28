@@ -178,6 +178,7 @@ async function approveCyclist(req, res) {
           'CyclistId': id,
         },
       }).then((foundScores) => {
+        console.log(foundScores)
         if (foundScores.length === 0) {
           cyclist.updateAttributes({
             approved: req.body.approved,
