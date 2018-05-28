@@ -12,7 +12,7 @@ import {
 } from "react-bootstrap"
 import SearchInput, {createFilter} from 'react-search-input'
 
-const KEYS_TO_FILTERS = ['user.firstName', 'user.lastName', 'user.uciId']
+const KEYS_TO_FILTERS = ['firstName', 'lastName', 'uciId']
 
 class MyTeam extends Component {
     constructor(props){
@@ -34,6 +34,7 @@ class MyTeam extends Component {
           birthday: null,
           searchTerm: '',
           eventId: null,
+          cyclists: null,
         }
 
         this.deleteUser = this.deleteUser.bind(this)
@@ -69,8 +70,12 @@ class MyTeam extends Component {
         console.log(this.state.eventId)
       }
     })
+    api.getCyclists(this.props.user).then((cyclists) => {
+      this.setState({
+        cyclists,
+      })
+    })
     this.getRequests()
-
    }
 
    deleteUser(id) {
@@ -237,15 +242,16 @@ class MyTeam extends Component {
     this.setState({searchTerm: term})
   }
 
-  setCyclistData(cyclistId){
+  setCyclistData(cyclist){
     this.setState({
-      firstName: "Migle",
-      lastName: "Beresineviciute",
-      category: "som",
-      gender: "female",
-      birthday: '1995-04-16',
-      uciCode: 90987876756,
-      team: "LTU",
+      firstName: cyclist.firstName,
+      lastName: cyclist.lastName,
+      category: cyclist.category,
+      gender: cyclist.gender,
+      nationality: cyclist.nationality,
+      birthday: cyclist.birthdate,
+      uciCode: cyclist.uciCode,
+      team: cyclist.team,
     })
   }
 
@@ -263,28 +269,9 @@ class MyTeam extends Component {
           birthday,
           gender,
           searchTerm,
+          cyclists
         } = this.state
-        const emails = [{
-          id: 1,
-          user :{
-            firstName: 'Migle',
-            uciId: 90987876756,
-            lastName: 'Beresineviciute'
-          },
-        },
-        {
-          id: 2,
-          user: {
-            name: 'Anne',
-          },
-        },
-        {
-          id: 3,
-          user: {
-            name: 'Tom',
-          },
-        }]
-        const filteredEmails = emails.filter(createFilter(this.state.searchTerm, KEYS_TO_FILTERS))
+        const filteredEmails = cyclists && cyclists.filter(createFilter(this.state.searchTerm, KEYS_TO_FILTERS))
         return (
           <div className="container">
           {
@@ -349,12 +336,12 @@ class MyTeam extends Component {
         </article>
         <div>
         <SearchInput className="search-input" onChange={this.searchUpdated} />
-        {filteredEmails.map((email) => {
+        {filteredEmails && filteredEmails.map((email) => {
           return (
             searchTerm && (
               <div className="mail" key={email.id}>
-                 <a key={email.id} onClick={() => this.setCyclistData(email.id)} className="list-group-item list-group-item-action list-group-item-primary">
-                 {email.user.firstName} {email.user.lastName} {email.user.uciId}</a>
+                 <a key={email.id} onClick={() => this.setCyclistData(email)} className="list-group-item list-group-item-action list-group-item-primary">
+                 {email.firstName} {email.lastName} {email.uciCode}</a>
             </div>
             )
           )
@@ -419,7 +406,7 @@ class MyTeam extends Component {
           <ControlLabel>Birthday</ControlLabel>
           <FormControl
             type="date"
-            value={birthday}
+            value={Moment(birthday).format('YYYY-MM-DD')}
             onChange={this.handleChangeBirthday}
           />
           <FormControl.Feedback />

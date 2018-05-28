@@ -1,10 +1,12 @@
 
 
 const router = require('express').Router()
-const { Cyclist, Race, Score, User } = require('../models/index')
+const { Cyclist, Race, Score, User, Event } = require('../models/index')
 const responseBadRequest = require('../helpers/responseHelper')
 const Excel = require('exceljs')
+const sequelize = require('sequelize')
 const { Op } = require('sequelize').Sequelize
+
 const PATH = '/Users/migleberesineviciute/Documents/GitHub/omnium/server/helpers/UCI_EVENT.xlsx'
 const tempfile = require('tempfile')
 
@@ -55,6 +57,30 @@ async function getCyclist(req, res) {
   }).catch((error) => {
     res.status(400)
     res.send(responseBadRequest(error))
+  })
+}
+async function getTeamMembersAnalytics(req, res) {
+  const userId = Number(req.params.userId)
+  Cyclist.findAll({
+    where: {
+      userId,
+    },
+    include: [
+      {
+        model: Score,
+        attributes: ['id', [sequelize.fn('sum', sequelize.col('Scores.totalPoints')), 'total_points']],
+        include: [
+          {
+            model: Race,
+            group: 'order',
+          },
+        ],
+      },
+    ],
+    group: ['Scores.id', 'Cyclist.id', 'Scores->Race.id'],
+  }).then((cyclists) => {
+    res.json(cyclists)
+    console.log(cyclists.length)
   })
 }
 
@@ -229,6 +255,21 @@ async function deleteCyclist(req, res) {
   })
 }
 
+async function getTeamMebers(req, res) {
+  const userId = Number(req.params.userId)
+  Cyclist.findAll({
+    where: {
+      userId,
+    },
+  }).then((cyclists) => {
+    res.json(cyclists)
+    res.status(200)
+  }).catch((err) => {
+    res.status(400)
+    res.send(responseBadRequest(err))
+  })
+}
+
 async function getScoreCyclists(req, res) {
   console.log('Getting list of cyclists')
   // const eventId = Number(req.params.eventId)
@@ -388,7 +429,6 @@ async function uciFile(req, resp) {
     ],
   }).then((all) => {
     console.log(all.length)
-
     if (all.length !== 0) {
       all.sort((a, b) => b.totalPoints - a.totalPoints).forEach((score, id) => {
         let irm = ''
@@ -400,7 +440,7 @@ async function uciFile(req, resp) {
           irm = 'DNQ'
         }
         worksheet.addRow({
-          rank: id + 1,
+          rank: score.place,
           BIB: score.raceNumber,
           uciId: score.Cyclist.uciCode,
           lastName: score.Cyclist.lastName,
@@ -410,7 +450,7 @@ async function uciFile(req, resp) {
           gender: score.Cyclist.gender,
           result: score.totalPoints,
           IRM: irm,
-          sort: id + 1,
+          sort: score.finishPlace,
         })
       })
     }
@@ -438,6 +478,8 @@ router.put('/api/cyclists/approve/:cyclistId', approveCyclist)
 router.delete('/api/cyclists/:cyclistId', deleteCyclist)
 router.post('/api/uploadFile', fileUpload)
 router.get('/api/events/:eventId/races/:raceOrder/:category/uciFile', uciFile)
+router.get('/api/cyclists/users/:userId', getTeamMebers)
+router.get('/api/cyclists/users/:userId/analytics', getTeamMembersAnalytics)
 
 module.exports = {
   router,
@@ -454,4 +496,6 @@ module.exports = {
   getCyclistsListApproved,
   createCyclistsFromMyTeam,
   uciFile,
+  getTeamMebers,
+  getTeamMembersAnalytics,
 }

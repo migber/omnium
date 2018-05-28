@@ -22,6 +22,26 @@ const api = {
     .then(response =>
       response.json())
   },
+
+  getCyclists(user) {
+    const url = new URL(`${baseUrl}/api/cyclists/users/${user.id}`)
+    return fetch(url, {
+      method: 'GET',
+      headers: getHeaders(user.accessToken, user)
+    })
+    .then(response =>
+      response.json())
+  },
+
+  getCyclistsAnalytics(user) {
+    const url = new URL(`${baseUrl}/api/cyclists/users/${user.id}/analytics`)
+    return fetch(url, {
+      method: 'GET',
+      headers: getHeaders(user.accessToken, user)
+    })
+    .then(response =>
+      response.json())
+  },
 }
 
 export default api
