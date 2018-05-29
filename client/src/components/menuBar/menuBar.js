@@ -9,7 +9,6 @@ import './menuBar.css'
 import { GoogleLogin } from 'react-google-login'
 import { VIP_EMAIL } from '../../config/env'
 
-
 class MenuBar extends Component {
   constructor(props) {
     super(props)
@@ -33,7 +32,6 @@ class MenuBar extends Component {
       <Navbar.Collapse>
         <Nav className="img-div">
         { authenticated && (
-
           <NavItem eventKey={1}>
             <Link id="myTeam" className="link" to="/myTeam">My Team</Link>
           </NavItem>

@@ -2,8 +2,11 @@ import React, { Component } from 'react'
 import { Route } from 'react-router-dom'
 import { Modal } from "react-bootstrap"
 import api from './api'
+import './myTeam.css'
+import logo from '../../LDSTS_logo-02.svg'
 import eventsApi from '../events/api'
 import Moment from 'moment'
+import helper from './helper'
 import {
   FormGroup,
   FormControl,
@@ -35,6 +38,7 @@ class MyTeam extends Component {
           searchTerm: '',
           eventId: null,
           cyclists: null,
+          analytics: null,
         }
 
         this.deleteUser = this.deleteUser.bind(this)
@@ -53,6 +57,7 @@ class MyTeam extends Component {
         this.validation = this.validation.bind(this)
         this.setCyclistData = this.setCyclistData.bind(this)
         this.validateData = this.validateData.bind(this)
+        this.openForm = this.openForm.bind(this)
       }
 
    componentWillMount() {
@@ -76,6 +81,14 @@ class MyTeam extends Component {
       })
     })
     this.getRequests()
+    api.getCyclistsAnalytics(this.props.user).then((cyclists) => {
+      console.log(cyclists)
+      const analytics = helper.getAnalyticsData(cyclists)
+      console.log(analytics)
+      this.setState({
+        analytics
+      })
+    })
    }
 
    deleteUser(id) {
@@ -149,6 +162,11 @@ class MyTeam extends Component {
     })
   }
 
+  openForm(){
+    this.setState({
+      saveClicked: false,
+    })
+  }
 
   onSaveButtonClick(){
     const data = {
@@ -269,7 +287,8 @@ class MyTeam extends Component {
           birthday,
           gender,
           searchTerm,
-          cyclists
+          cyclists,
+          analytics,
         } = this.state
         const filteredEmails = cyclists && cyclists.filter(createFilter(this.state.searchTerm, KEYS_TO_FILTERS))
         return (
@@ -288,25 +307,26 @@ class MyTeam extends Component {
                       <tr >
                       <th scope="col">First name</th>
                       <th scope="col">Last name</th>
-                      <th scope="col">UCI ID</th>
-                      <th scope="col">Category</th>
-                      <th scope="col">Races</th>
-                      <th scope="col">Scratch points</th>
-                      <th scope="col">Tempo Points</th>
-                      <th scope="col">Elimination Points</th>
-                      <th scope="col">Point Race points</th>
-                      <th scope="col">Avg. position in race</th>
+                      <th scope="col">Events</th>
+                      <th scope="col">Scratch avg. rank</th>
+                      <th scope="col">Tempo race avg. rank</th>
+                      <th scope="col">Elimination avg. rank</th>
+                      <th scope="col">Omnium points</th>
+                      <th scope="col">Omnium avg. rank</th>
+                      {/* <th scope="col">Avg. position in race</th> */}
                   </tr>
                   </thead>
-            { requests && requests.map((request, index) => {
+            { analytics && analytics.map((cyclist, index) => {
                     return (
-                      <tbody key={request.id} className="left">
-                          <td>{request.name}</td>
-                          <td>{request.surname}</td>
-                          <td> {request.phone}</td>
-                          <td> {request.email}</td>
-                          <button onClick={() => this.deleteUser(request.id)} type="button" className="btn-delete btn-float btn">Delete</button>
-                          <button id="btn-approve-user" type="button" onClick={() => this.approve(request.id)} className="btn-approve btn-float btn btn-success">Approve</button>
+                      <tbody key={cyclist.id} className="left">
+                          <td>{cyclist.firstName}</td>
+                          <td className="twofing">    {cyclist.lastName}</td>
+                          <td className="txt-align">{cyclist.events}</td>
+                          <td className="txt-align">{cyclist.positionScratch}</td>
+                          <td className="txt-align">{cyclist.positionElim}</td>
+                          <td className="txt-align">{cyclist.positionTempo}</td>
+                          <td className="txt-align">{cyclist.pointrace}</td>
+                          <td className="txt-align">{cyclist.positionPointRace}</td>
                       </tbody>
                     )
                   })
@@ -322,9 +342,13 @@ class MyTeam extends Component {
               <h1>Cyclist registration</h1>
             </div>
             <div className="from-top">
-            <p>
-              <h4>Please provide cyclists information.</h4>
-            </p>
+            {
+              !saveClicked && (
+                <p>
+                 <h4>Please provide cyclists information.</h4>
+                </p>
+              )
+            }
           </div>
           {
             showErrors && (
@@ -334,6 +358,9 @@ class MyTeam extends Component {
             )
           }
         </article>
+        {
+          !saveClicked && (
+        <div>
         <div>
         <SearchInput className="search-input" onChange={this.searchUpdated} />
         {filteredEmails && filteredEmails.map((email) => {
@@ -433,7 +460,23 @@ class MyTeam extends Component {
           </FormGroup>
           <Button onClick={() => this.onSaveButtonClick()} bsStyle="primary">Add cyclist</Button>
           </form>
-      </div>
+          </div>
+          )
+        }
+        {
+          saveClicked && (
+            <div>
+              <p>
+                 <h4>Cyclist was submited</h4>
+              </p>
+              <div className="img-div">
+                <img alt="meaninful string" src={logo}  width="200" height="150"/>
+              </div>
+              <Button onClick={() => this.openForm()} bsStyle="primary">Add cyclist</Button>
+            </div>
+          )
+        }
+        </div>
          </div>
          </div>
             )

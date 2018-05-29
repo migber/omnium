@@ -68,7 +68,13 @@ async function getTeamMembersAnalytics(req, res) {
     include: [
       {
         model: Score,
-        attributes: ['id', [sequelize.fn('sum', sequelize.col('Scores.totalPoints')), 'total_points']],
+        attributes: [
+          'id',
+          [sequelize.fn('sum', sequelize.col('Scores.totalPoints')), 'total_points'],
+          [sequelize.fn('sum', sequelize.col('Scores.points')), 'points'],
+          [sequelize.fn('sum', sequelize.col('Scores.place')), 'place'],
+          [sequelize.fn('sum', sequelize.col('Scores.finishPlace')), 'finishPlace'],
+        ],
         include: [
           {
             model: Race,
